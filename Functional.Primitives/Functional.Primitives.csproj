@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>This library contains allocation free Option and Result discriminated union types and factory methods for both.</Description>
   </PropertyGroup>
 
 </Project>

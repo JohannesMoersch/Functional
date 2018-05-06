@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>This library contains discriminated union types for arbitrary unions of between 2 and 8 types and associated factory methods.</Description>
   </PropertyGroup>
 
 </Project>
