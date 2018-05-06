@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Unions.Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Enumerables.Extensions", "Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj", "{C7D27C23-70A1-4139-986C-F10B18E0062C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.All", "Functional.All\Functional.All.csproj", "{7B36F9D0-B835-4519-8AE8-9E2BF95CF3A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B36F9D0-B835-4519-8AE8-9E2BF95CF3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B36F9D0-B835-4519-8AE8-9E2BF95CF3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B36F9D0-B835-4519-8AE8-9E2BF95CF3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B36F9D0-B835-4519-8AE8-9E2BF95CF3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

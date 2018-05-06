@@ -3,7 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>This library contains extension methods for working with Union types.</Description>
+    <Description>This package contains extension methods for working with Union types.</Description>
+    <Copyright />
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

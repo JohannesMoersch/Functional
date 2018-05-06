@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>This package depends on all other packages in the Functional package suite.</Description>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+		<Authors>Johannes Moersch</Authors>
+		<Company />
+		<PackageTags>functional</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+    <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+  </ItemGroup>
+
+</Project>

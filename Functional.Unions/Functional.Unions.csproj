@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>This library contains discriminated union types for arbitrary unions of between 2 and 8 types and associated factory methods.</Description>
+    <Description>This package contains discriminated union types for arbitrary unions of between 2 and 8 types and associated factory methods.</Description>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
 </Project>

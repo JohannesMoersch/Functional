@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>This library contains a suite of extension methods for working with Option and Result types.</Description>
+    <Description>This package contains a suite of extension methods for working with Option and Result types.</Description>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

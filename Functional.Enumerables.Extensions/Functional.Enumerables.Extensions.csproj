@@ -3,7 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>This library contains extension methods that add support for Task&lt;IEnumerable&lt;T&gt;&gt; to LINQ.</Description>
+    <Description>This package contains extension methods that add support for Task&lt;IEnumerable&lt;T&gt;&gt; to LINQ.</Description>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
 </Project>
