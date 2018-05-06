@@ -15,6 +15,9 @@ namespace Functional
 			return new Result<TSuccess, TFailure>(true, success, default(TFailure));
 		}
 
+		public static async Task<Result<TSuccess, TFailure>> Success<TSuccess, TFailure>(Task<TSuccess> success)
+			=> Success<TSuccess, TFailure>(await success);
+
 		public static Result<TSuccess, TFailure> Failure<TSuccess, TFailure>(TFailure failure)
 		{
 			if (failure == null)
@@ -22,6 +25,9 @@ namespace Functional
 
 			return new Result<TSuccess, TFailure>(false, default(TSuccess), failure);
 		}
+
+		public static async Task<Result<TSuccess, TFailure>> Failure<TSuccess, TFailure>(Task<TFailure> failure)
+			=> Failure<TSuccess, TFailure>(await failure);
 
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, TSuccess success, TFailure failure)
 			=> isSuccess

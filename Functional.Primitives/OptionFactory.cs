@@ -15,6 +15,9 @@ namespace Functional
 			return new Option<T>(true, value);
 		}
 
+		public static async Task<Option<T>> Some<T>(Task<T> value)
+			=> Some(await value);
+
 		public static Option<T> None<T>()
 			=> new Option<T>(false, default(T));
 
@@ -24,11 +27,19 @@ namespace Functional
 				? Some(value)
 				: None<T>();
 
+		public static async Task<Option<T>> FromNullable<T>(Task<T> value)
+			where T : class
+			=> FromNullable(await value);
+
 		public static Option<T> FromNullable<T>(T? value)
 			where T : struct
 			=> value.HasValue
 				? Some(value.Value)
 				: None<T>();
+
+		public static async Task<Option<T>> FromNullable<T>(Task<T?> value)
+			where T : struct
+			=> FromNullable(await value);
 
 		public static Option<T> Create<T>(bool isSome, T value)
 			=> isSome

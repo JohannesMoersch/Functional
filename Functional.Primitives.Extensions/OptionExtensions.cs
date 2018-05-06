@@ -100,28 +100,6 @@ namespace Functional
 		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
 			=> option.Do(apply);
 
-		public static Task<Option<TValue>> Unwrap<TValue>(this Option<Task<TValue>> option)
-			=> option.Match(async t => Option.Some(await t), () => Task.FromResult(Option.None<TValue>()));
-
-		public static Task<Option<TValue>> Unwrap<TValue>(this Task<Option<Task<TValue>>> option)
-			=> option.Match(async t => Option.Some(await t), () => Task.FromResult(Option.None<TValue>())).Unwrap();
-
-		public static Task<Option<TResult>> UnwrapAndBind<TValue, TResult>(this Option<Task<TValue>> option, Func<TValue, Option<TResult>> bind)
-		{
-			if (bind == null)
-				throw new ArgumentNullException(nameof(bind));
-
-			return option.Match(async t => bind.Invoke(await t), () => Task.FromResult(Option.None<TResult>()));
-		}
-
-		public static Task<Option<TResult>> UnwrapAndBind<TValue, TResult>(this Task<Option<Task<TValue>>> option, Func<TValue, Option<TResult>> bind)
-		{
-			if (bind == null)
-				throw new ArgumentNullException(nameof(bind));
-
-			return option.Match(async t => bind.Invoke(await t), () => Task.FromResult(Option.None<TResult>())).Unwrap();
-		}
-
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> SelectMany<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
 			=> option.Match(bind, Option.None<TResult>);

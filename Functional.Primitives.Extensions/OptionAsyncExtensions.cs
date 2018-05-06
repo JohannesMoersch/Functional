@@ -67,21 +67,5 @@ namespace Functional
 
 		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
 			=> option.DoAsync(apply);
-
-		public static Task<Option<TResult>> UnwrapAndBindAsync<TValue, TResult>(this Option<Task<TValue>> option, Func<TValue, Task<Option<TResult>>> bind)
-		{
-			if (bind == null)
-				throw new ArgumentNullException(nameof(bind));
-
-			return option.Match(async t => await bind.Invoke(await t), () => Task.FromResult(Option.None<TResult>()));
-		}
-
-		public static Task<Option<TResult>> UnwrapAndBindAsync<TValue, TResult>(this Task<Option<Task<TValue>>> option, Func<TValue, Task<Option<TResult>>> bind)
-		{
-			if (bind == null)
-				throw new ArgumentNullException(nameof(bind));
-
-			return option.Match(async t => await bind.Invoke(await t), () => Task.FromResult(Option.None<TResult>())).Unwrap();
-		}
 	}
 }
