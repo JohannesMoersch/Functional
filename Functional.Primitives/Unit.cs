@@ -6,7 +6,7 @@ namespace Functional
 {
     public struct Unit : IEquatable<Unit>
 	{
-		public static Unit Default { get; } = new Unit();
+		public static Unit Value { get; } = new Unit();
 
 		public bool Equals(Unit other)
 			=> true;

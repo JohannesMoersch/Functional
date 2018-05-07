@@ -20,6 +20,9 @@ namespace Functional
 		public static Task<Option<TSuccess>> Success<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> result.Match(Option.Some, _ => Option.None<TSuccess>());
 
+		public static Option<TFailure> Failure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+			=> result.Match(_ => Option.None<TFailure>(), Option.Some);
+
 		public static Task<Option<TFailure>> Failure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> result.Match(_ => Option.None<TFailure>(), Option.Some);
 
@@ -75,11 +78,23 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> (await result).Do(success, failure);
 
+		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success)
+			=> result.Do(success, _ => { });
+
+		public static Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
+			=> result.Do(success, _ => { });
+
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> result.Do(success, failure);
 
 		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> result.Do(success, failure);
+
+		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success)
+			=> result.Do(success, _ => { });
+
+		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
+			=> result.Do(success, _ => { });
 
 		public static Option<TSuccess> ToOption<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 			=> result.Match(Option.Some, _ => Option.None<TSuccess>());
