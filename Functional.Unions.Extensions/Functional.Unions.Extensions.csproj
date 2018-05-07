@@ -3,11 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Title>Functional.Unions.Extensions</Title>
     <Description>This package contains extension methods for working with Union types.</Description>
-    <Copyright />
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <Authors>Johannes Moersch</Authors>
     <PackageTags>functional</PackageTags>
+    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl></RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
