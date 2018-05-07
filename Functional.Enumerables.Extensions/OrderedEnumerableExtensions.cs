@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Functional.Enumerables.Extensions
+namespace Functional
 {
     public static class OrderedEnumerableExtensions
     {

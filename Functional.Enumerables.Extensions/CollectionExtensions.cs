@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Functional.Enumerables.Extensions
+namespace Functional
 {
     public static class CollectionExtensions
     {
