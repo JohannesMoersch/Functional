@@ -19,6 +19,24 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> select)
 			=> await (await result).SelectAsync(select);
 
+		public static Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (failureFactory == null)
+				throw new ArgumentNullException(nameof(failureFactory));
+
+			return result.MatchAsync
+				(
+					async success => await predicate.Invoke(success) ? Result.Success<TSuccess, TFailure>(success) : Result.Failure<TSuccess, TFailure>(await failureFactory.Invoke(success)),
+					failure => Task.FromResult(Result.Failure<TSuccess, TFailure>(failure))
+				);
+		}
+
+		public static async Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
+			=> await (await result).WhereAsync(predicate, failureFactory);
+
 		public static Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<TResult>> mapFailure)
 		{
 			if (mapFailure == null)

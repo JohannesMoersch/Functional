@@ -12,10 +12,11 @@
 		<PackageTags>functional</PackageTags>
 		<PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
 		<Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />

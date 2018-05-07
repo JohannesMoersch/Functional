@@ -2,21 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Title>Functional.Unions.Extensions</Title>
-    <Description>This package contains extension methods for working with Union types.</Description>
-    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
-    <Authors>Johannes Moersch</Authors>
-    <PackageTags>functional</PackageTags>
-    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
-    <RepositoryUrl></RepositoryUrl>
     <Version>1.2.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Johannes Moersch</Authors>
+    <Description>This package contains extension methods for .NET types.</Description>
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
-    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
   </ItemGroup>
 
 </Project>

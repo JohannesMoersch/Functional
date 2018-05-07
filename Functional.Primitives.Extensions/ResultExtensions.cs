@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class ResultExtensions
-    {
+	public static class ResultExtensions
+	{
 		public static bool IsSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 			=> result.Match(_ => true, _ => false);
 
@@ -36,6 +36,24 @@ namespace Functional
 
 		public static async Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> select)
 			=> (await result).Select(select);
+
+		public static Result<TSuccess, TFailure> Where<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			if (failureFactory == null)
+				throw new ArgumentNullException(nameof(failureFactory));
+
+			return result.Match
+				(
+					success => predicate.Invoke(success) ? Result.Success<TSuccess, TFailure>(success) : Result.Failure<TSuccess, TFailure>(failureFactory.Invoke(success)),
+					Result.Failure<TSuccess, TFailure>
+				);
+		}
+
+		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+			=> (await result).Where(predicate, failureFactory);
 
 		public static Result<TSuccess, TResult> MapFailure<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, TResult> mapFailure)
 		{
