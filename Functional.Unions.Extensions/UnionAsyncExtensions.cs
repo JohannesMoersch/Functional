@@ -7,6 +7,19 @@ namespace Functional
 {
     public static class UnionAsyncExtensions
     {
+		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Func<TOne, Task> one)
+			where TUnionDefinition : IUnionDefinition
+		{
+			await union.Match(one);
+
+			return union.AsUnion();
+		}
+
+		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union, Func<TOne, Task> one)
+			where TUnionDefinition : IUnionDefinition
+			=> await (await union).DoAsync(one);
+
+
 		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union, Func<TOne, Task> one, Func<TTwo, Task> two)
 			where TUnionDefinition : IUnionDefinition
 		{
@@ -90,6 +103,14 @@ namespace Functional
 		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
 			where TUnionDefinition : IUnionDefinition
 			=> await (await union).DoAsync(one, two, three, four, five, six, seven, eight);
+
+		public static Task ApplyAsync<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Func<TOne, Task> one)
+			where TUnionDefinition : IUnionDefinition
+			=> union.Match(one);
+
+		public static async Task ApplyAsync<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union, Func<TOne, Task> one)
+			where TUnionDefinition : IUnionDefinition
+			=> await (await union).ApplyAsync(one);
 
 		public static Task ApplyAsync<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union, Func<TOne, Task> one, Func<TTwo, Task> two)
 			where TUnionDefinition : IUnionDefinition

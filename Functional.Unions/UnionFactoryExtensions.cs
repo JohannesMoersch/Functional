@@ -5,6 +5,14 @@ using System.Threading.Tasks;namespace Functional
 {
 	public static class UnionFactoryExtensions
 	{
+		public static Union<TUnionDefinition> Create<TUnionDefinition, TOne>(this IUnionFactory<UnionDefinition<TUnionDefinition, TOne>> factory, TOne one)
+			where TUnionDefinition : IUnionDefinition
+			=> UnionDefinition<TUnionDefinition, TOne>.Create(one);
+
+		public static Task<Union<TUnionDefinition>> Create<TUnionDefinition, TOne>(this IUnionFactory<UnionDefinition<TUnionDefinition, TOne>> factory, Task<TOne> one)
+			where TUnionDefinition : IUnionDefinition
+			=> UnionDefinition<TUnionDefinition, TOne>.Create(one);
+
 		public static Union<TUnionDefinition> Create<TUnionDefinition, TOne, TTwo>(this IUnionFactory<UnionDefinition<TUnionDefinition, TOne, TTwo>> factory, TOne one)
 			where TUnionDefinition : IUnionDefinition
 			=> UnionDefinition<TUnionDefinition, TOne, TTwo>.Create(one);

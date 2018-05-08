@@ -8,6 +8,58 @@ namespace Functional
 	{
 	}
 
+	internal class UnionValue<TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>
+	{
+		public byte State { get; }
+
+		public TOne One { get; }
+
+		public UnionValue(byte state, TOne one)
+		{
+			State = state;
+			One = one;
+		}
+
+		public bool Equals(UnionValue<TUnionDefinition, TOne> other)
+		{
+			if (State != other.State)
+				return false;
+
+			switch (State)
+			{
+				case 0:
+					return Equals(One, other.One);
+				default:
+					return false;
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			switch (State)
+			{
+				case 0:
+					return One.GetHashCode() * 31 + 7;
+				default:
+					return 0;
+			}
+		}
+
+		public override bool Equals(object obj)
+			=> obj is UnionValue<TUnionDefinition, TOne> value && Equals(value);
+
+		public override string ToString()
+		{
+			switch (State)
+			{
+				case 0:
+					return $"One:{One}";
+				default:
+					return String.Empty;
+			}
+		}
+	}
+
 	internal class UnionValue<TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>
 	{
 		public byte State { get; }

@@ -7,6 +7,21 @@ namespace Functional
 {
     public static class UnionExtensions
     {
+		public static Union<TUnionDefinition> Do<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Action<TOne> one)
+			where TUnionDefinition : IUnionDefinition
+		{
+			if (one == null)
+				throw new ArgumentNullException(nameof(one));
+
+			union.Match(value => { one.Invoke(value); return false; });
+
+			return union.AsUnion();
+		}
+
+		public static async Task<Union<TUnionDefinition>> Do<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union, Action<TOne> one)
+			where TUnionDefinition : IUnionDefinition
+			=> (await union).Do(one);
+
 		public static Union<TUnionDefinition> Do<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union, Action<TOne> one, Action<TTwo> two)
 			where TUnionDefinition : IUnionDefinition
 		{
@@ -195,6 +210,14 @@ namespace Functional
 		public static async Task<Union<TUnionDefinition>> Do<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
 			where TUnionDefinition : IUnionDefinition
 			=> (await union).Do(one, two, three, four, five, six, seven, eight);
+
+		public static void Apply<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Action<TOne> one)
+			where TUnionDefinition : IUnionDefinition
+			=> union.Do(one);
+
+		public static Task Apply<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union, Action<TOne> one)
+			where TUnionDefinition : IUnionDefinition
+			=> union.Do(one);
 
 		public static void Apply<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union, Action<TOne> one, Action<TTwo> two)
 			where TUnionDefinition : IUnionDefinition

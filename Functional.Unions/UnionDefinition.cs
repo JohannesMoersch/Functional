@@ -9,6 +9,16 @@ namespace Functional
 	{
 	}
 
+	public abstract class UnionDefinition<TUnionDefinition, TOne> : IUnionDefinition
+		where TUnionDefinition : IUnionDefinition
+	{
+		public static Union<TUnionDefinition> Create(TOne one)
+			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(0, UnionHelpers.CheckForNull(one, nameof(one))));
+
+		public static async Task<Union<TUnionDefinition>> Create(Task<TOne> one)
+			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(0, UnionHelpers.CheckForNull(await one, nameof(one))));
+	}
+
 	public abstract class UnionDefinition<TUnionDefinition, TOne, TTwo> : IUnionDefinition
 		where TUnionDefinition : IUnionDefinition
 	{

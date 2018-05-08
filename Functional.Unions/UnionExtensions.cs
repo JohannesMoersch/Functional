@@ -7,6 +7,14 @@ namespace Functional
 {
 	public static class UnionExtensions
 	{
+		public static Union<TUnionDefinition> AsUnion<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union)
+			where TUnionDefinition : IUnionDefinition
+			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne>)union);
+
+		public static async Task<Union<TUnionDefinition>> AsUnion<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union)
+			where TUnionDefinition : IUnionDefinition
+			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne>)(await union));
+
 		public static Union<TUnionDefinition> AsUnion<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union)
 			where TUnionDefinition : IUnionDefinition
 			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne, TTwo>)union);

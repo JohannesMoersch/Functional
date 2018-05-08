@@ -7,6 +7,14 @@ namespace Functional
 {
     public static class UnionValueExtensions
     {
+		public static Option<TOne> One<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union)
+			where TUnionDefinition : IUnionDefinition
+			=> union.Match(Option.Some);
+
+		public static Task<Option<TOne>> One<TUnionDefinition, TOne>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne>>> union)
+			where TUnionDefinition : IUnionDefinition
+			=> union.Match(Option.Some);
+
 		public static Option<TOne> One<TUnionDefinition, TOne, TTwo>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo>> union)
 			where TUnionDefinition : IUnionDefinition
 			=> union.Match(Option.Some, _ => Option.None<TOne>());
