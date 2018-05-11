@@ -175,8 +175,8 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> (await union).Do(one, two, three, four, five, six, seven);
 
-		public static Union<TUnionDefinition> Do<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static TUnionType Do<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 		{
 			if (one == null)
 				throw new ArgumentNullException(nameof(one));
@@ -207,8 +207,8 @@ namespace Functional
 			return union.AsUnion();
 		}
 
-		public static async Task<Union<TUnionDefinition>> Do<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task<TUnionType> Do<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> (await union).Do(one, two, three, four, five, six, seven, eight);
 
 		public static void Apply<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Action<TOne> one)
@@ -267,12 +267,12 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> union.Do(one, two, three, four, five, six, seven);
 
-		public static void Apply<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static void Apply<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> union.Do(one, two, three, four, five, six, seven, eight);
 
-		public static Task Apply<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static Task Apply<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Action<TOne> one, Action<TTwo> two, Action<TThree> three, Action<TFour> four, Action<TFive> five, Action<TSix> six, Action<TSeven> seven, Action<TEight> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> union.Do(one, two, three, four, five, six, seven, eight);
 	}
 }

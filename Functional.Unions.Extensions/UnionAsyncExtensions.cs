@@ -92,16 +92,16 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> await (await union).DoAsync(one, two, three, four, five, six, seven);
 
-		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task<TUnionType> DoAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 		{
 			await union.Match(one, two, three, four, five, six, seven, eight);
 
 			return union.AsUnion();
 		}
 
-		public static async Task<Union<TUnionDefinition>> DoAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task<TUnionType> DoAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> await (await union).DoAsync(one, two, three, four, five, six, seven, eight);
 
 		public static Task ApplyAsync<TUnionDefinition, TOne>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Func<TOne, Task> one)
@@ -160,12 +160,12 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> await (await union).ApplyAsync(one, two, three, four, five, six, seven);
 
-		public static Task ApplyAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static Task ApplyAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> union.Match(one, two, three, four, five, six, seven, eight);
 
-		public static async Task ApplyAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task ApplyAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task> one, Func<TTwo, Task> two, Func<TThree, Task> three, Func<TFour, Task> four, Func<TFive, Task> five, Func<TSix, Task> six, Func<TSeven, Task> seven, Func<TEight, Task> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> await (await union).ApplyAsync(one, two, three, four, five, six, seven, eight);
 	}
 }

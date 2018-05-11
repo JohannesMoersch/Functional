@@ -39,13 +39,5 @@ namespace Functional
 		public static IUnionFactory<TUnionDefinition> OfType<TUnionDefinition>()
 			where TUnionDefinition : IUnionDefinition
 			=> UnionFactory<TUnionDefinition>.Instance;
-
-		public static IUnionValue<TUnionDefinition> Value<TUnionDefinition>(this Union<TUnionDefinition> union)
-			where TUnionDefinition : IUnionDefinition
-			=> union.Value;
-
-		public static IUnionTask<IUnionValue<TUnionDefinition>> Value<TUnionDefinition>(this Task<Union<TUnionDefinition>> union)
-			where TUnionDefinition : IUnionDefinition
-			=> new UnionTask<IUnionValue<TUnionDefinition>>(union.ContinueWith(t => t.Result.Value, TaskContinuationOptions.OnlyOnRanToCompletion));
 	}
 }

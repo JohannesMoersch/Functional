@@ -5,18 +5,14 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	public interface IUnionDefinition
-	{
-	}
-
 	public abstract class UnionDefinition<TUnionDefinition, TOne> : IUnionDefinition
 		where TUnionDefinition : IUnionDefinition
 	{
 		public static Union<TUnionDefinition> Create(TOne one)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(0, UnionHelpers.CheckForNull(one, nameof(one))));
+			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(UnionHelpers.CheckForNull(one, nameof(one))));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TOne> one)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(0, UnionHelpers.CheckForNull(await one, nameof(one))));
+			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne>(UnionHelpers.CheckForNull(await one, nameof(one))));
 	}
 
 	public abstract class UnionDefinition<TUnionDefinition, TOne, TTwo> : IUnionDefinition
@@ -205,55 +201,58 @@ namespace Functional
 			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), UnionHelpers.CheckForNull(await seven, nameof(seven))));
 	}
 
-	public abstract class UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionDefinition
-		where TUnionDefinition : IUnionDefinition
+	public abstract class UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionDefinitionBase<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+		where TUnionDefinition : UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 	{
 		public static Union<TUnionDefinition> Create(TOne one)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, UnionHelpers.CheckForNull(one, nameof(one)), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, UnionHelpers.CheckForNull(one, nameof(one)), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TOne> one)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, UnionHelpers.CheckForNull(await one, nameof(one)), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, UnionHelpers.CheckForNull(await one, nameof(one)), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TTwo two)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), UnionHelpers.CheckForNull(two, nameof(two)), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), UnionHelpers.CheckForNull(two, nameof(two)), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TTwo> two)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), UnionHelpers.CheckForNull(await two, nameof(two)), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), UnionHelpers.CheckForNull(await two, nameof(two)), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TThree three)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), UnionHelpers.CheckForNull(three, nameof(three)), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), UnionHelpers.CheckForNull(three, nameof(three)), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TThree> three)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), UnionHelpers.CheckForNull(await three, nameof(three)), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), UnionHelpers.CheckForNull(await three, nameof(three)), default(TFour), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TFour four)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), UnionHelpers.CheckForNull(four, nameof(four)), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), UnionHelpers.CheckForNull(four, nameof(four)), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TFour> four)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), UnionHelpers.CheckForNull(await four, nameof(four)), default(TFive), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), UnionHelpers.CheckForNull(await four, nameof(four)), default(TFive), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TFive five)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), UnionHelpers.CheckForNull(five, nameof(five)), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), UnionHelpers.CheckForNull(five, nameof(five)), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TFive> five)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), UnionHelpers.CheckForNull(await five, nameof(five)), default(TSix), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), UnionHelpers.CheckForNull(await five, nameof(five)), default(TSix), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TSix six)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), UnionHelpers.CheckForNull(six, nameof(six)), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), UnionHelpers.CheckForNull(six, nameof(six)), default(TSeven), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TSix> six)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), UnionHelpers.CheckForNull(await six, nameof(six)), default(TSeven), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), UnionHelpers.CheckForNull(await six, nameof(six)), default(TSeven), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TSeven seven)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), UnionHelpers.CheckForNull(seven, nameof(seven)), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), UnionHelpers.CheckForNull(seven, nameof(seven)), default(TEight), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TSeven> seven)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), UnionHelpers.CheckForNull(await seven, nameof(seven)), default(TEight)));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), UnionHelpers.CheckForNull(await seven, nameof(seven)), default(TEight), CreateUnion));
 
 		public static Union<TUnionDefinition> Create(TEight eight)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(eight, nameof(eight))));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(eight, nameof(eight)), CreateUnion));
 
 		public static async Task<Union<TUnionDefinition>> Create(Task<TEight> eight)
-			=> new Union<TUnionDefinition>(new UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(await eight, nameof(eight))));
+			=> new Union<TUnionDefinition>(new UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(0, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(await eight, nameof(eight)), CreateUnion));
+
+		private static Union<TUnionDefinition> CreateUnion(IUnionValue<TUnionDefinition> value)
+			=> new Union<TUnionDefinition>(value);
 	}
 }

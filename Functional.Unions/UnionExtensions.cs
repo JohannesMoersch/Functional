@@ -63,12 +63,12 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>)(await union));
 
-		public static Union<TUnionDefinition> AsUnion<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union)
-			where TUnionDefinition : IUnionDefinition
-			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>)union);
+		public static TUnionType AsUnion<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			=> ((UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>)union).GetUnion();
 
-		public static async Task<Union<TUnionDefinition>> AsUnion<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union)
-			where TUnionDefinition : IUnionDefinition
-			=> new Union<TUnionDefinition>((UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>)(await union));
+		public static async Task<TUnionType> AsUnion<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			=> ((UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>)await union).GetUnion();
 	}
 }

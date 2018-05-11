@@ -14,13 +14,7 @@ namespace Functional
 				throw new ArgumentNullException(nameof(one));
 
 			if (union is UnionValue<TUnionDefinition, TOne> storage)
-			{
-				switch (storage.State)
-				{
-					case 0:
-						return one.Invoke(storage.One);
-				}
-			}
+				return one.Invoke(storage.One);
 
 			throw new UnionInvalidMatchException();
 		}
@@ -266,8 +260,8 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> (await union).Match(one, two, three, four, five, six, seven);
 
-		public static TResult Match<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, TResult> one, Func<TTwo, TResult> two, Func<TThree, TResult> three, Func<TFour, TResult> four, Func<TFive, TResult> five, Func<TSix, TResult> six, Func<TSeven, TResult> seven, Func<TEight, TResult> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static TResult Match<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, TResult> one, Func<TTwo, TResult> two, Func<TThree, TResult> three, Func<TFour, TResult> four, Func<TFive, TResult> five, Func<TSix, TResult> six, Func<TSeven, TResult> seven, Func<TEight, TResult> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 		{
 			if (one == null)
 				throw new ArgumentNullException(nameof(one));
@@ -293,7 +287,7 @@ namespace Functional
 			if (eight == null)
 				throw new ArgumentNullException(nameof(eight));
 
-			if (union is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> storage)
+			if (union is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> storage)
 			{
 				switch (storage.State)
 				{
@@ -319,8 +313,8 @@ namespace Functional
 			throw new UnionInvalidMatchException();
 		}
 
-		public static async Task<TResult> Match<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, TResult> one, Func<TTwo, TResult> two, Func<TThree, TResult> three, Func<TFour, TResult> four, Func<TFive, TResult> five, Func<TSix, TResult> six, Func<TSeven, TResult> seven, Func<TEight, TResult> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task<TResult> Match<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, TResult> one, Func<TTwo, TResult> two, Func<TThree, TResult> three, Func<TFour, TResult> four, Func<TFive, TResult> five, Func<TSix, TResult> six, Func<TSeven, TResult> seven, Func<TEight, TResult> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> (await union).Match(one, two, three, four, five, six, seven, eight);
 
 		public static Task<TResult> MatchAsync<TUnionDefinition, TOne, TResult>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne>> union, Func<TOne, Task<TResult>> one)
@@ -379,12 +373,12 @@ namespace Functional
 			where TUnionDefinition : IUnionDefinition
 			=> await (await union).Match(one, two, three, four, five, six, seven);
 
-		public static Task<TResult> MatchAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task<TResult>> one, Func<TTwo, Task<TResult>> two, Func<TThree, Task<TResult>> three, Func<TFour, Task<TResult>> four, Func<TFive, Task<TResult>> five, Func<TSix, Task<TResult>> six, Func<TSeven, Task<TResult>> seven, Func<TEight, Task<TResult>> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static Task<TResult> MatchAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> union, Func<TOne, Task<TResult>> one, Func<TTwo, Task<TResult>> two, Func<TThree, Task<TResult>> three, Func<TFour, Task<TResult>> four, Func<TFive, Task<TResult>> five, Func<TSix, Task<TResult>> six, Func<TSeven, Task<TResult>> seven, Func<TEight, Task<TResult>> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> union.Match(one, two, three, four, five, six, seven, eight);
 
-		public static async Task<TResult> MatchAsync<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionTask<IUnionValue<UnionDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task<TResult>> one, Func<TTwo, Task<TResult>> two, Func<TThree, Task<TResult>> three, Func<TFour, Task<TResult>> four, Func<TFive, Task<TResult>> five, Func<TSix, Task<TResult>> six, Func<TSeven, Task<TResult>> seven, Func<TEight, Task<TResult>> eight)
-			where TUnionDefinition : IUnionDefinition
+		public static async Task<TResult> MatchAsync<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight, TResult>(this IUnionTask<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> union, Func<TOne, Task<TResult>> one, Func<TTwo, Task<TResult>> two, Func<TThree, Task<TResult>> three, Func<TFour, Task<TResult>> four, Func<TFive, Task<TResult>> five, Func<TSix, Task<TResult>> six, Func<TSeven, Task<TResult>> seven, Func<TEight, Task<TResult>> eight)
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> await (await union).Match(one, two, three, four, five, six, seven, eight);
 	}
 }
