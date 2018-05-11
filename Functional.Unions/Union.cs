@@ -36,16 +36,29 @@ namespace Functional
 
 	public static class Union
 	{
-		public static IUnionFactory<TUnionDefinition> OfType<TUnionDefinition>()
+		public static IUnionFactory<TUnionDefinition> FromDefinition<TUnionDefinition>()
 			where TUnionDefinition : IUnionDefinition
 			=> UnionFactory<TUnionDefinition>.Instance;
 
-		public static IUnionValue<TUnionDefinition> Value<TUnionDefinition>(this Union<TUnionDefinition> union)
-			where TUnionDefinition : IUnionDefinition
-			=> union.Value;
+		public static IUnionFactory<TOne, TTwo> FromTypes<TOne, TTwo>()
+			=> UnionFactory<TOne, TTwo>.Instance;
 
-		public static IUnionTask<IUnionValue<TUnionDefinition>> Value<TUnionDefinition>(this Task<Union<TUnionDefinition>> union)
-			where TUnionDefinition : IUnionDefinition
-			=> new UnionTask<IUnionValue<TUnionDefinition>>(union.ContinueWith(t => t.Result.Value, TaskContinuationOptions.OnlyOnRanToCompletion));
+		public static IUnionFactory<TOne, TTwo, TThree> FromTypes<TOne, TTwo, TThree>()
+			=> UnionFactory<TOne, TTwo, TThree>.Instance;
+
+		public static IUnionFactory<TOne, TTwo, TThree, TFour> FromTypes<TOne, TTwo, TThree, TFour>()
+			=> UnionFactory<TOne, TTwo, TThree, TFour>.Instance;
+
+		public static IUnionFactory<TOne, TTwo, TThree, TFour, TFive> FromTypes<TOne, TTwo, TThree, TFour, TFive>()
+			=> UnionFactory<TOne, TTwo, TThree, TFour, TFive>.Instance;
+
+		public static IUnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix> FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>()
+			=> UnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix>.Instance;
+
+		public static IUnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>()
+			=> UnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>.Instance;
+
+		public static IUnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>()
+			=> UnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>.Instance;
 	}
 }

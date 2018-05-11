@@ -5,62 +5,41 @@ using System.Text;
 namespace Functional
 {
 	public interface IUnionValue<out TUnionDefinition>
+		where TUnionDefinition : IUnionDefinition
 	{
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>
+		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
-
 		public TOne One { get; }
 
-		public UnionValue(byte state, TOne one)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
-			State = state;
 			One = one;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne> other)
-		{
-			if (State != other.State)
-				return false;
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
 
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				default:
-					return false;
-			}
-		}
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne> other)
+			=> Equals(One, other.One);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> One.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"One:{One}";
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -68,14 +47,20 @@ namespace Functional
 
 		public TTwo Two { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
 			Two = two;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> other)
 		{
 			if (State != other.State)
 				return false;
@@ -105,7 +90,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -121,7 +106,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -131,15 +117,21 @@ namespace Functional
 
 		public TThree Three { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
 			Two = two;
 			Three = three;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
 		{
 			if (State != other.State)
 				return false;
@@ -173,7 +165,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -191,7 +183,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -203,16 +196,22 @@ namespace Functional
 
 		public TFour Four { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
 			Two = two;
 			Three = three;
 			Four = four;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
 		{
 			if (State != other.State)
 				return false;
@@ -250,7 +249,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -270,7 +269,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -284,7 +284,9 @@ namespace Functional
 
 		public TFive Five { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
@@ -292,9 +294,13 @@ namespace Functional
 			Three = three;
 			Four = four;
 			Five = five;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 		{
 			if (State != other.State)
 				return false;
@@ -336,7 +342,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -358,7 +364,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -374,7 +381,9 @@ namespace Functional
 
 		public TSix Six { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
@@ -383,9 +392,13 @@ namespace Functional
 			Four = four;
 			Five = five;
 			Six = six;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 		{
 			if (State != other.State)
 				return false;
@@ -431,7 +444,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -455,7 +468,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -473,7 +487,9 @@ namespace Functional
 
 		public TSeven Seven { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
@@ -483,9 +499,13 @@ namespace Functional
 			Five = five;
 			Six = six;
 			Seven = seven;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 		{
 			if (State != other.State)
 				return false;
@@ -535,7 +555,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
 
 		public override string ToString()
 		{
@@ -561,7 +581,8 @@ namespace Functional
 		}
 	}
 
-	internal class UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
+		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
 
@@ -581,7 +602,9 @@ namespace Functional
 
 		public TEight Eight { get; }
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven, TEight eight)
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven, TEight eight, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 		{
 			State = state;
 			One = one;
@@ -592,9 +615,13 @@ namespace Functional
 			Six = six;
 			Seven = seven;
 			Eight = eight;
+			_unionFactory = unionFactory;
 		}
 
-		public bool Equals(UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+
+		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 		{
 			if (State != other.State)
 				return false;
@@ -648,7 +675,7 @@ namespace Functional
 		}
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
 
 		public override string ToString()
 		{
