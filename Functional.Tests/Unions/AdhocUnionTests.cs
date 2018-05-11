@@ -12,7 +12,8 @@ namespace Functional.Tests.Unions
 		{
 			[Fact]
 			public void EightValueMatchOne()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((byte)10)
 					.Value()
 					.Match(_ => true, _ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => false)
@@ -21,7 +22,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchTwo()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((sbyte)10)
 					.Value()
 					.Match(_ => false, _ => true, _ => false, _ => false, _ => false, _ => false, _ => false, _ => false)
@@ -30,7 +32,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchThree()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((ushort)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => true, _ => false, _ => false, _ => false, _ => false, _ => false)
@@ -39,7 +42,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchFour()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((short)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => false, _ => true, _ => false, _ => false, _ => false, _ => false)
@@ -48,7 +52,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchFive()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((uint)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => false, _ => false, _ => true, _ => false, _ => false, _ => false)
@@ -57,7 +62,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchSix()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((int)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => false, _ => false, _ => false, _ => true, _ => false, _ => false)
@@ -66,7 +72,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchSeven()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((ulong)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => true, _ => false)
@@ -75,7 +82,8 @@ namespace Functional.Tests.Unions
 
 			[Fact]
 			public void EightValueMatchEight()
-				=> Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				=> Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					.Create((long)10)
 					.Value()
 					.Match(_ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => true)
@@ -90,7 +98,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((byte)10)
 					  .Value()
 					  .Do(_ => result = true, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { });
@@ -103,7 +112,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((sbyte)10)
 					  .Value()
 					  .Do(_ => { }, _ => result = true, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { });
@@ -116,7 +126,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((ushort)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => result = true, _ => { }, _ => { }, _ => { }, _ => { }, _ => { });
@@ -129,7 +140,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((short)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => { }, _ => result = true, _ => { }, _ => { }, _ => { }, _ => { });
@@ -142,7 +154,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((uint)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => { }, _ => { }, _ => result = true, _ => { }, _ => { }, _ => { });
@@ -155,7 +168,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((int)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => result = true, _ => { }, _ => { });
@@ -168,7 +182,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((ulong)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => result = true, _ => { });
@@ -181,7 +196,8 @@ namespace Functional.Tests.Unions
 			{
 				bool result = false;
 
-				Union<byte, sbyte, ushort, short, uint, int, ulong, long>
+				Union
+					.FromTypes<byte, sbyte, ushort, short, uint, int, ulong, long>()
 					  .Create((long)10)
 					  .Value()
 					  .Do(_ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => { }, _ => result = true);
