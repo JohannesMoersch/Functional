@@ -67,5 +67,31 @@ namespace Functional
 
 		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
 			=> option.DoAsync(apply);
+
+		public static Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
+		{
+			if (doWhenSome == null) throw new ArgumentNullException(nameof(doWhenSome));
+			if (doWhenNone == null) throw new ArgumentNullException(nameof(doWhenNone));
+
+			return option.Match(async value =>
+				{
+					await doWhenSome.Invoke(value);
+					return option;
+				},
+				async () =>
+				{
+					await doWhenNone.Invoke();
+					return option;
+				});
+		}
+
+		public static async Task<Option<TValue>> DoAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
+			=> await (await option).DoAsync(doWhenSome, doWhenNone);
+
+		public static Task ApplyAsync<TValue>(this Option<TValue> option, Func<TValue, Task> applyWhenSome, Func<Task> applyWhenNone)
+			=> option.DoAsync(applyWhenSome, applyWhenNone);
+
+		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> applyWhenSome, Func<Task> applyWhenNone)
+			=> option.DoAsync(applyWhenSome, applyWhenNone);
 	}
 }
