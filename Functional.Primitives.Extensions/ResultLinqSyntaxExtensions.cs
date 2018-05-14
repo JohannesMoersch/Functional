@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class ResultLinqSyntaxExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class ResultLinqSyntaxExtensions
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TResult, TFailure>> bind)

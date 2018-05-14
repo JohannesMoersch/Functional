@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class OptionLinqSyntaxExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class OptionLinqSyntaxExtensions
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> SelectMany<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)

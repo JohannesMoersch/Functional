@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class ResultLinqSyntaxExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class ResultLinqSyntaxExtensions
 	{
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -28,6 +30,10 @@ namespace Functional
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<IEnumerable<Result<TResult, TFailure>>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			=> (await result).SelectMany(bind, resultSelector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IEnumerable<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
@@ -42,6 +48,10 @@ namespace Functional
 					.Select(obj => resultSelector.Invoke(value, obj))
 				);
 		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<IEnumerable<Result<TResult, TFailure>>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<IEnumerable<TSuccess>> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			=> (await source).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IEnumerable<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<Result<TSuccess, TFailure>> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
@@ -62,6 +72,10 @@ namespace Functional
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<IEnumerable<Result<TResult, TFailure>>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			=> (await source).SelectMany(bind, resultSelector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IEnumerable<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<Result<TSuccess, TFailure>> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
@@ -80,5 +94,9 @@ namespace Functional
 					)
 				);
 		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<IEnumerable<Result<TResult, TFailure>>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			=> (await source).SelectMany(bind, resultSelector);
 	}
 }
