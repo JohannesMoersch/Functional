@@ -25,11 +25,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.Match(
-				value => bind
-					.Invoke(value)
-					.Match(obj => Option.Some(resultSelector.Invoke(value, obj)), Option.None<TResult>),
-				Option.None<TResult>
+			return option.Bind(value => bind
+				.Invoke(value)
+				.Select(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -46,11 +44,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.MatchAsync(
-				value => bind
-					.Invoke(value)
-					.Match(obj => Option.Some(resultSelector.Invoke(value, obj)), Option.None<TResult>),
-				() => Task.FromResult(Option.None<TResult>())
+			return option.BindAsync(value => bind
+				.Invoke(value)
+				.Select(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -75,11 +71,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.MatchAsync(
-				value => bind
+			return option.BindAsync(value => bind
 					.Invoke(value)
-					.MatchAsync(obj => Option.Some(resultSelector.Invoke(value, obj)), () => Task.FromResult(Option.None<TResult>())),
-				() => Task.FromResult(Option.None<TResult>())
+					.SelectAsync(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -96,11 +90,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.MatchAsync(
-				value => bind
-					.Invoke(value)
-					.MatchAsync(obj => Option.Some(resultSelector.Invoke(value, obj)), () => Task.FromResult(Option.None<TResult>())),
-				() => Task.FromResult(Option.None<TResult>())
+			return option.BindAsync(value => bind
+				.Invoke(value)
+				.SelectAsync(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 

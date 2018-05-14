@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
   </ItemGroup>
 

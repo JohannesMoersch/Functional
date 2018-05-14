@@ -101,8 +101,11 @@ namespace Functional
 
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> doWhenSome, Action doWhenNone)
 		{
-			if (doWhenSome == null) throw new ArgumentNullException(nameof(doWhenSome));
-			if (doWhenNone == null) throw new ArgumentNullException(nameof(doWhenNone));
+			if (doWhenSome == null)
+				throw new ArgumentNullException(nameof(doWhenSome));
+
+			if (doWhenNone == null)
+				throw new ArgumentNullException(nameof(doWhenNone));
 
 			return option.Match(value =>
 				{
