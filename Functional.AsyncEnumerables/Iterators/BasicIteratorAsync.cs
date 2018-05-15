@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class BasicIterator<TSource, TResult> : IAsyncEnumerator<TResult>
+	internal class BasicIteratorAsync<TSource, TResult> : IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
-		private readonly Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult current)> _moveNext;
+		private readonly Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult current)>> _moveNext;
 
 		private int _count;
 
 		public TResult Current { get; private set; }
 
-		public BasicIterator(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult current)> onNext)
+		public BasicIteratorAsync(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult current)>> onNext)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
 			_moveNext = onNext ?? throw new ArgumentNullException(nameof(onNext));
@@ -24,7 +24,7 @@ namespace Functional
 		{
 			while (await _enumerator.MoveNext())
 			{
-				var value = _moveNext.Invoke((_enumerator.Current, _count++));
+				var value = await _moveNext.Invoke((_enumerator.Current, _count++));
 
 				switch (value.type)
 				{

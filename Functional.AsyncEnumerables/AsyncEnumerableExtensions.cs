@@ -159,16 +159,6 @@ namespace Functional
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source.AsAsyncEnumerable(), selector, (_, o) => o));
 
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector(o), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), collectionSelector, resultSelector));
-
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source.AsAsyncEnumerable(), (o, _) => selector(o), (_, o) => o));
@@ -176,16 +166,6 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source.AsAsyncEnumerable(), selector, (_, o) => o));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector(o), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), collectionSelector, resultSelector));
 
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
@@ -195,34 +175,6 @@ namespace Functional
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, i) => selector(o, i).AsAsyncEnumerable(), (_, o) => o));
 
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector(o).AsAsyncEnumerable(), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, (o, i) => collectionSelector(o, i).AsAsyncEnumerable(), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TResult>>> selector)
-			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, _) => selector(o).AsAsyncEnumerable(), (_, o) => o));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<IEnumerable<TResult>>> selector)
-			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, i) => selector(o, i).AsAsyncEnumerable(), (_, o) => o));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector(o).AsAsyncEnumerable(), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, (o, i) => collectionSelector(o, i).AsAsyncEnumerable(), resultSelector));
-
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, _) => selector(o), (_, o) => o));
@@ -230,16 +182,6 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, selector, (_, o) => o));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector(o), resultSelector));
-
-		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
-				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TCollection, TResult>(source, collectionSelector, resultSelector));
 
 		public static async Task<TSource> Single<TSource>(this IAsyncEnumerable<TSource> source)
 		{

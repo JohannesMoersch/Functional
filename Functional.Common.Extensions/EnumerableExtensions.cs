@@ -90,11 +90,5 @@ namespace Functional
 
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryLast(predicate);
-
-		public static Option<T> TrySingle<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-			=> source.Take(2).Count() == 1 ? Option.Some(source.Single(predicate)) : Option.None<T>();
-
-		public static async Task<Option<T>> TrySingle<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
-			=> (await source).TrySingle(predicate);
 	}
 }

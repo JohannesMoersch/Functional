@@ -24,8 +24,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj" />
     <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj" />
     <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
     <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />

@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Common.Extension
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Tests", "Functional.Tests\Functional.Tests.csproj", "{01DF0B82-75DC-420D-A2A5-31025C930237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.AsyncEnumerables", "Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj", "{F3FFBCD4-11BB-412C-BAEB-256118C2560F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables", "Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj", "{F3FFBCD4-11BB-412C-BAEB-256118C2560F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{F3FFBCD4-11BB-412C-BAEB-256118C2560F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3FFBCD4-11BB-412C-BAEB-256118C2560F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3FFBCD4-11BB-412C-BAEB-256118C2560F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F598749-794A-4078-9591-B09BA20E8C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F598749-794A-4078-9591-B09BA20E8C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
