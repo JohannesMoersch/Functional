@@ -71,7 +71,8 @@ namespace Functional
 				throw new ArgumentNullException(nameof(resultSelector));
 
 			return source
-				.Select(value => bind
+				.AsAsyncEnumerable()
+				.SelectAsync(value => bind
 					.Invoke(value)
 					.Select(success => resultSelector.Invoke(value, success))
 				)
@@ -106,7 +107,6 @@ namespace Functional
 				throw new ArgumentNullException(nameof(resultSelector));
 
 			return source
-				.AsAsyncEnumerable()
 				.SelectMany(value => bind
 					.Invoke(value)
 					.Select(obj => obj.Select(success => resultSelector.Invoke(value, success)))
@@ -274,7 +274,6 @@ namespace Functional
 				throw new ArgumentNullException(nameof(resultSelector));
 
 			return source
-				.AsAsyncEnumerable()
 				.SelectMany(result => result
 					.Match(success =>
 						bind
@@ -318,7 +317,6 @@ namespace Functional
 				throw new ArgumentNullException(nameof(resultSelector));
 
 			return source
-				.AsAsyncEnumerable()
 				.SelectMany(result => result
 					.Match(success =>
 						bind

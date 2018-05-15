@@ -22,9 +22,6 @@ namespace Functional
 
 	internal static class AsyncResultEnumerable
 	{
-		public static IAsyncResultEnumerable<TSuccess, TFailure> AsAsyncResultEnumerable<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
-			=> new AsyncResultEnumerable<TSuccess, TFailure>(AsyncEnumerable.Create(source));
-
 		public static IAsyncResultEnumerable<TSuccess, TFailure> AsAsyncResultEnumerable<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 			=> new AsyncResultEnumerable<TSuccess, TFailure>(source);
 	}
