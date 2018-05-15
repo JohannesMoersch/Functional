@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-	public class ConcatExtensions
+	public class ConcatTests
 	{
 		[Fact]
 		public async Task ConcatEmptyToEmpty()

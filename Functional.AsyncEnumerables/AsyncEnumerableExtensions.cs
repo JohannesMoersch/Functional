@@ -103,12 +103,6 @@ namespace Functional
 		
 		public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
 			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
-		
-		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second)
-			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second.AsAsyncEnumerable()));
-
-		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, Task<IEnumerable<TSource>> second)
-			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second.AsAsyncEnumerable()));
 
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first.AsAsyncEnumerable(), second));
@@ -116,15 +110,21 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this Task<IEnumerable<TSource>> first, IAsyncEnumerable<TSource> second)
 			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first.AsAsyncEnumerable(), second));
 
+		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second)
+			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second.AsAsyncEnumerable()));
+
+		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, Task<IEnumerable<TSource>> second)
+			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second.AsAsyncEnumerable()));
+
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second));
-		/*
+		
 		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source)
-			=> source.GetEnumerator().MoveNext
+			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource>(source, default));
 
 		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source, TSource defaultValue)
-			=> (await source).DefaultIfEmpty(defaultValue);
-		*/
+			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource>(source, defaultValue));
+
 		public static async Task<TSource> ElementAt<TSource>(this IAsyncEnumerable<TSource> source, int index)
 		{
 			if (source == null)
@@ -311,15 +311,20 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> Where<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
 				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => predicate.Invoke(data.current) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
-		/*
-		public static Task<IEnumerable<TResult>> Zip<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-			=> (await first).Zip(second, resultSelector);
 
-		public static Task<IEnumerable<TResult>> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, TResult> resultSelector)
-			=> first.Zip(await second, resultSelector);
+		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
 
-		public static Task<IEnumerable<TResult>> Zip<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, TResult> resultSelector)
-			=> (await first).Zip(await second, resultSelector);
-			*/
+		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
+
+		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
+
+		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, TResult> resultSelector)
+			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
+
+		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second, resultSelector));
 	}
 }
