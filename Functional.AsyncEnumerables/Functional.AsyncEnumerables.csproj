@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>1.5.0</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Johannes Moersch</Authors>
-    <Description>This package contains extension methods for .NET types.</Description>
+    <Company>Johannes Moersch</Company>
+    <Description>This package contains a framework and extension methods for asynchronous enumerables.</Description>
     <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
     <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
@@ -19,9 +19,5 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
-  </ItemGroup>
 
 </Project>
