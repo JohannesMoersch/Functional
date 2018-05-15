@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Functional.AsyncEnumerables
+namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class EnumerableExtensions
