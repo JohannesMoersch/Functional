@@ -19,6 +19,9 @@ namespace Functional
 
 	public static class AsyncEnumerable
 	{
+		public static IAsyncEnumerable<T> Create<T>(IEnumerable<T> source)
+			=> new AsyncEnumerable<T>(() => Task.FromResult(source));
+
 		public static IAsyncEnumerable<T> Create<T>(Task<IEnumerable<T>> source)
 			=> new AsyncEnumerable<T>(() => source);
 

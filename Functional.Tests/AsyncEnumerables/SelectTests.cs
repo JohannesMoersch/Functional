@@ -10,6 +10,18 @@ namespace Functional.Tests.AsyncEnumerables
     public class SelectTests
     {
 		[Fact]
+		public async Task SelectIndex()
+			=> (
+					await
+					AsyncEnumerable
+					.Create(Task.FromResult(new[] { 1, 2, 3 }).AsEnumerable())
+					.Select((_, index) => index)
+					.AsEnumerable()
+				)
+				.Should()
+				.BeEquivalentTo(new[] { 0, 1, 2 });
+
+		[Fact]
 		public async Task SelectCompletedTask()
 			=> (
 					await
