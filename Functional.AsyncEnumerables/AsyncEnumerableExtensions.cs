@@ -100,10 +100,10 @@ namespace Functional
 
 			return value;
 		}
+		
+		public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
+			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
 		/*
-		public static async Task<IEnumerable<TResult>> Cast<TResult>(this Task<IEnumerable> source)
-			=> (await source).Cast<TResult>();
-
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second)
 			=> (await first).Concat(second);
 
@@ -136,10 +136,10 @@ namespace Functional
 
 		public static Task<TSource> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> (await source).FirstOrDefault(predicate);
-
-		public static async Task<IEnumerable<TResult>> OfType<TResult>(this Task<IEnumerable> source)
-			=> (await source).OfType<TResult>();
-			*/
+		*/
+		public static IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
+			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => data.current is TResult result ? (BasicIteratorContinuationType.Take, result) : (BasicIteratorContinuationType.Skip, default)));
+			
 		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
 				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current))));

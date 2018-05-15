@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public interface IAsyncEnumerator<T>
+    public interface IAsyncEnumerator<out T>
     {
 		Task<bool> MoveNext();
 

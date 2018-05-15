@@ -89,6 +89,9 @@ namespace Functional
 		public static async Task<IEnumerable<TResult>> Cast<TResult>(this Task<IEnumerable> source)
 			=> (await source).Cast<TResult>();
 
+		public static async Task<IEnumerable<TResult>> Cast<TSource, TResult>(this Task<IEnumerable<TSource>> source)
+			=> (await source).Cast<TResult>();
+
 		public static async Task<IEnumerable<TSource>> Concat<TSource>(this Task<IEnumerable<TSource>> first, IEnumerable<TSource> second)
 			=> (await first).Concat(second);
 
@@ -375,6 +378,9 @@ namespace Functional
 			=> (await source).Min();
 
 		public static async Task<IEnumerable<TResult>> OfType<TResult>(this Task<IEnumerable> source)
+			=> (await source).OfType<TResult>();
+
+		public static async Task<IEnumerable<TResult>> OfType<TSource, TResult>(this Task<IEnumerable<TSource>> source)
 			=> (await source).OfType<TResult>();
 
 		public static async Task<IOrderedEnumerable<TSource>> OrderBy<TSource, TKey>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector, IComparer<TKey> comparer)

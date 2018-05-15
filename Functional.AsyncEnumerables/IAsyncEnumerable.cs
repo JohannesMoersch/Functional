@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Functional
 {
-    public interface IAsyncEnumerable<T>
+    public interface IAsyncEnumerable<out T>
     {
 		IAsyncEnumerator<T> GetEnumerator();
     }
