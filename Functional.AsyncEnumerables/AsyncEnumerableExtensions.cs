@@ -24,49 +24,6 @@ namespace Functional
 
 			return list.AsEnumerable();
 		}
-
-
-		public static async Task<TSource> Aggregate<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, TSource, TSource> func)
-		{
-			if (source == null)
-				throw new ArgumentNullException(nameof(source));
-
-			var enumerator = source.GetEnumerator();
-
-			if (!await enumerator.MoveNext())
-				throw new InvalidOperationException("Sequence contains no elements");
-
-			var value = enumerator.Current;
-			
-			while (await enumerator.MoveNext())
-				value = func.Invoke(value, enumerator.Current);
-
-			return value;
-		}
-
-		public static Task<TAccumulate> Aggregate<TSource, TAccumulate>(this IAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
-			=> Aggregate(source, seed, func, o => o);
-
-		public static async Task<TResult> Aggregate<TSource, TAccumulate, TResult>(this IAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-		{
-			if (source == null)
-				throw new ArgumentNullException(nameof(source));
-
-			if (func == null)
-				throw new ArgumentNullException(nameof(func));
-
-			if (resultSelector == null)
-				throw new ArgumentNullException(nameof(resultSelector));
-
-			var enumerator = source.GetEnumerator();
-
-			var value = seed;
-
-			while (await enumerator.MoveNext())
-				value = func.Invoke(value, enumerator.Current);
-
-			return resultSelector.Invoke(value);
-		}
 		
 		public static async Task<bool> All<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 		{
