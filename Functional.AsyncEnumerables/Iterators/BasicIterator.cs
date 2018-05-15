@@ -15,7 +15,10 @@ namespace Functional
 		public TResult Current { get; private set; }
 
 		public BasicIterator(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult current)> moveNext)
-			=> (_enumerator, _moveNext) = ((source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator(), moveNext);
+		{
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_moveNext = moveNext;
+		}
 
 		public async Task<bool> MoveNext()
 		{

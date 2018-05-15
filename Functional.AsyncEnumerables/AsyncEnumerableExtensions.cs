@@ -12,6 +12,9 @@ namespace Functional
 	{
 		public static async Task<IEnumerable<TSource>> AsEnumerable<TSource>(this IAsyncEnumerable<TSource> source)
 		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
 			var enumerator = source.GetEnumerator();
 
 			var list = new List<TSource>();
@@ -22,24 +25,84 @@ namespace Functional
 			return list.AsEnumerable();
 		}
 
-		/*
-		public static Task<TSource> Aggregate<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, TSource, TSource> func)
-			=> (await source).Aggregate(func);
+
+		public static async Task<TSource> Aggregate<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, TSource, TSource> func)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			var enumerator = source.GetEnumerator();
+
+			if (!await enumerator.MoveNext())
+				throw new InvalidOperationException("Sequence contains no elements");
+
+			var value = enumerator.Current;
+			
+			while (await enumerator.MoveNext())
+				value = func.Invoke(value, enumerator.Current);
+
+			return value;
+		}
 
 		public static Task<TAccumulate> Aggregate<TSource, TAccumulate>(this IAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func)
-			=> (await source).Aggregate(seed, func);
+			=> Aggregate(source, seed, func, o => o);
 
-		public static Task<TResult> Aggregate<TSource, TAccumulate, TResult>(this IAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
-			=> (await source).Aggregate(seed, func, resultSelector);
+		public static async Task<TResult> Aggregate<TSource, TAccumulate, TResult>(this IAsyncEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func, Func<TAccumulate, TResult> resultSelector)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
 
-		public static Task<bool> All<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
-			=> (await source).All(predicate);
+			if (func == null)
+				throw new ArgumentNullException(nameof(func));
+
+			if (resultSelector == null)
+				throw new ArgumentNullException(nameof(resultSelector));
+
+			var enumerator = source.GetEnumerator();
+
+			var value = seed;
+
+			while (await enumerator.MoveNext())
+				value = func.Invoke(value, enumerator.Current);
+
+			return resultSelector.Invoke(value);
+		}
+		
+		public static async Task<bool> All<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			var enumerator = source.GetEnumerator();
+
+			var value = true;
+
+			while (value && await enumerator.MoveNext())
+				value = predicate.Invoke(enumerator.Current);
+
+			return value;
+		}
 
 		public static Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source)
-			=> (await source).Any();
+			=> (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator().MoveNext();
 
-		public static Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
-			=> (await source).Any(predicate);
+		public static async Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			var enumerator = source.GetEnumerator();
+
+			var value = false;
+
+			while (!value && await enumerator.MoveNext())
+				value = predicate.Invoke(enumerator.Current);
+
+			return value;
+		}
+		/*
+		public static async Task<IEnumerable<TResult>> Cast<TResult>(this Task<IEnumerable> source)
+			=> (await source).Cast<TResult>();
 
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second)
 			=> (await first).Concat(second);
@@ -56,6 +119,12 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source, TSource defaultValue)
 			=> (await source).DefaultIfEmpty(defaultValue);
 
+		public static async Task<TSource> ElementAt<TSource>(this Task<IEnumerable<TSource>> source, int index)
+			=> (await source).ElementAt(index);
+
+		public static async Task<TSource> ElementAtOrDefault<TSource>(this Task<IEnumerable<TSource>> source, int index)
+			=> (await source).ElementAtOrDefault(index);
+
 		public static Task<TSource> First<TSource>(this IAsyncEnumerable<TSource> source)
 			=> (await source).First();
 
@@ -67,6 +136,9 @@ namespace Functional
 
 		public static Task<TSource> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> (await source).FirstOrDefault(predicate);
+
+		public static async Task<IEnumerable<TResult>> OfType<TResult>(this Task<IEnumerable> source)
+			=> (await source).OfType<TResult>();
 			*/
 		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
@@ -117,8 +189,8 @@ namespace Functional
 			if (predicate == null)
 				throw new ArgumentNullException(nameof(predicate));
 
-			bool matchFound = false;
-			return AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => (matchFound ? true : (matchFound = predicate.Invoke(data.current, data.index))) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
+			bool skip = true;
+			return AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => (skip ? (skip = predicate.Invoke(data.current, data.index)) : false) ? (BasicIteratorContinuationType.Skip, default) : (BasicIteratorContinuationType.Take, data.current)));
 		}
 
 		public static IAsyncEnumerable<TSource> Take<TSource>(this IAsyncEnumerable<TSource> source, int count)

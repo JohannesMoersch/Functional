@@ -56,5 +56,17 @@ namespace Functional.Tests.AsyncEnumerables
 				)
 				.Should()
 				.BeEquivalentTo(new[] { 2, 3 });
+
+		[Fact]
+		public async Task SkipWhileIndexLessThanOne()
+			=> (
+					await
+					AsyncEnumerable
+					.Create(Task.FromResult(new[] { 1, 2, 3 }).AsEnumerable())
+					.SkipWhile((_, index) => index < 1)
+					.AsEnumerable()
+				)
+				.Should()
+				.BeEquivalentTo(new[] { 2, 3 });
 	}
 }
