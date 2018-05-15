@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,19 @@ namespace Functional
 		public static IAsyncEnumerable<T> Create<T>(Task<IEnumerable<T>> source)
 			=> new AsyncEnumerable<T>(() => source);
 
+		public static IAsyncEnumerable<T> Create<T>(IEnumerable<Task<T>> source)
+			=> new AsyncTaskEnumerable<T>(() => source);
+
+		public static IAsyncEnumerable<T> Create<T>(Func<IEnumerable<Task<T>>> source)
+			=> new AsyncTaskEnumerable<T>(source);
+
 		public static IAsyncEnumerable<T> Create<T>(Func<Task<IEnumerable<T>>> source)
 			=> new AsyncEnumerable<T>(source);
+
+		public static IAsyncEnumerable<T> Repeat<T>(T element, int count)
+			=> Create(Enumerable.Repeat(element, count));
+
+		public static IAsyncEnumerable<T> Repeat<T>(Task<T> element, int count)
+			=> Create(Enumerable.Repeat(element, count));
 	}
 }

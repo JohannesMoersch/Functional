@@ -34,16 +34,14 @@ namespace Functional.Tests.AsyncEnumerables
 		}
 
 		[Fact]
-		public async Task SourceFunctionEvaluatedOnlyOnceOnMultipleEnumerations()
-		{
-			int invokeCount = 0;
-
-			var sut = AsyncEnumerable.Create(() => Task.FromResult(new[] { ++invokeCount }).AsEnumerable());
-
-			await sut.AsEnumerable();
-			await sut.AsEnumerable();
-
-			invokeCount.Should().Be(1);
-		}
+		public async Task EnumerationOfArrayOfTasksIsSuccessful()
+			=> (
+					await
+					AsyncEnumerable
+					.Create(new[] { Task.FromResult(1), Task.FromResult(2), Task.FromResult(3) })
+					.AsEnumerable()
+				)
+				.Should()
+				.BeEquivalentTo(new[] { 1, 2, 3 });
 	}
 }

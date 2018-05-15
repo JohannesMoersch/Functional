@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Johannes Moersch</Authors>
+    <Version>1.5.0</Version>
+    <Company>Johannes Moersch</Company>
+    <Description>This package contains a extension methods for primitives and async enumerables.</Description>
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+  </ItemGroup>
+
+</Project>

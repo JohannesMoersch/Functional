@@ -70,8 +70,11 @@ namespace Functional
 
 		public static Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
 		{
-			if (doWhenSome == null) throw new ArgumentNullException(nameof(doWhenSome));
-			if (doWhenNone == null) throw new ArgumentNullException(nameof(doWhenNone));
+			if (doWhenSome == null)
+				throw new ArgumentNullException(nameof(doWhenSome));
+
+			if (doWhenNone == null)
+				throw new ArgumentNullException(nameof(doWhenNone));
 
 			return option.Match(async value =>
 				{

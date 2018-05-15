@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class ResultLinqSyntaxExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class ResultLinqSyntaxExtensions
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TResult, TFailure>> bind)
@@ -25,11 +26,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.Match(
-				value => bind
-					.Invoke(value)
-					.Match(obj => Result.Success<TResult, TFailure>(resultSelector.Invoke(value, obj)), Result.Failure<TResult, TFailure>),
-				Result.Failure<TResult, TFailure>
+			return result.Bind(value => bind
+				.Invoke(value)
+				.Select(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -46,11 +45,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.MatchAsync(
-				value => bind
-					.Invoke(value)
-					.Match(obj => Result.Success<TResult, TFailure>(resultSelector.Invoke(value, obj)), Result.Failure<TResult, TFailure>),
-				failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
+			return result.BindAsync(value => bind
+				.Invoke(value)
+				.Select(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -75,11 +72,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.MatchAsync(
-				value => bind
-					.Invoke(value)
-					.MatchAsync(async obj => Result.Success<TResult, TFailure>(await resultSelector.Invoke(value, obj)), failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))),
-				failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
+			return result.BindAsync(value => bind
+				.Invoke(value)
+				.SelectAsync(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
@@ -96,11 +91,9 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.MatchAsync(
-				value => bind
-					.Invoke(value)
-					.MatchAsync(obj => Result.Success<TResult, TFailure>(resultSelector.Invoke(value, obj)), failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))),
-				failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
+			return result.BindAsync(value => bind
+				.Invoke(value)
+				.SelectAsync(obj => resultSelector.Invoke(value, obj))
 			);
 		}
 
