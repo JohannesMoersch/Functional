@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Functional
 {
-    public enum BasicIteratorContinuationType
+    internal enum BasicIteratorContinuationType
     {
 		Take,
 		Skip,
