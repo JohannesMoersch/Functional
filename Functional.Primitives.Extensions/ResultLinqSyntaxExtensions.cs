@@ -10,14 +10,6 @@ namespace Functional
 	public static class ResultLinqSyntaxExtensions
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TResult, TFailure>> bind)
-			=> result.Match(bind, failure => Result.Failure<TResult, TFailure>(failure));
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<TResult, TFailure>> bind)
-			=> (await result).SelectMany(bind);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
@@ -54,14 +46,6 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 			=> await (await result).SelectMany(bind, resultSelector);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
-			=> result.MatchAsync(bind, failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure)));
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
-			=> await (await result).SelectMany(bind);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)

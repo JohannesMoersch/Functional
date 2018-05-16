@@ -10,14 +10,6 @@ namespace Functional
 	public static class OptionLinqSyntaxExtensions
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Option<TResult> SelectMany<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
-			=> option.Match(bind, Option.None<TResult>);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Option<TResult>> SelectMany<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TResult>> bind)
-			=> (await option).SelectMany(bind);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
@@ -54,14 +46,6 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, TResult> resultSelector)
 			=> await (await option).SelectMany(bind, resultSelector);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TResult>> SelectMany<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TResult>>> bind)
-			=> option.MatchAsync(bind, () => Task.FromResult(Option.None<TResult>()));
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Option<TResult>> SelectMany<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TResult>>> bind)
-			=> await (await option).SelectMany(bind);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
