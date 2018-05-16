@@ -13,23 +13,37 @@ namespace Functional
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default(T)));
 
-		public static async Task<Result<IEnumerable<TSuccess>, TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 		{
-			var successes = new List<TSuccess>();
+			var successes = new TSuccess[4];
 
 			var enumerator = source.GetEnumerator();
 
+			var index = 0;
 			while (await enumerator.MoveNext())
 			{
 				var value = enumerator.Current;
 
 				if (value.Match(_ => false, _ => true))
-					return Result.Failure<IEnumerable<TSuccess>, TFailure>(value.Match(_ => default(TFailure), failure => failure));
+					return Result.Failure<TSuccess[], TFailure>(value.Match(_ => default, failure => failure));
 
-				successes.Add(value.Match(success => success, _ => default(TSuccess)));
+				if (index == successes.Length)
+				{
+					var old = successes;
+					successes = new TSuccess[old.Length * 2];
+					Array.Copy(old, successes, old.Length);
+				}
+				successes[index++] = value.Match(success => success, _ => default);
 			}
 
-			return Result.Success<IEnumerable<TSuccess>, TFailure>(successes);
+			if (index != successes.Length)
+			{
+				var old = successes;
+				successes = new TSuccess[index];
+				Array.Copy(old, successes, index);
+			}
+
+			return Result.Success<TSuccess[], TFailure>(successes);
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)

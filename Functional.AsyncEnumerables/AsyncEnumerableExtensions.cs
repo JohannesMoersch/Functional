@@ -57,7 +57,7 @@ namespace Functional
 
 			return value;
 		}
-		
+
 		public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
 			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
 

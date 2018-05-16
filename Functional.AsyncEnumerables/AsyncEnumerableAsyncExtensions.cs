@@ -40,6 +40,13 @@ namespace Functional
 			return value;
 		}
 
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
+			=> selector == null ? throw new ArgumentNullException(nameof(selector))
+				: AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, (o, _) => selector.Invoke(o)));
+
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector)
+			=> AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, selector));
+
 		public static Task<TSource> FirstAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
 			=> source.WhereAsync(predicate).First();
 
