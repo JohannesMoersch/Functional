@@ -65,35 +65,5 @@ namespace Functional
 				? Some(await valueFactory.Invoke())
 				: None<T>();
 		}
-
-		public static Option<T> Try<T>(Func<T> valueFactory)
-		{
-			if (valueFactory == null)
-				throw new ArgumentNullException(nameof(valueFactory));
-
-			try
-			{
-				return Some(valueFactory.Invoke());
-			}
-			catch
-			{
-				return None<T>();
-			}
-		}
-
-		public static async Task<Option<T>> Try<T>(Func<Task<T>> valueFactory)
-		{
-			if (valueFactory == null)
-				throw new ArgumentNullException(nameof(valueFactory));
-
-			try
-			{
-				return Some(await valueFactory.Invoke());
-			}
-			catch
-			{
-				return None<T>();
-			}
-		}
 	}
 }

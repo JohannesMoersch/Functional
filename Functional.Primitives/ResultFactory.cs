@@ -75,6 +75,10 @@ namespace Functional
 			}
 		}
 
+		public static Result<Unit, Exception> Try(Action successFactory)
+		=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Unit.Value; });
+
+
 		public static async Task<Result<TSuccess, Exception>> Try<TSuccess>(Func<Task<TSuccess>> successFactory)
 		{
 			if (successFactory == null)
@@ -89,6 +93,9 @@ namespace Functional
 				return Failure<TSuccess, Exception>(ex);
 			}
 		}
+
+		public static Task<Result<Unit, Exception>> Try(Func<Task> successFactory)
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Unit.Value; });
 
 		public static Result<TSuccess, TFailure> Try<TSuccess, TFailure>(Func<TSuccess> successFactory, Func<Exception, TFailure> @catch)
 		{
@@ -108,6 +115,9 @@ namespace Functional
 			}
 		}
 
+		public static Result<Unit, TFailure> Try<TFailure>(Action successFactory, Func<Exception, TFailure> @catch)
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Unit.Value; }, @catch);
+
 		public static async Task<Result<TSuccess, TFailure>> Try<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
 		{
 			if (successFactory == null)
@@ -125,5 +135,8 @@ namespace Functional
 				return Failure<TSuccess, TFailure>(@catch.Invoke(ex));
 			}
 		}
+
+		public static Task<Result<Unit, TFailure>> Try<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Unit.Value; }, @catch);
 	}
 }
