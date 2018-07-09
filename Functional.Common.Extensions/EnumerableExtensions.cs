@@ -102,7 +102,21 @@ namespace Functional
 			=> (await source).TryFirst();
 
 		public static Option<T> TryFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-			=> source.Any() ? Option.Some(source.First(predicate)) : Option.None<T>();
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			foreach (var element in source)
+			{
+				if (predicate.Invoke(element))
+					return Option.Some(element);
+			}
+
+			return Option.None<T>();
+		}
 
 		public static async Task<Option<T>> TryFirst<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryFirst(predicate);
@@ -114,7 +128,23 @@ namespace Functional
 			=> (await source).TryLast();
 
 		public static Option<T> TryLast<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-			=> source.Any() ? Option.Some(source.Last(predicate)) : Option.None<T>();
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
+			var result = Option.None<T>();
+
+			foreach (var element in source)
+			{
+				if (predicate.Invoke(element))
+					result = Option.Some(element);
+			}
+
+			return result;
+		}
 
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryLast(predicate);
