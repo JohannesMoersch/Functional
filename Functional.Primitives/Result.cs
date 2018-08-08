@@ -35,7 +35,8 @@ namespace Functional
 		}
 
 		public bool Equals(Result<TSuccess, TFailure> other)
-			=> IsSuccess() ? Equals(_success, other._success) : Equals(_failure, other._failure);
+			=> IsSuccess() == other.IsSuccess()
+			   && (IsSuccess() ? Equals(_success, other._success) : Equals(_failure, other._failure));
 
 		public override int GetHashCode()
 			=> IsSuccess() ? _success.GetHashCode() * 31 : _failure.GetHashCode() * 31;
