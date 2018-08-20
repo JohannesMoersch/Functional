@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Functional
 {
+	[Serializable]
     public struct Unit : IEquatable<Unit>
 	{
 		public static Unit Value { get; } = new Unit();

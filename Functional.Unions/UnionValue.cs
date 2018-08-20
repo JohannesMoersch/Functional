@@ -9,6 +9,7 @@ namespace Functional
 	{
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -38,6 +39,7 @@ namespace Functional
 			=> $"One:{One}";
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -106,6 +108,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -183,6 +186,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -269,6 +273,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -364,6 +369,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -468,6 +474,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -581,6 +588,7 @@ namespace Functional
 		}
 	}
 
+	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
 		where TUnionDefinition : IUnionDefinition
 	{

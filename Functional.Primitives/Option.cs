@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[Serializable]
 	public struct Option<TValue> : IEquatable<Option<TValue>>
 	{
 		private readonly bool _hasValue;
