@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[Serializable]
 	public struct Union<TUnionDefinition> : IEquatable<Union<TUnionDefinition>>
 		where TUnionDefinition : IUnionDefinition
 	{

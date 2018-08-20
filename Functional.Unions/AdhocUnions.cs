@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[Serializable]
 	public struct Union<TOne, TTwo> : IEquatable<Union<TOne, TTwo>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo>> _value;
@@ -32,6 +33,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree> : IEquatable<Union<TOne, TTwo, TThree>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> _value;
@@ -59,6 +61,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour> : IEquatable<Union<TOne, TTwo, TThree, TFour>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> _value;
@@ -86,6 +89,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> _value;
@@ -113,6 +117,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> _value;
@@ -140,6 +145,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> _value;
@@ -167,6 +173,7 @@ namespace Functional
 			=> !left.Equals(right);
 	}
 
+	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
     {
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> _value;
