@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
 	[Serializable]
-	public struct Result<TSuccess, TFailure> : IEquatable<Result<TSuccess, TFailure>>
+	public struct Result<TSuccess, TFailure> : IEquatable<Result<TSuccess, TFailure>>, ISerializable
 	{
 		private readonly bool? _isSuccess;
 
@@ -19,6 +20,35 @@ namespace Functional
 			_isSuccess = isSuccess;
 			_success = success;
 			_failure = failure;
+		}
+
+		private Result(SerializationInfo info, StreamingContext context)
+		{
+			var isSuccess = info.GetBoolean(nameof(_isSuccess));
+
+			if (isSuccess)
+			{
+				_isSuccess = true;
+				_success = (TSuccess)info.GetValue(nameof(_success), typeof(TSuccess));
+				_failure = default;
+			}
+			else
+			{
+				_isSuccess = false;
+				_success = default;
+				_failure = (TFailure)info.GetValue(nameof(_failure), typeof(TFailure));
+			}
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			var isSuccess = IsSuccess();
+
+			info.AddValue(nameof(_isSuccess), isSuccess);
+			if (isSuccess)
+				info.AddValue(nameof(_success), _success);
+			else
+				info.AddValue(nameof(_failure), _failure);
 		}
 
 		private bool IsSuccess()
