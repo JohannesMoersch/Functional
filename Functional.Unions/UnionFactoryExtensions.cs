@@ -503,11 +503,11 @@ using System.Threading.Tasks;namespace Functional
 		public static async Task<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Create<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> factory, Task<TEight> eight)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(new UnionValue<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(7, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(await eight, nameof(eight)), CreateUnionFromTypes));
 
-		private static Union<TUnionDefinition> CreateUnionFromDefinition<TUnionDefinition>(IUnionValue<TUnionDefinition> value)
+		public static Union<TUnionDefinition> CreateUnionFromDefinition<TUnionDefinition>(IUnionValue<TUnionDefinition> value)
 			where TUnionDefinition : IUnionDefinition
 			=> new Union<TUnionDefinition>(value);
 
-		private static Union<TOne, TTwo> CreateUnionFromTypes<TOne, TTwo>(IUnionValue<AdhocUnionDefinition<TOne, TTwo>> value)
+		public static Union<TOne, TTwo> CreateUnionFromTypes<TOne, TTwo>(IUnionValue<AdhocUnionDefinition<TOne, TTwo>> value)
 			=> new Union<TOne, TTwo>(value);
 
 		private static Union<TOne, TTwo, TThree> CreateUnionFromTypes<TOne, TTwo, TThree>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> value)

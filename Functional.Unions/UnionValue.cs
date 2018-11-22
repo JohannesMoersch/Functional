@@ -11,6 +11,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public TOne One { get; }
@@ -41,6 +42,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -110,6 +112,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -188,6 +191,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -275,6 +279,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -371,6 +376,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -476,6 +482,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }
@@ -590,6 +597,7 @@ namespace Functional
 
 	[Serializable]
 	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
 		public byte State { get; }

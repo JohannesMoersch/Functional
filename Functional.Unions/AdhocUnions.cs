@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
 	[Serializable]
-	public struct Union<TOne, TTwo> : IEquatable<Union<TOne, TTwo>>
+	public struct Union<TOne, TTwo> : IEquatable<Union<TOne, TTwo>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo> other)
 			=> Equals(_value, other._value);
@@ -34,13 +41,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree> : IEquatable<Union<TOne, TTwo, TThree>>
+	public struct Union<TOne, TTwo, TThree> : IEquatable<Union<TOne, TTwo, TThree>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree> other)
 			=> Equals(_value, other._value);
@@ -62,13 +75,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree, TFour> : IEquatable<Union<TOne, TTwo, TThree, TFour>>
+	public struct Union<TOne, TTwo, TThree, TFour> : IEquatable<Union<TOne, TTwo, TThree, TFour>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour> other)
 			=> Equals(_value, other._value);
@@ -90,13 +109,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree, TFour, TFive> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive>>
+	public struct Union<TOne, TTwo, TThree, TFour, TFive> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive> other)
 			=> Equals(_value, other._value);
@@ -118,13 +143,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix>>
+	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> Equals(_value, other._value);
@@ -146,13 +177,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
+	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> Equals(_value, other._value);
@@ -174,13 +211,19 @@ namespace Functional
 	}
 
 	[Serializable]
-	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
-    {
+	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Value => _value ?? throw new UnionNotInitializedException();
 
 		internal Union(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> Equals(_value, other._value);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[Serializable]
-	public struct Union<TUnionDefinition> : IEquatable<Union<TUnionDefinition>>
+	public struct Union<TUnionDefinition> : IEquatable<Union<TUnionDefinition>>, ISerializable
 		where TUnionDefinition : IUnionDefinition
 	{
 		internal IUnionValue<TUnionDefinition> _value;
@@ -15,6 +16,12 @@ namespace Functional
 
 		internal Union(IUnionValue<TUnionDefinition> value)
 			=> _value = value;
+
+		private Union(SerializationInfo info, StreamingContext context)
+			=> _value = (IUnionValue<TUnionDefinition>)info.GetValue(nameof(_value), typeof(IUnionValue<TUnionDefinition>));
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			=> info.AddValue(nameof(_value), Value);
 
 		public bool Equals(Union<TUnionDefinition> other)
 			=> Equals(_value, other._value);
