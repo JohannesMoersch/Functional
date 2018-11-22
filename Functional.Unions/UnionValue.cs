@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Functional
@@ -10,7 +12,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>, ISerializable
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -23,6 +25,15 @@ namespace Functional
 			One = one;
 			_unionFactory = unionFactory;
 		}
+
+		private UnionValue(SerializationInfo info, StreamingContext context)
+		{
+			One = (TOne)info.GetValue(nameof(One), typeof(TOne));
+			_unionFactory = UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>();
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) 
+			=> info.AddValue(nameof(One), One);
 
 		public TUnionType GetUnion()
 			=> _unionFactory.Invoke(this);

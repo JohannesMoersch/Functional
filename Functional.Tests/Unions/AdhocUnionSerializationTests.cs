@@ -7,25 +7,12 @@ using Xunit;
 
 namespace Functional.Tests.Unions
 {
-	public class UnionSerializationTests
+	public class AdhocUnionSerializationTests
 	{
 		[Fact]
-		public void UnionDefinitionOneOfOneCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfTwoCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<OneUnionDefinition>().Create((sbyte)64);
-
-			SerializationUtility
-				.CloneViaSerialization(value)
-				.Value()
-				.Do(_ => { })
-				.Should()
-				.BeEquivalentTo(value);
-		}
-
-		[Fact]
-		public void UnionDefinitionOneOfTwoCanSerializeAndDeserialize()
-		{
-			var value = Union.FromDefinition<TwoUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -36,9 +23,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfTwoCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfTwoCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<TwoUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -49,9 +36,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfThreeCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfThreeCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<ThreeUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -62,9 +49,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfThreeCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfThreeCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<ThreeUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -75,9 +62,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfThreeCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfThreeCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<ThreeUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -88,9 +75,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfFourCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfFourCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FourUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -101,9 +88,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfFourCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfFourCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FourUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -114,9 +101,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfFourCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfFourCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FourUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -127,9 +114,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFourOfFourCanSerializeAndDeserialize()
+		public void AdhocUnionFourOfFourCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FourUnionDefinition>().Create((ushort)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort>().Create((ushort)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -140,9 +127,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfFiveCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfFiveCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FiveUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -153,9 +140,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfFiveCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfFiveCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FiveUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -166,9 +153,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfFiveCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfFiveCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FiveUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -179,9 +166,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFourOfFiveCanSerializeAndDeserialize()
+		public void AdhocUnionFourOfFiveCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FiveUnionDefinition>().Create((ushort)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int>().Create((ushort)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -192,9 +179,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFiveOfFiveCanSerializeAndDeserialize()
+		public void AdhocUnionFiveOfFiveCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<FiveUnionDefinition>().Create((int)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int>().Create((int)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -205,9 +192,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -218,9 +205,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -231,9 +218,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -244,9 +231,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFourOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionFourOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((ushort)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((ushort)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -257,9 +244,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFiveOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionFiveOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((int)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((int)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -270,9 +257,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionSixOfSixCanSerializeAndDeserialize()
+		public void AdhocUnionSixOfSixCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SixUnionDefinition>().Create((uint)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint>().Create((uint)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -283,9 +270,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -296,9 +283,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -309,9 +296,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -322,9 +309,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFourOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionFourOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((ushort)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((ushort)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -335,9 +322,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFiveOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionFiveOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((int)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((int)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -348,9 +335,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionSixOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionSixOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((uint)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((uint)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -361,9 +348,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionSevenOfSevenCanSerializeAndDeserialize()
+		public void AdhocUnionSevenOfSevenCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<SevenUnionDefinition>().Create((long)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long>().Create((long)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -374,9 +361,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionOneOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionOneOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((sbyte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((sbyte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -387,9 +374,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionTwoOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionTwoOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((byte)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((byte)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -400,9 +387,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionThreeOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionThreeOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((short)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((short)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -413,9 +400,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFourOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionFourOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((ushort)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((ushort)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -426,9 +413,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionFiveOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionFiveOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((int)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((int)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -439,9 +426,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionSixOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionSixOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((uint)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((uint)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -452,9 +439,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionSevenOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionSevenOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((long)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((long)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -465,9 +452,9 @@ namespace Functional.Tests.Unions
 		}
 
 		[Fact]
-		public void UnionDefinitionEightOfEightCanSerializeAndDeserialize()
+		public void AdhocUnionEightOfEightCanSerializeAndDeserialize()
 		{
-			var value = Union.FromDefinition<EightUnionDefinition>().Create((ulong)64);
+			var value = Union.FromTypes<sbyte, byte, short, ushort, int, uint, long, ulong>().Create((ulong)64);
 
 			SerializationUtility
 				.CloneViaSerialization(value)
@@ -476,14 +463,5 @@ namespace Functional.Tests.Unions
 				.Should()
 				.BeEquivalentTo(value);
 		}
-
-		public class OneUnionDefinition : UnionDefinition<OneUnionDefinition, sbyte> { }
-		public class TwoUnionDefinition : UnionDefinition<TwoUnionDefinition, sbyte, byte> { }
-		public class ThreeUnionDefinition : UnionDefinition<ThreeUnionDefinition, sbyte, byte, short> { }
-		public class FourUnionDefinition : UnionDefinition<FourUnionDefinition, sbyte, byte, short, ushort> { }
-		public class FiveUnionDefinition : UnionDefinition<FiveUnionDefinition, sbyte, byte, short, ushort, int> { }
-		public class SixUnionDefinition : UnionDefinition<SixUnionDefinition, sbyte, byte, short, ushort, int, uint> { }
-		public class SevenUnionDefinition : UnionDefinition<SevenUnionDefinition, sbyte, byte, short, ushort, int, uint, long> { }
-		public class EightUnionDefinition : UnionDefinition<EightUnionDefinition, sbyte, byte, short, ushort, int, uint, long, ulong> { }
 	}
 }

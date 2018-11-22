@@ -503,29 +503,29 @@ using System.Threading.Tasks;namespace Functional
 		public static async Task<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Create<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionFactory<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> factory, Task<TEight> eight)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(new UnionValue<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(7, default(TOne), default(TTwo), default(TThree), default(TFour), default(TFive), default(TSix), default(TSeven), UnionHelpers.CheckForNull(await eight, nameof(eight)), CreateUnionFromTypes));
 
-		public static Union<TUnionDefinition> CreateUnionFromDefinition<TUnionDefinition>(IUnionValue<TUnionDefinition> value)
+		internal static Union<TUnionDefinition> CreateUnionFromDefinition<TUnionDefinition>(IUnionValue<TUnionDefinition> value)
 			where TUnionDefinition : IUnionDefinition
 			=> new Union<TUnionDefinition>(value);
 
-		public static Union<TOne, TTwo> CreateUnionFromTypes<TOne, TTwo>(IUnionValue<AdhocUnionDefinition<TOne, TTwo>> value)
+		internal static Union<TOne, TTwo> CreateUnionFromTypes<TOne, TTwo>(IUnionValue<AdhocUnionDefinition<TOne, TTwo>> value)
 			=> new Union<TOne, TTwo>(value);
 
-		private static Union<TOne, TTwo, TThree> CreateUnionFromTypes<TOne, TTwo, TThree>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> value)
+		internal static Union<TOne, TTwo, TThree> CreateUnionFromTypes<TOne, TTwo, TThree>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> value)
 			=> new Union<TOne, TTwo, TThree>(value);
 
-		private static Union<TOne, TTwo, TThree, TFour> CreateUnionFromTypes<TOne, TTwo, TThree, TFour>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> value)
+		internal static Union<TOne, TTwo, TThree, TFour> CreateUnionFromTypes<TOne, TTwo, TThree, TFour>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> value)
 			=> new Union<TOne, TTwo, TThree, TFour>(value);
 
-		private static Union<TOne, TTwo, TThree, TFour, TFive> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> value)
+		internal static Union<TOne, TTwo, TThree, TFour, TFive> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> value)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive>(value);
 
-		private static Union<TOne, TTwo, TThree, TFour, TFive, TSix> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> value)
+		internal static Union<TOne, TTwo, TThree, TFour, TFive, TSix> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> value)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive, TSix>(value);
 
-		private static Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> value)
+		internal static Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> value)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(value);
 
-		private static Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> value)
+		internal static Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> CreateUnionFromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> value)
 			=> new Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(value);
 	}
 }
