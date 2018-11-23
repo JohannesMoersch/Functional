@@ -11,7 +11,7 @@
     <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
     <RepositoryUrl></RepositoryUrl>
-    <Version>1.8.0</Version>
+    <Version>1.9.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
