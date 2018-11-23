@@ -6,17 +6,28 @@ using System.Text;
 
 namespace Functional
 {
+	internal interface IUnionValue
+	{
+		int State { get; }
+
+		object Value { get; }
+	}
+
 	public interface IUnionValue<out TUnionDefinition>
 		where TUnionDefinition : IUnionDefinition
 	{
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>, ISerializable
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
+		public int State => 0;
+
 		public TOne One { get; }
+
+		object IUnionValue.Value => One;
 
 		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
 
@@ -25,15 +36,6 @@ namespace Functional
 			One = one;
 			_unionFactory = unionFactory;
 		}
-
-		private UnionValue(SerializationInfo info, StreamingContext context)
-		{
-			One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-			_unionFactory = UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>();
-		}
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) 
-			=> info.AddValue(nameof(One), One);
 
 		public TUnionType GetUnion()
 			=> _unionFactory.Invoke(this);
@@ -72,7 +74,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -82,16 +84,11 @@ namespace Functional
 
 		public override TTwo Two => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory) 
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>()) 
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> other)
 			=> other != null && Equals(One, other.One);
@@ -107,7 +104,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -117,16 +114,11 @@ namespace Functional
 
 		public override TTwo Two { get; }
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory) 
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> other)
 			=> other != null && Equals(Two, other.Two);
@@ -164,7 +156,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -176,16 +168,11 @@ namespace Functional
 
 		public override TThree Three => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
 			=> other != null && Equals(One, other.One);
@@ -201,7 +188,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -213,16 +200,11 @@ namespace Functional
 
 		public override TThree Three => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
 			=> other != null && Equals(Two, other.Two);
@@ -238,7 +220,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -250,16 +232,11 @@ namespace Functional
 
 		public override TThree Three { get; }
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
 			=> other != null && Equals(Three, other.Three);
@@ -299,7 +276,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -313,16 +290,11 @@ namespace Functional
 
 		public override TFour Four => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
 			=> other != null && Equals(One, other.One);
@@ -338,7 +310,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -352,16 +324,11 @@ namespace Functional
 
 		public override TFour Four => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
 			=> other != null && Equals(Two, other.Two);
@@ -377,7 +344,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -391,16 +358,11 @@ namespace Functional
 
 		public override TFour Four => default;
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
 			=> other != null && Equals(Three, other.Three);
@@ -416,7 +378,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, ISerializable
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -430,16 +392,11 @@ namespace Functional
 
 		public override TFour Four { get; }
 
+		object IUnionValue.Value => Four;
+
 		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Four = four;
-
-		private UnionValueFour(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Four = (TFour)info.GetValue(nameof(Four), typeof(TFour));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Four), Four);
 
 		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
 			=> other != null && Equals(Four, other.Four);
@@ -481,7 +438,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -497,16 +454,11 @@ namespace Functional
 
 		public override TFive Five => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 			=> other != null && Equals(One, other.One);
@@ -522,7 +474,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -538,16 +490,11 @@ namespace Functional
 
 		public override TFive Five => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 			=> other != null && Equals(Two, other.Two);
@@ -563,7 +510,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -579,16 +526,11 @@ namespace Functional
 
 		public override TFive Five => default;
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 			=> other != null && Equals(Three, other.Three);
@@ -604,7 +546,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -620,16 +562,11 @@ namespace Functional
 
 		public override TFive Five => default;
 
+		object IUnionValue.Value => Four;
+
 		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Four = four;
-
-		private UnionValueFour(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Four = (TFour)info.GetValue(nameof(Four), typeof(TFour));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Four), Four);
 
 		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 			=> other != null && Equals(Four, other.Four);
@@ -645,7 +582,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -661,16 +598,11 @@ namespace Functional
 
 		public override TFive Five { get; }
 
+		object IUnionValue.Value => Five;
+
 		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Five = five;
-
-		private UnionValueFive(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Five = (TFive)info.GetValue(nameof(Five), typeof(TFive));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Five), Five);
 
 		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
 			=> other != null && Equals(Five, other.Five);
@@ -714,7 +646,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -732,16 +664,11 @@ namespace Functional
 
 		public override TSix Six => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(One, other.One);
@@ -757,7 +684,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -775,16 +702,11 @@ namespace Functional
 
 		public override TSix Six => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(Two, other.Two);
@@ -800,7 +722,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -818,16 +740,11 @@ namespace Functional
 
 		public override TSix Six => default;
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(Three, other.Three);
@@ -843,7 +760,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -861,16 +778,11 @@ namespace Functional
 
 		public override TSix Six => default;
 
+		object IUnionValue.Value => Four;
+
 		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Four = four;
-
-		private UnionValueFour(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Four = (TFour)info.GetValue(nameof(Four), typeof(TFour));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Four), Four);
 
 		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(Four, other.Four);
@@ -886,7 +798,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -904,16 +816,11 @@ namespace Functional
 
 		public override TSix Six => default;
 
+		object IUnionValue.Value => Five;
+
 		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Five = five;
-
-		private UnionValueFive(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Five = (TFive)info.GetValue(nameof(Five), typeof(TFive));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Five), Five);
 
 		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(Five, other.Five);
@@ -929,7 +836,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -947,16 +854,11 @@ namespace Functional
 
 		public override TSix Six { get; }
 
+		object IUnionValue.Value => Six;
+
 		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Six = six;
-
-		private UnionValueSix(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Six = (TSix)info.GetValue(nameof(Six), typeof(TSix));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Six), Six);
 
 		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> other != null && Equals(Six, other.Six);
@@ -1002,7 +904,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1022,16 +924,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(One, other.One);
@@ -1047,7 +944,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1067,16 +964,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Two, other.Two);
@@ -1092,7 +984,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1112,16 +1004,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Three, other.Three);
@@ -1137,7 +1024,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1157,16 +1044,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => Four;
+
 		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Four = four;
-
-		private UnionValueFour(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Four = (TFour)info.GetValue(nameof(Four), typeof(TFour));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Four), Four);
 
 		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Four, other.Four);
@@ -1182,7 +1064,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1202,16 +1084,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => Five;
+
 		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Five = five;
-
-		private UnionValueFive(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Five = (TFive)info.GetValue(nameof(Five), typeof(TFive));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Five), Five);
 
 		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Five, other.Five);
@@ -1227,7 +1104,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1247,16 +1124,11 @@ namespace Functional
 
 		public override TSeven Seven => default;
 
+		object IUnionValue.Value => Six;
+
 		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Six = six;
-
-		private UnionValueSix(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Six = (TSix)info.GetValue(nameof(Six), typeof(TSix));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Six), Six);
 
 		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Six, other.Six);
@@ -1272,7 +1144,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1292,16 +1164,11 @@ namespace Functional
 
 		public override TSeven Seven { get; }
 
+		object IUnionValue.Value => Seven;
+
 		public UnionValueSeven(TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Seven = seven;
-
-		private UnionValueSeven(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Seven = (TSeven)info.GetValue(nameof(Seven), typeof(TSeven));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Seven), Seven);
 
 		public bool Equals(UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> other != null && Equals(Seven, other.Seven);
@@ -1349,7 +1216,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1371,16 +1238,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => One;
+
 		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> One = one;
-
-		private UnionValueOne(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> One = (TOne)info.GetValue(nameof(One), typeof(TOne));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(One), One);
 
 		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(One, other.One);
@@ -1396,7 +1258,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1418,16 +1280,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Two;
+
 		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Two = two;
-
-		private UnionValueTwo(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Two = (TTwo)info.GetValue(nameof(Two), typeof(TTwo));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Two), Two);
 
 		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Two, other.Two);
@@ -1443,7 +1300,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1465,16 +1322,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Three;
+
 		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Three = three;
-
-		private UnionValueThree(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Three = (TThree)info.GetValue(nameof(Three), typeof(TThree));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Three), Three);
 
 		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Three, other.Three);
@@ -1490,7 +1342,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1512,16 +1364,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Four;
+
 		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Four = four;
-
-		private UnionValueFour(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Four = (TFour)info.GetValue(nameof(Four), typeof(TFour));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Four), Four);
 
 		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Four, other.Four);
@@ -1537,7 +1384,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1559,16 +1406,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Five;
+
 		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Five = five;
-
-		private UnionValueFive(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Five = (TFive)info.GetValue(nameof(Five), typeof(TFive));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Five), Five);
 
 		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Five, other.Five);
@@ -1584,7 +1426,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1606,16 +1448,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Six;
+
 		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Six = six;
-
-		private UnionValueSix(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Six = (TSix)info.GetValue(nameof(Six), typeof(TSix));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Six), Six);
 
 		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Six, other.Six);
@@ -1631,7 +1468,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1653,16 +1490,11 @@ namespace Functional
 
 		public override TEight Eight => default;
 
+		object IUnionValue.Value => Seven;
+
 		public UnionValueSeven(TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Seven = seven;
-
-		private UnionValueSeven(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Seven = (TSeven)info.GetValue(nameof(Seven), typeof(TSeven));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Seven), Seven);
 
 		public bool Equals(UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Seven, other.Seven);
@@ -1678,7 +1510,7 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+	internal class UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
 		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
@@ -1700,16 +1532,11 @@ namespace Functional
 
 		public override TEight Eight { get; }
 
+		object IUnionValue.Value => Eight;
+
 		public UnionValueEight(TEight eight, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			: base(unionFactory)
 			=> Eight = eight;
-
-		private UnionValueEight(SerializationInfo info, StreamingContext context)
-			: base(UnionValueUtility.CreateUnionFactory<TUnionType, TUnionDefinition>())
-			=> Eight = (TEight)info.GetValue(nameof(Eight), typeof(TEight));
-
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(Eight), Eight);
 
 		public bool Equals(UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> other != null && Equals(Eight, other.Eight);

@@ -16,10 +16,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo>, AdhocUnionDefinition<TOne, TTwo>, TOne, TTwo>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo> other)
 			=> Equals(_value, other._value);
@@ -50,10 +50,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree>, AdhocUnionDefinition<TOne, TTwo, TThree>, TOne, TTwo, TThree>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree> other)
 			=> Equals(_value, other._value);
@@ -84,10 +84,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree, TFour>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour>, TOne, TTwo, TThree, TFour>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour> other)
 			=> Equals(_value, other._value);
@@ -118,10 +118,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree, TFour, TFive>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>, TOne, TTwo, TThree, TFour, TFive>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive> other)
 			=> Equals(_value, other._value);
@@ -152,10 +152,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree, TFour, TFive, TSix>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>, TOne, TTwo, TThree, TFour, TFive, TSix>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix> other)
 			=> Equals(_value, other._value);
@@ -186,10 +186,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
 			=> Equals(_value, other._value);
@@ -220,10 +220,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>)info.GetValue(nameof(_value), typeof(IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(info, UnionFactoryExtensions.CreateUnionFromTypes);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
 			=> Equals(_value, other._value);

@@ -18,10 +18,10 @@ namespace Functional
 			=> _value = value;
 
 		private Union(SerializationInfo info, StreamingContext context)
-			=> _value = (IUnionValue<TUnionDefinition>)info.GetValue(nameof(_value), typeof(IUnionValue<TUnionDefinition>));
+			=> _value = UnionSerializationHelpers.CreateUnionValue<TUnionDefinition>(info);
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
-			=> info.AddValue(nameof(_value), Value);
+			=> UnionSerializationHelpers.Serialize(info, (IUnionValue)Value);
 
 		public bool Equals(Union<TUnionDefinition> other)
 			=> Equals(_value, other._value);
