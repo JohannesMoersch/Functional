@@ -24,12 +24,12 @@ namespace Functional
 		{
 			while (await _enumerator.MoveNext())
 			{
-				var value = await _moveNext.Invoke((_enumerator.Current, _count++));
+				var (type, current) = await _moveNext.Invoke((_enumerator.Current, _count++));
 
-				switch (value.type)
+				switch (type)
 				{
 					case BasicIteratorContinuationType.Take:
-						Current = value.current;
+						Current = current;
 						return true;
 					case BasicIteratorContinuationType.Skip:
 						continue;

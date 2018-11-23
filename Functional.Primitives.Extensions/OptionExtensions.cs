@@ -30,16 +30,16 @@ namespace Functional
 		public static async Task<Option<TResult>> Bind<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TResult>> bind)
 			=> (await option).Bind(bind);
 
-		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, TValue defaultValue = default(TValue))
+		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.Match(value => value, () => defaultValue);
 
-		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default(TValue))
+		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
 
-		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default(TValue))
+		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.Match(Option.Some, () => Option.Some(defaultValue));
 
-		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default(TValue))
+		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).DefaultIfNone(defaultValue);
 
 		public static Option<TValue> OfType<TValue>(this Option<object> option)

@@ -13,7 +13,7 @@ namespace Functional
 
 		private readonly Lazy<Task<IEnumerator<T>>> _enumerator;
 
-		public T Current => _enumerator.IsValueCreated && _enumerator.Value.IsCompleted ? _enumerator.Value.Result.Current : default(T);
+		public T Current => _enumerator.IsValueCreated && _enumerator.Value.IsCompleted ? _enumerator.Value.Result.Current : default;
 
 		internal AsyncEnumerator(Lazy<Task<IEnumerator<T>>> enumerator)
 			=> _enumerator = enumerator;
