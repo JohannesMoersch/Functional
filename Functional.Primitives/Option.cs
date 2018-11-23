@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Functional
 {
 	[Serializable]
-	public struct Option<TValue> : IEquatable<Option<TValue>>
+	public struct Option<TValue> : IEquatable<Option<TValue>>, ISerializable
 	{
 		private readonly bool _hasValue;
 
@@ -15,6 +16,23 @@ namespace Functional
 			_hasValue = hasValue;
 
 			_value = value;
+		}
+
+		private Option(SerializationInfo info, StreamingContext context)
+		{
+			_hasValue = info.GetBoolean(nameof(_hasValue));
+
+			if (_hasValue)
+				_value = (TValue)info.GetValue(nameof(_value), typeof(TValue));
+			else
+				_value = default;
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue(nameof(_hasValue), _hasValue);
+			if (_hasValue)
+				info.AddValue(nameof(_value), _value);
 		}
 
 		public TResult Match<TResult>(Func<TValue, TResult> some, Func<TResult> none)

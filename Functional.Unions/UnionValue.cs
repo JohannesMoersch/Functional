@@ -1,19 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Functional
 {
+	internal interface IUnionValue
+	{
+		int State { get; }
+
+		object Value { get; }
+	}
+
 	public interface IUnionValue<out TUnionDefinition>
 		where TUnionDefinition : IUnionDefinition
 	{
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>
+	internal class UnionValue<TUnionType, TUnionDefinition, TOne> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
+		public int State => 0;
+
 		public TOne One { get; }
+
+		object IUnionValue.Value => One;
 
 		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
 
@@ -27,7 +41,7 @@ namespace Functional
 			=> _unionFactory.Invoke(this);
 
 		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne> other)
-			=> Equals(One, other.One);
+			=> other != null && Equals(One, other.One);
 
 		public override int GetHashCode()
 			=> One.GetHashCode() * 31 + 7;
@@ -40,674 +54,1500 @@ namespace Functional
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>>
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public abstract int State { get; }
 
-		public TOne One { get; }
+		public abstract TOne One { get; }
 
-		public TTwo Two { get; }
+		public abstract TTwo Two { get; }
 
 		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
 
-		public UnionValue(byte state, TOne one, TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			_unionFactory = unionFactory;
-		}
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory) 
+			=> _unionFactory = unionFactory;
 
 		public TUnionType GetUnion()
 			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				default:
-					return false;
-			}
-		}
-
-		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
-
-		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> value && Equals(value);
-
-		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				default:
-					return String.Empty;
-			}
-		}
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public override int State => 0;
 
-		public TOne One { get; }
+		public override TOne One { get; }
 
-		public TTwo Two { get; }
+		public override TTwo Two => default;
 
-		public TThree Three { get; }
+		object IUnionValue.Value => One;
 
-		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory) 
+			=> One = one;
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			_unionFactory = unionFactory;
-		}
-
-		public TUnionType GetUnion()
-			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				default:
-					return false;
-			}
-		}
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> other)
+			=> other != null && Equals(One, other.One);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> One.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"One:{One}";
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public override int State => 1;
 
-		public TOne One { get; }
+		public override TOne One => default;
 
-		public TTwo Two { get; }
+		public override TTwo Two { get; }
 
-		public TThree Three { get; }
+		object IUnionValue.Value => Two;
 
-		public TFour Four { get; }
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory) 
+			=> Two = two;
 
-		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
-
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			Four = four;
-			_unionFactory = unionFactory;
-		}
-
-		public TUnionType GetUnion()
-			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				case 3:
-					return Equals(Four, other.Four);
-				default:
-					return false;
-			}
-		}
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> other)
+			=> other != null && Equals(Two, other.Two);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				case 3:
-					return Four.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> Two.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				case 3:
-					return $"One:{Four}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"Two:{Two}";
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public abstract int State { get; }
 
-		public TOne One { get; }
+		public abstract TOne One { get; }
 
-		public TTwo Two { get; }
+		public abstract TTwo Two { get; }
 
-		public TThree Three { get; }
-
-		public TFour Four { get; }
-
-		public TFive Five { get; }
+		public abstract TThree Three { get; }
 
 		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			Four = four;
-			Five = five;
-			_unionFactory = unionFactory;
-		}
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			=> _unionFactory = unionFactory;
 
 		public TUnionType GetUnion()
 			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				case 3:
-					return Equals(Four, other.Four);
-				case 4:
-					return Equals(Five, other.Five);
-				default:
-					return false;
-			}
-		}
-
-		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				case 3:
-					return Four.GetHashCode() * 31 + 7;
-				case 4:
-					return Five.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
-
-		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
-
-		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				case 3:
-					return $"One:{Four}";
-				case 4:
-					return $"One:{Five}";
-				default:
-					return String.Empty;
-			}
-		}
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public override int State => 0;
 
-		public TOne One { get; }
+		public override TOne One { get; }
 
-		public TTwo Two { get; }
+		public override TTwo Two => default;
 
-		public TThree Three { get; }
+		public override TThree Three => default;
 
-		public TFour Four { get; }
+		object IUnionValue.Value => One;
 
-		public TFive Five { get; }
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
 
-		public TSix Six { get; }
-
-		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
-
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			Four = four;
-			Five = five;
-			Six = six;
-			_unionFactory = unionFactory;
-		}
-
-		public TUnionType GetUnion()
-			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				case 3:
-					return Equals(Four, other.Four);
-				case 4:
-					return Equals(Five, other.Five);
-				case 5:
-					return Equals(Six, other.Six);
-				default:
-					return false;
-			}
-		}
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
+			=> other != null && Equals(One, other.One);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				case 3:
-					return Four.GetHashCode() * 31 + 7;
-				case 4:
-					return Five.GetHashCode() * 31 + 7;
-				case 5:
-					return Six.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> One.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				case 3:
-					return $"One:{Four}";
-				case 4:
-					return $"One:{Five}";
-				case 5:
-					return $"One:{Six}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"One:{One}";
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public override int State => 1;
 
-		public TOne One { get; }
+		public override TOne One => default;
 
-		public TTwo Two { get; }
+		public override TTwo Two { get; }
 
-		public TThree Three { get; }
+		public override TThree Three => default;
 
-		public TFour Four { get; }
+		object IUnionValue.Value => Two;
 
-		public TFive Five { get; }
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
 
-		public TSix Six { get; }
-
-		public TSeven Seven { get; }
-
-		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
-
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			Four = four;
-			Five = five;
-			Six = six;
-			Seven = seven;
-			_unionFactory = unionFactory;
-		}
-
-		public TUnionType GetUnion()
-			=> _unionFactory.Invoke(this);
-
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
-		{
-			if (State != other.State)
-				return false;
-
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				case 3:
-					return Equals(Four, other.Four);
-				case 4:
-					return Equals(Five, other.Five);
-				case 5:
-					return Equals(Six, other.Six);
-				case 6:
-					return Equals(Seven, other.Seven);
-				default:
-					return false;
-			}
-		}
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
+			=> other != null && Equals(Two, other.Two);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				case 3:
-					return Four.GetHashCode() * 31 + 7;
-				case 4:
-					return Five.GetHashCode() * 31 + 7;
-				case 5:
-					return Six.GetHashCode() * 31 + 7;
-				case 6:
-					return Seven.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> Two.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				case 3:
-					return $"One:{Four}";
-				case 4:
-					return $"One:{Five}";
-				case 5:
-					return $"One:{Six}";
-				case 6:
-					return $"One:{Seven}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"Two:{Two}";
 	}
 
 	[Serializable]
-	internal class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>, IEquatable<UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>, IUnionValue
+		where TUnionType : struct
 		where TUnionDefinition : IUnionDefinition
 	{
-		public byte State { get; }
+		public override int State => 2;
 
-		public TOne One { get; }
+		public override TOne One => default;
 
-		public TTwo Two { get; }
+		public override TTwo Two => default;
 
-		public TThree Three { get; }
+		public override TThree Three { get; }
 
-		public TFour Four { get; }
+		object IUnionValue.Value => Three;
 
-		public TFive Five { get; }
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
 
-		public TSix Six { get; }
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> other)
+			=> other != null && Equals(Three, other.Three);
 
-		public TSeven Seven { get; }
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
 
-		public TEight Eight { get; }
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public abstract int State { get; }
+
+		public abstract TOne One { get; }
+
+		public abstract TTwo Two { get; }
+
+		public abstract TThree Three { get; }
+
+		public abstract TFour Four { get; }
 
 		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
 
-		public UnionValue(byte state, TOne one, TTwo two, TThree three, TFour four, TFive five, TSix six, TSeven seven, TEight eight, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
-		{
-			State = state;
-			One = one;
-			Two = two;
-			Three = three;
-			Four = four;
-			Five = five;
-			Six = six;
-			Seven = seven;
-			Eight = eight;
-			_unionFactory = unionFactory;
-		}
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory) 
+			=> _unionFactory = unionFactory;
 
 		public TUnionType GetUnion()
 			=> _unionFactory.Invoke(this);
+	}
 
-		public bool Equals(UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
-		{
-			if (State != other.State)
-				return false;
+	[Serializable]
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 0;
 
-			switch (State)
-			{
-				case 0:
-					return Equals(One, other.One);
-				case 1:
-					return Equals(Two, other.Two);
-				case 2:
-					return Equals(Three, other.Three);
-				case 3:
-					return Equals(Four, other.Four);
-				case 4:
-					return Equals(Five, other.Five);
-				case 5:
-					return Equals(Six, other.Six);
-				case 6:
-					return Equals(Seven, other.Seven);
-				case 7:
-					return Equals(Eight, other.Eight);
-				default:
-					return false;
-			}
-		}
+		public override TOne One { get; }
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		object IUnionValue.Value => One;
+
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
+
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
+			=> other != null && Equals(One, other.One);
 
 		public override int GetHashCode()
-		{
-			switch (State)
-			{
-				case 0:
-					return One.GetHashCode() * 31 + 7;
-				case 1:
-					return Two.GetHashCode() * 31 + 7;
-				case 2:
-					return Three.GetHashCode() * 31 + 7;
-				case 3:
-					return Four.GetHashCode() * 31 + 7;
-				case 4:
-					return Five.GetHashCode() * 31 + 7;
-				case 5:
-					return Six.GetHashCode() * 31 + 7;
-				case 6:
-					return Seven.GetHashCode() * 31 + 7;
-				case 7:
-					return Eight.GetHashCode() * 31 + 7;
-				default:
-					return 0;
-			}
-		}
+			=> One.GetHashCode() * 31 + 7;
 
 		public override bool Equals(object obj)
-			=> obj is UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
 
 		public override string ToString()
-		{
-			switch (State)
-			{
-				case 0:
-					return $"One:{One}";
-				case 1:
-					return $"One:{Two}";
-				case 2:
-					return $"One:{Three}";
-				case 3:
-					return $"One:{Four}";
-				case 4:
-					return $"One:{Five}";
-				case 5:
-					return $"One:{Six}";
-				case 6:
-					return $"One:{Seven}";
-				case 7:
-					return $"One:{Eight}";
-				default:
-					return String.Empty;
-			}
-		}
+			=> $"One:{One}";
+	}
+
+	[Serializable]
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 1;
+
+		public override TOne One => default;
+
+		public override TTwo Two { get; }
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		object IUnionValue.Value => Two;
+
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
+
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
+			=> other != null && Equals(Two, other.Two);
+
+		public override int GetHashCode()
+			=> Two.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
+
+		public override string ToString()
+			=> $"Two:{Two}";
+	}
+
+	[Serializable]
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 2;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three { get; }
+
+		public override TFour Four => default;
+
+		object IUnionValue.Value => Three;
+
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
+
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
+			=> other != null && Equals(Three, other.Three);
+
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 3;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four { get; }
+
+		object IUnionValue.Value => Four;
+
+		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Four = four;
+
+		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> other)
+			=> other != null && Equals(Four, other.Four);
+
+		public override int GetHashCode()
+			=> Four.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> value && Equals(value);
+
+		public override string ToString()
+			=> $"Four:{Four}";
+	}
+
+	[Serializable]
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public abstract int State { get; }
+
+		public abstract TOne One { get; }
+
+		public abstract TTwo Two { get; }
+
+		public abstract TThree Three { get; }
+
+		public abstract TFour Four { get; }
+
+		public abstract TFive Five { get; }
+
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory) 
+			=> _unionFactory = unionFactory;
+
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+	}
+
+	[Serializable]
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 0;
+
+		public override TOne One { get; }
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		object IUnionValue.Value => One;
+
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
+
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+			=> other != null && Equals(One, other.One);
+
+		public override int GetHashCode()
+			=> One.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+
+		public override string ToString()
+			=> $"One:{One}";
+	}
+
+	[Serializable]
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 1;
+
+		public override TOne One => default;
+
+		public override TTwo Two { get; }
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		object IUnionValue.Value => Two;
+
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
+
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+			=> other != null && Equals(Two, other.Two);
+
+		public override int GetHashCode()
+			=> Two.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+
+		public override string ToString()
+			=> $"Two:{Two}";
+	}
+
+	[Serializable]
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 2;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three { get; }
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		object IUnionValue.Value => Three;
+
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
+
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+			=> other != null && Equals(Three, other.Three);
+
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 3;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four { get; }
+
+		public override TFive Five => default;
+
+		object IUnionValue.Value => Four;
+
+		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Four = four;
+
+		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+			=> other != null && Equals(Four, other.Four);
+
+		public override int GetHashCode()
+			=> Four.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+
+		public override string ToString()
+			=> $"Four:{Four}";
+	}
+
+	[Serializable]
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 4;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five { get; }
+
+		object IUnionValue.Value => Five;
+
+		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Five = five;
+
+		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> other)
+			=> other != null && Equals(Five, other.Five);
+
+		public override int GetHashCode()
+			=> Five.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> value && Equals(value);
+
+		public override string ToString()
+			=> $"Five:{Five}";
+	}
+
+	[Serializable]
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public abstract int State { get; }
+
+		public abstract TOne One { get; }
+
+		public abstract TTwo Two { get; }
+
+		public abstract TThree Three { get; }
+
+		public abstract TFour Four { get; }
+
+		public abstract TFive Five { get; }
+
+		public abstract TSix Six { get; }
+
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			=> _unionFactory = unionFactory;
+
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+	}
+
+	[Serializable]
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 0;
+
+		public override TOne One { get; }
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		object IUnionValue.Value => One;
+
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
+
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(One, other.One);
+
+		public override int GetHashCode()
+			=> One.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"One:{One}";
+	}
+
+	[Serializable]
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 1;
+
+		public override TOne One => default;
+
+		public override TTwo Two { get; }
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		object IUnionValue.Value => Two;
+
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
+
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(Two, other.Two);
+
+		public override int GetHashCode()
+			=> Two.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"Two:{Two}";
+	}
+
+	[Serializable]
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 2;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three { get; }
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		object IUnionValue.Value => Three;
+
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
+
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(Three, other.Three);
+
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 3;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four { get; }
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		object IUnionValue.Value => Four;
+
+		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Four = four;
+
+		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(Four, other.Four);
+
+		public override int GetHashCode()
+			=> Four.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"Four:{Four}";
+	}
+
+	[Serializable]
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 4;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five { get; }
+
+		public override TSix Six => default;
+
+		object IUnionValue.Value => Five;
+
+		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Five = five;
+
+		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(Five, other.Five);
+
+		public override int GetHashCode()
+			=> Five.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"Five:{Five}";
+	}
+
+	[Serializable]
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 5;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six { get; }
+
+		object IUnionValue.Value => Six;
+
+		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Six = six;
+
+		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> other)
+			=> other != null && Equals(Six, other.Six);
+
+		public override int GetHashCode()
+			=> Six.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> value && Equals(value);
+
+		public override string ToString()
+			=> $"Six:{Six}";
+	}
+
+	[Serializable]
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public abstract int State { get; }
+
+		public abstract TOne One { get; }
+
+		public abstract TTwo Two { get; }
+
+		public abstract TThree Three { get; }
+
+		public abstract TFour Four { get; }
+
+		public abstract TFive Five { get; }
+
+		public abstract TSix Six { get; }
+
+		public abstract TSeven Seven { get; }
+
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			=> _unionFactory = unionFactory;
+
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+	}
+
+	[Serializable]
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 0;
+
+		public override TOne One { get; }
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => One;
+
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
+
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(One, other.One);
+
+		public override int GetHashCode()
+			=> One.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"One:{One}";
+	}
+
+	[Serializable]
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 1;
+
+		public override TOne One => default;
+
+		public override TTwo Two { get; }
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => Two;
+
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
+
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Two, other.Two);
+
+		public override int GetHashCode()
+			=> Two.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Two:{Two}";
+	}
+
+	[Serializable]
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 2;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three { get; }
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => Three;
+
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
+
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Three, other.Three);
+
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 3;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four { get; }
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => Four;
+
+		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Four = four;
+
+		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Four, other.Four);
+
+		public override int GetHashCode()
+			=> Four.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Four:{Four}";
+	}
+
+	[Serializable]
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 4;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five { get; }
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => Five;
+
+		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Five = five;
+
+		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Five, other.Five);
+
+		public override int GetHashCode()
+			=> Five.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Five:{Five}";
+	}
+
+	[Serializable]
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 5;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six { get; }
+
+		public override TSeven Seven => default;
+
+		object IUnionValue.Value => Six;
+
+		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Six = six;
+
+		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Six, other.Six);
+
+		public override int GetHashCode()
+			=> Six.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Six:{Six}";
+	}
+
+	[Serializable]
+	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 6;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven { get; }
+
+		object IUnionValue.Value => Seven;
+
+		public UnionValueSeven(TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Seven = seven;
+
+		public bool Equals(UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> other)
+			=> other != null && Equals(Seven, other.Seven);
+
+		public override int GetHashCode()
+			=> Seven.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> value && Equals(value);
+
+		public override string ToString()
+			=> $"Seven:{Seven}";
+	}
+
+	[Serializable]
+	internal abstract class UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IUnionValue<TUnionDefinition>
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public abstract int State { get; }
+
+		public abstract TOne One { get; }
+
+		public abstract TTwo Two { get; }
+
+		public abstract TThree Three { get; }
+
+		public abstract TFour Four { get; }
+
+		public abstract TFive Five { get; }
+
+		public abstract TSix Six { get; }
+
+		public abstract TSeven Seven { get; }
+
+		public abstract TEight Eight { get; }
+
+		private readonly Func<IUnionValue<TUnionDefinition>, TUnionType> _unionFactory;
+
+		public UnionValue(Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory) 
+			=> _unionFactory = unionFactory;
+
+		public TUnionType GetUnion()
+			=> _unionFactory.Invoke(this);
+	}
+
+	[Serializable]
+	internal class UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 0;
+
+		public override TOne One { get; }
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => One;
+
+		public UnionValueOne(TOne one, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> One = one;
+
+		public bool Equals(UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(One, other.One);
+
+		public override int GetHashCode()
+			=> One.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueOne<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"One:{One}";
+	}
+
+	[Serializable]
+	internal class UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 1;
+
+		public override TOne One => default;
+
+		public override TTwo Two { get; }
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Two;
+
+		public UnionValueTwo(TTwo two, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Two = two;
+
+		public bool Equals(UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Two, other.Two);
+
+		public override int GetHashCode()
+			=> Two.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueTwo<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Two:{Two}";
+	}
+
+	[Serializable]
+	internal class UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 2;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three { get; }
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Three;
+
+		public UnionValueThree(TThree three, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Three = three;
+
+		public bool Equals(UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Three, other.Three);
+
+		public override int GetHashCode()
+			=> Three.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueThree<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Three:{Three}";
+	}
+
+	[Serializable]
+	internal class UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 3;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four { get; }
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Four;
+
+		public UnionValueFour(TFour four, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Four = four;
+
+		public bool Equals(UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Four, other.Four);
+
+		public override int GetHashCode()
+			=> Four.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFour<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Four:{Four}";
+	}
+
+	[Serializable]
+	internal class UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 4;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five { get; }
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Five;
+
+		public UnionValueFive(TFive five, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Five = five;
+
+		public bool Equals(UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Five, other.Five);
+
+		public override int GetHashCode()
+			=> Five.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueFive<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Five:{Five}";
+	}
+
+	[Serializable]
+	internal class UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 5;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six { get; }
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Six;
+
+		public UnionValueSix(TSix six, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Six = six;
+
+		public bool Equals(UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Six, other.Six);
+
+		public override int GetHashCode()
+			=> Six.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueSix<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Six:{Six}";
+	}
+
+	[Serializable]
+	internal class UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 6;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven { get; }
+
+		public override TEight Eight => default;
+
+		object IUnionValue.Value => Seven;
+
+		public UnionValueSeven(TSeven seven, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Seven = seven;
+
+		public bool Equals(UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Seven, other.Seven);
+
+		public override int GetHashCode()
+			=> Seven.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueSeven<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Seven:{Seven}";
+	}
+
+	[Serializable]
+	internal class UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>, IEquatable<UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, IUnionValue
+		where TUnionType : struct
+		where TUnionDefinition : IUnionDefinition
+	{
+		public override int State => 7;
+
+		public override TOne One => default;
+
+		public override TTwo Two => default;
+
+		public override TThree Three => default;
+
+		public override TFour Four => default;
+
+		public override TFive Five => default;
+
+		public override TSix Six => default;
+
+		public override TSeven Seven => default;
+
+		public override TEight Eight { get; }
+
+		object IUnionValue.Value => Eight;
+
+		public UnionValueEight(TEight eight, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
+			: base(unionFactory)
+			=> Eight = eight;
+
+		public bool Equals(UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> other)
+			=> other != null && Equals(Eight, other.Eight);
+
+		public override int GetHashCode()
+			=> Eight.GetHashCode() * 31 + 7;
+
+		public override bool Equals(object obj)
+			=> obj is UnionValueEight<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> value && Equals(value);
+
+		public override string ToString()
+			=> $"Eight:{Eight}";
 	}
 }

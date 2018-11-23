@@ -12,7 +12,7 @@ namespace Functional
 			if (success == null)
 				throw new ArgumentNullException(nameof(success));
 
-			return new Result<TSuccess, TFailure>(true, success, default(TFailure));
+			return new Result<TSuccess, TFailure>(true, success, default);
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> Success<TSuccess, TFailure>(Task<TSuccess> success)
@@ -23,7 +23,7 @@ namespace Functional
 			if (failure == null)
 				throw new ArgumentNullException(nameof(failure));
 
-			return new Result<TSuccess, TFailure>(false, default(TSuccess), failure);
+			return new Result<TSuccess, TFailure>(false, default, failure);
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> Failure<TSuccess, TFailure>(Task<TFailure> failure)

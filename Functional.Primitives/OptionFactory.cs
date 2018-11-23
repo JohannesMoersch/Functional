@@ -19,7 +19,7 @@ namespace Functional
 			=> Some(await value);
 
 		public static Option<T> None<T>()
-			=> new Option<T>(false, default(T));
+			=> new Option<T>(false, default);
 
 		public static Option<T> FromNullable<T>(T value)
 			where T : class

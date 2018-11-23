@@ -11,7 +11,7 @@ namespace Functional
 		public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
-				.Select(option => option.Match(o => o, () => default(T)));
+				.Select(option => option.Match(o => o, () => default));
 
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 		{

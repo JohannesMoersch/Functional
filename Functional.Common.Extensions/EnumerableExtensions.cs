@@ -11,12 +11,12 @@ namespace Functional
 		public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
-				.Select(option => option.Match(o => o, () => default(T)));
+				.Select(option => option.Match(o => o, () => default));
 
 		public static async Task<IEnumerable<T>> WhereSome<T>(this Task<IEnumerable<Option<T>>> source)
 			=> (await source)
 				.Where(option => option.Match(_ => true, () => false))
-				.Select(option => option.Match(o => o, () => default(T)));
+				.Select(option => option.Match(o => o, () => default));
 
 		public static Result<TSuccess[], TFailure> TakeUntilFailure<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
 		{	
