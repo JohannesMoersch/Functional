@@ -52,6 +52,38 @@ namespace Functional
 				);
 		}
 
+		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
+			=> result.Select(success => success.Match(x => Option.Some(select(x)), Option.None<TResult>));
+
+		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
+			=> (await result).SelectIfSome(select);
+
+		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
+		{
+			return result.MatchAsync(
+				success => success.MatchAsync(async value => Result.Success<Option<TResult>, TFailure>(Option.Some(await select(value))), () => Task.FromResult(Result.Success<Option<TResult>, TFailure>(Option.None<TResult>()))),
+				failure => Task.FromResult(Result.Failure<Option<TResult>, TFailure>(failure)));
+		}
+
+		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
+			=> await (await result).SelectIfSomeAsync(select);
+
+		public static Result<Option<TResult>, TFailure> BindIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Result<TResult, TFailure>> bind)
+			=> result.Bind(success => success.Match(x => bind(x).Select(Option.Some), () => Result.Success<Option<TResult>, TFailure>(Option.None<TResult>())));
+
+		public static async Task<Result<Option<TResult>, TFailure>> BindIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Result<TResult, TFailure>> bind)
+			=> (await result).BindIfSome(bind);
+
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> bind)
+		{
+			return result.MatchAsync(
+				success => success.MatchAsync(async value => Result.Success<Option<TResult>, TFailure>(Option.Some(await bind(value))), () => Task.FromResult(Result.Success<Option<TResult>, TFailure>(Option.None<TResult>()))),
+				failure => Task.FromResult(Result.Failure<Option<TResult>, TFailure>(failure)));
+		}
+
+		public static async Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> bind)
+			=> await (await result).BindIfSomeAsync(bind);
+
 		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
 			=> (await result).Where(predicate, failureFactory);
 
@@ -123,6 +155,66 @@ namespace Functional
 		[Obsolete("Please use .Succes() instead.")]
 		public static async Task<Option<TSuccess>> ToOption<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> (await result).ToOption();
+
+		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
+			=> result.Match(x => x.Match(successSome, successNone), failure);
+
+		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+
+		public static async Task<T> Match<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
+			=> (await result).Match(successSome, successNone, failure);
+
+		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+
+		public static void Do<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> successSome, Action successNone, Action<TFailure> failure)
+			=> result.Do(x => x.Do(successSome, successNone), failure);
+
+		public static void Do<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> successSome, Action successNone)
+			=> result.Do(x => x.Do(successSome, successNone));
+
+		public static Task DoAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.DoAsync(x => x.DoAsync(successSome, successNone), failure);
+
+		public static Task DoAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone)
+			=> result.DoAsync(x => x.DoAsync(successSome, successNone));
+
+		public static async Task Do<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> successSome, Action successNone, Action<TFailure> failure)
+			=> (await result).Do(successSome, successNone, failure);
+
+		public static async Task Do<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> successSome, Action successNone)
+			=> (await result).Do(successSome, successNone);
+
+		public static Task DoAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.DoAsync(x => x.DoAsync(successSome, successNone), failure);
+
+		public static Task DoAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone)
+			=> result.DoAsync(x => x.DoAsync(successSome, successNone));
+
+		public static void Apply<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> successSome, Action successNone, Action<TFailure> failure)
+			=> result.Apply(x => x.Apply(successSome, successNone), failure);
+		
+		public static void Apply<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> successSome, Action successNone)
+			=> result.Apply(x => x.Apply(successSome, successNone));
+
+		public static Task ApplyAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.ApplyAsync(x => x.ApplyAsync(successSome, successNone), failure);
+
+		public static Task ApplyAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone)
+			=> result.ApplyAsync(x => x.ApplyAsync(successSome, successNone));
+
+		public static async Task Apply<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> successSome, Action successNone, Action<TFailure> failure)
+			=> (await result).Apply(successSome, successNone, failure);
+
+		public static async Task Apply<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> successSome, Action successNone)
+			=> (await result).Apply(successSome, successNone);
+
+		public static Task ApplyAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.ApplyAsync(x => x.ApplyAsync(successSome, successNone), failure);
+
+		public static Task ApplyAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone)
+			=> result.ApplyAsync(x => x.ApplyAsync(successSome, successNone));
 
 		public static Result<TSuccess, TFailure> FailureIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TFailure> failureFactory)
 		{
