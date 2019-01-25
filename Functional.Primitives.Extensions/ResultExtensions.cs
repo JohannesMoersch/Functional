@@ -25,6 +25,18 @@ namespace Functional
 		public static Task<Option<TFailure>> Failure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> result.Match(_ => Option.None<TFailure>(), Option.Some);
 
+		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
+			=> result.Match(x => x.Match(successSome, successNone), failure);
+
+		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+
+		public static async Task<T> Match<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
+			=> (await result).Match(successSome, successNone, failure);
+
+		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+
 		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> select)
 		{
 			if (select == null)
@@ -50,18 +62,6 @@ namespace Functional
 					Result.Failure<TSuccess, TFailure>
 				);
 		}
-
-		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
-			=> result.Match(x => x.Match(successSome, successNone), failure);
-
-		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
-			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
-
-		public static async Task<T> Match<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
-			=> (await result).Match(successSome, successNone, failure);
-
-		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
-			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
 
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
 			=> result.Select(success => success.Match(x => Option.Some(select(x)), Option.None<TResult>));
