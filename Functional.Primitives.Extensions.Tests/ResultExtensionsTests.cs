@@ -9,6 +9,27 @@ namespace Functional.Primitives.Extensions.Tests
 	{
 		public class WhenResultOfOption
 		{
+			public class AndMatch
+			{
+				[Fact]
+				public void ShouldMapOptionSomeToFirstValue() => Result.Success<Option<int>, string>(Option.Some(1337)).Match(First, Second, Third).Should().Be("1337");
+
+				[Fact]
+				public void ShouldMapOptionNoneToSecondValue() => Result.Success<Option<int>, string>(Option.None<int>()).Match(First, Second, Third).Should().Be("none");
+
+				[Fact]
+				public void ShouldMapOptionNoneToThirdValue() => Result.Failure<Option<int>, string>("error").Match(First, Second, Third).Should().Be("error");
+
+				private static string First(int i) => i.ToString();
+				private static string Second() => "none";
+				private static string Third(string s) => s;
+			}
+
+			public class AndMatchAsync
+			{
+
+			}
+
 			public class AndSelectIfSome
 			{
 				[Fact]
@@ -108,6 +129,8 @@ namespace Functional.Primitives.Extensions.Tests
 					private static Task<Result<bool, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<bool, string>(ERROR));
 				}
 			}
+
+			
 		}
 
 		public class WhenTaskOfResultOfOption
