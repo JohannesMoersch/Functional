@@ -382,16 +382,33 @@ namespace Functional.Primitives.Extensions.Tests
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
-					[Fact]
-					public async Task ShouldMapOptionSomeToOptionSome() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).BindIfSome(IsEvenResult)).Should().BeSuccessful(option => option.Should().HaveExpectedValue(false));
+					public class OfSome
+					{
+						[Fact]
+						public async Task ShouldMapOptionSomeToOptionSome() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).BindIfSome(IsEvenResult)).Should().BeSuccessful(option => option.Should().HaveExpectedValue(false));
 
-					[Fact]
-					public async Task ShouldMapOptionNoneToOptionNone() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).BindIfSome(IsEvenResult)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+						[Fact]
+						public async Task ShouldMapOptionNoneToOptionNone() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).BindIfSome(IsEvenResult)).Should().BeSuccessful(option => option.Should().NotHaveValue());
 
-					[Fact]
-					public async Task ShouldDoNothingOnFailure() => (await Task.FromResult(Result.Failure<Option<int>, string>("some error")).BindIfSome(IsEvenResult)).Should().BeFaulted();
+						[Fact]
+						public async Task ShouldDoNothingOnFailure() => (await Task.FromResult(Result.Failure<Option<int>, string>("some error")).BindIfSome(IsEvenResult)).Should().BeFaulted();
 
-					private static Result<Option<bool>, string> IsEvenResult(int i) => Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0));
+						private static Result<Option<bool>, string> IsEvenResult(int i) => Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0));
+					}
+
+					public class OfNone
+					{
+						[Fact]
+						public async Task ShouldMapOptionSomeToOptionSome() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).BindIfSome(IsNoneResult)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+
+						[Fact]
+						public async Task ShouldMapOptionNoneToOptionNone() => (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).BindIfSome(IsNoneResult)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+
+						[Fact]
+						public async Task ShouldDoNothingOnFailure() => (await Task.FromResult(Result.Failure<Option<int>, string>("some error")).BindIfSome(IsNoneResult)).Should().BeFaulted();
+
+						private static Result<Option<bool>, string> IsNoneResult(int i) => Result.Success<Option<bool>, string>(Option.None<bool>());
+					}
 				}
 
 				public class AndFunctionProducesFaultedResult
@@ -418,16 +435,33 @@ namespace Functional.Primitives.Extensions.Tests
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
-					[Fact]
-					public async Task ShouldMapOptionSomeToOptionSome() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().HaveExpectedValue(false));
+					public class OfSome
+					{
+						[Fact]
+						public async Task ShouldMapOptionSomeToOptionSome() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().HaveExpectedValue(false));
 
-					[Fact]
-					public async Task ShouldMapOptionNoneToOptionNone() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+						[Fact]
+						public async Task ShouldMapOptionNoneToOptionNone() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().NotHaveValue());
 
-					[Fact]
-					public async Task ShouldDoNothingOnFailure() => (await (await Task.FromResult(Result.Failure<Option<int>, string>("some error"))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeFaulted();
+						[Fact]
+						public async Task ShouldDoNothingOnFailure() => (await (await Task.FromResult(Result.Failure<Option<int>, string>("some error"))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeFaulted();
 
-					private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0)));
+						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0)));
+					}
+
+					public class OfNone
+					{
+						[Fact]
+						public async Task ShouldMapOptionSomeToOptionSome() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+
+						[Fact]
+						public async Task ShouldMapOptionNoneToOptionNone() => (await (await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeSuccessful(option => option.Should().NotHaveValue());
+
+						[Fact]
+						public async Task ShouldDoNothingOnFailure() => (await (await Task.FromResult(Result.Failure<Option<int>, string>("some error"))).BindIfSomeAsync(IsEvenResultAsync)).Should().BeFaulted();
+
+						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.None<bool>()));
+					}
 				}
 
 				public class AndFunctionProducesFaultedResult
