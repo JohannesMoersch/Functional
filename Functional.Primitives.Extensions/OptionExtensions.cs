@@ -62,6 +62,8 @@ namespace Functional
 
 		public static IEnumerable<TValue> ToEnumerable<TValue>(this Option<TValue> option) => option.Match(value => Enumerable.Repeat(value, 1), Enumerable.Empty<TValue>);
 
+		public static async Task<IEnumerable<TValue>> ToEnumerable<TValue>(this Task<Option<TValue>> option) => (await option).ToEnumerable();
+
 		public static TValue? ToNullable<TValue>(this Option<TValue> option)
 			where TValue : struct
 			=> option.Match(value => (TValue?)value, () => null);
