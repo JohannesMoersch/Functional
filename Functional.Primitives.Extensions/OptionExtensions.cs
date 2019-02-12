@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -59,6 +60,8 @@ namespace Functional
 		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, bool> predicate)
 			=> (await option).Where(predicate);
 
+		public static IEnumerable<TValue> ToEnumerable<TValue>(this Option<TValue> option) => option.Match(value => Enumerable.Repeat(value, 1), Enumerable.Empty<TValue>);
+
 		public static TValue? ToNullable<TValue>(this Option<TValue> option)
 			where TValue : struct
 			=> option.Match(value => (TValue?)value, () => null);
@@ -66,6 +69,7 @@ namespace Functional
 		public static async Task<TValue?> ToNullable<TValue>(this Task<Option<TValue>> option)
 			where TValue : struct
 			=> (await option).ToNullable();
+
 
 		public static Result<TValue, TFailure> ToResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
 		{
