@@ -72,7 +72,6 @@ namespace Functional
 			where TValue : struct
 			=> (await option).ToNullable();
 
-
 		public static Result<TValue, TFailure> ToResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
 		{
 			if (failureFactory == null)
