@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Title>Functional.Unions.Mappers</Title>
+		<Description>This package contains mapper extension methods for union types.</Description>
+		<PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+		<Authors>Johannes Moersch</Authors>
+		<PackageTags>functional</PackageTags>
+		<PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+		<Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+		<RepositoryUrl></RepositoryUrl>
+		<Version>1.8.0</Version>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<LangVersion>7.3</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
     <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Unions.Mappers\Functional.Unions.Mappers.csproj" />
     <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
   </ItemGroup>
 
