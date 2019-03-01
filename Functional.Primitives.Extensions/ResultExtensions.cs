@@ -129,5 +129,32 @@ namespace Functional
 
 		public static async Task<Result<TSuccess, TFailure>> FailureIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TFailure> failureFactory)
 			=> (await result).FailureIfNone(failureFactory);
+
+		public static Result<TSuccess, TFailure> Try<TInputSuccess, TSuccess, TFailure>(this Result<TInputSuccess, TFailure> result, Func<TInputSuccess, TSuccess> successFactory, Func<Exception, TFailure> failureFactory)
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			if(failureFactory == null)
+				throw new ArgumentNullException(nameof(failureFactory));
+
+			try
+			{
+				return result.Select(successFactory);
+			}
+			catch (Exception ex)
+			{
+				return Result.Failure<TSuccess, TFailure>(failureFactory(ex));
+			}
+		}
+
+		public static Result<TSuccess, Exception> Try<TInputSuccess, TSuccess>(this Result<TInputSuccess, Exception> result, Func<TInputSuccess, TSuccess> successFactory)
+			=> Try(result, successFactory, ex => ex);
+
+		public static async Task<Result<TSuccess, TFailure>> Try<TInputSuccess, TSuccess, TFailure>(this Task<Result<TInputSuccess, TFailure>> result, Func<TInputSuccess, TSuccess> successFactory, Func<Exception, TFailure> failureFactory)
+			=> (await result).Try(successFactory, failureFactory);
+
+		public static async Task<Result<TSuccess, Exception>> Try<TInputSuccess, TSuccess>(this Task<Result<TInputSuccess, Exception>> result, Func<TInputSuccess, TSuccess> successFactory)
+			=> (await result).Try(successFactory, ex => ex);
 	}
 }
