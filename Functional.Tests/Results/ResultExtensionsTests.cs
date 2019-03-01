@@ -14,22 +14,22 @@ namespace Functional.Tests.Results
 			var objectObjectInput = Result.Success<object, object>(new object());
 			var objectExceptionInput = Result.Success<object, Exception>(new object());
 
-			var withFailureFactoryResult = objectObjectInput.Try(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure")).AssertSuccess();
+			var withFailureFactoryResult = objectObjectInput.TrySelect(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure")).AssertSuccess();
 			withFailureFactoryResult.Object.Should().Be(objectObjectInput.Success().ValueOrDefault());
 			withFailureFactoryResult.Boolean.Should().BeTrue();
 
 
-			var withoutFailureFactoryResult = objectExceptionInput.Try(o => (Object: o, Boolean: true)).AssertSuccess();
+			var withoutFailureFactoryResult = objectExceptionInput.TrySelect(o => (Object: o, Boolean: true)).AssertSuccess();
 			withoutFailureFactoryResult.Object.Should().Be(objectExceptionInput.Success().ValueOrDefault());
 			withoutFailureFactoryResult.Boolean.Should().BeTrue();
 
 
-			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).Try(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure")).AssertSuccess();
+			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).TrySelect(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure")).AssertSuccess();
 			withFailureFactoryTaskResult.Object.Should().Be(objectObjectInput.Success().ValueOrDefault());
 			withFailureFactoryTaskResult.Boolean.Should().BeTrue();
 
 
-			var result = await Task.FromResult(objectExceptionInput).Try(o => (Object: o, Boolean: true)).AssertSuccess();
+			var result = await Task.FromResult(objectExceptionInput).TrySelect(o => (Object: o, Boolean: true)).AssertSuccess();
 			result.Object.Should().Be(objectExceptionInput.Success().ValueOrDefault());
 			result.Boolean.Should().BeTrue();
 		}
@@ -40,19 +40,19 @@ namespace Functional.Tests.Results
 			var objectObjectInput = Result.Failure<object, object>(new object());
 			var objectExceptionInput = Result.Failure<object, Exception>(new Exception());
 
-			var withFailureFactoryResult = objectObjectInput.Try<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).AssertFailure();
+			var withFailureFactoryResult = objectObjectInput.TrySelect<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).AssertFailure();
 			withFailureFactoryResult.Should().Be(objectObjectInput.Failure().ValueOrDefault());
 
 
-			var withoutFailureFactoryResult = objectExceptionInput.Try(o => (Object: o, Boolean: true)).AssertFailure();
+			var withoutFailureFactoryResult = objectExceptionInput.TrySelect(o => (Object: o, Boolean: true)).AssertFailure();
 			withoutFailureFactoryResult.Should().Be(objectExceptionInput.Failure().ValueOrDefault());
 
 
-			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).Try<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).AssertFailure();
+			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).TrySelect<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).AssertFailure();
 			withFailureFactoryTaskResult.Should().Be(objectObjectInput.Failure().ValueOrDefault());
 
 
-			var result = await Task.FromResult(objectExceptionInput).Try(o => (Object: o, Boolean: true)).AssertFailure();
+			var result = await Task.FromResult(objectExceptionInput).TrySelect(o => (Object: o, Boolean: true)).AssertFailure();
 			result.Should().Be(objectExceptionInput.Failure().ValueOrDefault());
 		}
 
@@ -63,21 +63,21 @@ namespace Functional.Tests.Results
 			var objectObjectInput = Result.Success<object, (Exception Exception, bool Boolean)>(new object());
 			var objectExceptionInput = Result.Success<object, Exception>(new object());
 
-			var withFailureFactoryResult = objectObjectInput.Try<object, object, (Exception Exception, bool Boolean)>(s => throw exception, f => (f, true)).AssertFailure();
+			var withFailureFactoryResult = objectObjectInput.TrySelect<object, object, (Exception Exception, bool Boolean)>(s => throw exception, f => (f, true)).AssertFailure();
 			withFailureFactoryResult.Exception.Should().Be(exception);
 			withFailureFactoryResult.Boolean.Should().BeTrue();
 
 
-			var withoutFailureFactoryResult = objectExceptionInput.Try<object, object>(o => throw exception).AssertFailure();
+			var withoutFailureFactoryResult = objectExceptionInput.TrySelect<object, object>(o => throw exception).AssertFailure();
 			withoutFailureFactoryResult.Should().Be(exception);
 
 
-			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).Try<object, object, (Exception Exception, bool Boolean)>(o => throw exception, ex => (ex, true)).AssertFailure();
+			var withFailureFactoryTaskResult = await Task.FromResult(objectObjectInput).TrySelect<object, object, (Exception Exception, bool Boolean)>(o => throw exception, ex => (ex, true)).AssertFailure();
 			withFailureFactoryTaskResult.Exception.Should().Be(exception);
 			withFailureFactoryTaskResult.Boolean.Should().BeTrue();
 
 
-			var result = await Task.FromResult(objectExceptionInput).Try<object, object>(o => throw exception).AssertFailure();
+			var result = await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw exception).AssertFailure();
 			result.Should().Be(exception);
 		}
 	}

@@ -130,7 +130,7 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> FailureIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TFailure> failureFactory)
 			=> (await result).FailureIfNone(failureFactory);
 
-		public static Result<TSuccess, TFailure> Try<TInputSuccess, TSuccess, TFailure>(this Result<TInputSuccess, TFailure> result, Func<TInputSuccess, TSuccess> successFactory, Func<Exception, TFailure> failureFactory)
+		public static Result<TResult, TFailure> TrySelect<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -144,17 +144,17 @@ namespace Functional
 			}
 			catch (Exception ex)
 			{
-				return Result.Failure<TSuccess, TFailure>(failureFactory(ex));
+				return Result.Failure<TResult, TFailure>(failureFactory(ex));
 			}
 		}
 
-		public static Result<TSuccess, Exception> Try<TInputSuccess, TSuccess>(this Result<TInputSuccess, Exception> result, Func<TInputSuccess, TSuccess> successFactory)
-			=> Try(result, successFactory, ex => ex);
+		public static Result<TResult, Exception> TrySelect<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
+			=> TrySelect(result, successFactory, ex => ex);
 
-		public static async Task<Result<TSuccess, TFailure>> Try<TInputSuccess, TSuccess, TFailure>(this Task<Result<TInputSuccess, TFailure>> result, Func<TInputSuccess, TSuccess> successFactory, Func<Exception, TFailure> failureFactory)
-			=> (await result).Try(successFactory, failureFactory);
+		public static async Task<Result<TResult, TFailure>> TrySelect<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
+			=> (await result).TrySelect(successFactory, failureFactory);
 
-		public static async Task<Result<TSuccess, Exception>> Try<TInputSuccess, TSuccess>(this Task<Result<TInputSuccess, Exception>> result, Func<TInputSuccess, TSuccess> successFactory)
-			=> (await result).Try(successFactory, ex => ex);
+		public static async Task<Result<TResult, Exception>> TrySelect<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, TResult> successFactory)
+			=> (await result).TrySelect(successFactory, ex => ex);
 	}
 }
