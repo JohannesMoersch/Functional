@@ -138,14 +138,7 @@ namespace Functional
 			if(failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			try
-			{
-				return result.Select(successFactory);
-			}
-			catch (Exception ex)
-			{
-				return Result.Failure<TResult, TFailure>(failureFactory(ex));
-			}
+			return result.Bind(success => Result.Try(() => successFactory(success), failureFactory));
 		}
 
 		public static Result<TResult, Exception> TrySelect<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
