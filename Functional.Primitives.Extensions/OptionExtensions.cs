@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,6 +42,18 @@ namespace Functional
 
 		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).DefaultIfNone(defaultValue);
+
+		public static Option<TValue> OrElse<TValue>(this Option<TValue> option, Func<Option<TValue>> other)
+			=> option.Match(Option.Some, other);
+
+		public static async Task<Option<TValue>> OrElse<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> other)
+			=> (await option).OrElse(other);
+
+		public static Task<Option<TValue>> OrElseAsync<TValue>(this Option<TValue> option, Func<Task<Option<TValue>>> other)
+			=> option.Match(value => Task.FromResult(Option.Some(value)), other);
+		
+		public static async Task<Option<TValue>> OrElseAsync<TValue>(this Task<Option<TValue>> option, Func<Task<Option<TValue>>> other)
+			=> await (await option).OrElseAsync(other);
 
 		public static Option<TValue> OfType<TValue>(this Option<object> option)
 			=> option.Match(value => Option.Create(value is TValue, () => (TValue)value), Option.None<TValue>);
