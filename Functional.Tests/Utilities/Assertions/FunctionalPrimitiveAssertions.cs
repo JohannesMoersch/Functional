@@ -1,6 +1,4 @@
-﻿using Functional;
-
-namespace FluentAssertions
+﻿namespace Functional.Tests.Utilities.Assertions
 {
 	/// <summary>
 	/// Defines additional fluent assertion gateways for types defined in Functional.Primitives namespace.

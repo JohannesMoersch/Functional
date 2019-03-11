@@ -49,7 +49,7 @@ namespace Functional
 			=> (await result).Select(select);
 
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
-			=> result.Select(success => success.Match(x => Option.Some(select(x)), Option.None<TResult>));
+			=> result.Select(success => success.Select(select));
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
 			=> (await result).SelectIfSome(select);
