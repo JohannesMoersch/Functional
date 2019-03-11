@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Primitives.Extensions.Tests", "Functional.Primitives.Extensions.Tests\Functional.Primitives.Extensions.Tests.csproj", "{6FAA6FCB-DBC9-47D9-BADD-8A7607BD28C7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,10 +69,6 @@ Global
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FAA6FCB-DBC9-47D9-BADD-8A7607BD28C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FAA6FCB-DBC9-47D9-BADD-8A7607BD28C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FAA6FCB-DBC9-47D9-BADD-8A7607BD28C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FAA6FCB-DBC9-47D9-BADD-8A7607BD28C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

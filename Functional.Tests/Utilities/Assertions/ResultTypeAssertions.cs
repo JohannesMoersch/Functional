@@ -2,9 +2,8 @@
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using FluentAssertions.Execution;
-using Functional;
 
-namespace FluentAssertions
+namespace Functional.Tests.Utilities.Assertions
 {
 	/// <summary>
 	/// Defines assertions for <see cref="Result{TSuccess,TFailure}"/> type.
