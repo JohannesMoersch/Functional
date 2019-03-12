@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Functional.Tests.Utilities.Assertions;
 using Xunit;
 
-namespace Functional.Primitives.Extensions.Tests
+namespace Functional.Tests.Results
 {
 	public class ResultExtensionsTests
 	{
