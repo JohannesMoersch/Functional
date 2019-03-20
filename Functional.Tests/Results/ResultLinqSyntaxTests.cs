@@ -15,9 +15,6 @@ namespace Functional.Tests.Results
 		public static IResultEnumerable<System.Linq.IGrouping<TKey, TElement>, TFailure> GroupBy<TKey, TSuccess, TElement, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
 			=> null;
 
-		public static IResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
-			=> null;
-
 		public static IResultEnumerable<TSuccess, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
 			=> null;
 	}
@@ -25,15 +22,30 @@ namespace Functional.Tests.Results
 	public class ResultLinqSyntaxTests
 	{
 		[Fact]
-		public void SynchronousWhere()
+		public void EnumerableWhereSuccessful()
 			=>
 			(
 				from num in new int[] { 1, 2, 3, 4, 5 }
 				where Result.Success<Unit, string>(Unit.Value)
 				select num
 			)
+			.TakeAll()
+			.AssertSuccess()
 			.Should()
-			.BeEquivalentTo(null);
+			.BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+
+		[Fact]
+		public void EnumerableWhereFailure()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }
+				where Result.Create(num % 2 == 0, Unit.Value, num.ToString())
+				select num
+			)
+			.TakeAll()
+			.AssertFailure()
+			.Should()
+			.BeEquivalentTo(new[] { "1", "3", "5" });
 
 		[Fact]
 		public void SynchronousGroupBy()
