@@ -15,6 +15,9 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this Task<IEnumerable<TSource>> source)
 			=> AsyncEnumerable.Create(source);
 
+		public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this IEnumerable<Task<TSource>> source)
+			=> AsyncEnumerable.Create(source);
+
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first.AsAsyncEnumerable(), second));
 

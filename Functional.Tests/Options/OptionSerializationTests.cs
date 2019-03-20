@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
-using Functional.Tests.Utilities;
 using Xunit;
 
 namespace Functional.Tests.Options
