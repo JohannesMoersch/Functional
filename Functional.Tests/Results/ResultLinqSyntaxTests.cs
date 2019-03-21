@@ -14,9 +14,6 @@ namespace Functional.Tests.Results
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<System.Linq.IGrouping<TKey, TElement>, TFailure> GroupBy<TKey, TSuccess, TElement, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
 			=> null;
-
-		public static IResultEnumerable<TSuccess, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
-			=> null;
 	}
 
 	public class ResultLinqSyntaxTests

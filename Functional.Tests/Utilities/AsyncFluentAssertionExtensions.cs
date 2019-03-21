@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Collections;
+using FluentAssertions.Numeric;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,12 @@ namespace Functional
 {
 	public static class AsyncFluentAssertionExtensions
 	{
+		public static async Task<NumericAssertions<int>> Should(this Task<int> source)
+			=> (await source).Should();
+
+		public static async Task<AndConstraint<NumericAssertions<int>>> Be(this Task<NumericAssertions<int>> source, int expected)
+			=> (await source).Be(expected);
+
 		public static async Task<GenericCollectionAssertions<T>> Should<T>(this Task<IEnumerable<T>> source)
 			=> (await source).Should();
 
