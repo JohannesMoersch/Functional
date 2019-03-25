@@ -102,5 +102,97 @@ namespace Functional.Tests.Results
 			.AssertFailure()
 			.Should()
 			.BeEquivalentTo(new[] { "1", "3", "5" });
+
+		[Fact]
+		public Task AsyncWhereSuccessful()
+			=>
+			(
+				from unit in Task.FromResult(Result.Unit<string>())
+				where Result.Where(true, () => String.Empty)
+				select unit
+			)
+			.AssertSuccess();
+
+		[Fact]
+		public Task AsyncWhereFailure()
+			=>
+			(
+				from unit in Task.FromResult(Result.Unit<string>())
+				where Result.Where(false, () => String.Empty)
+				select unit
+			)
+			.AssertFailure();
+
+		[Fact]
+		public Task AsyncWhereTaskSuccessful()
+			=>
+			(
+				from unit in Task.FromResult(Result.Unit<string>())
+				where Task.FromResult(Result.Where(true, () => String.Empty))
+				select unit
+			)
+			.AssertSuccess();
+
+		[Fact]
+		public Task AsyncWhereTaskFailure()
+			=>
+			(
+				from unit in Task.FromResult(Result.Unit<string>())
+				where Task.FromResult(Result.Where(false, () => String.Empty))
+				select unit
+			)
+			.AssertFailure();
+
+		[Fact]
+		public Task AsyncEnumerableWhereSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				where Result.Where(true, () => String.Empty)
+				select num
+			)
+			.TakeAll()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+
+		[Fact]
+		public Task AsyncEnumerableWhereFailure()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				where Result.Where(num % 2 == 0, () => num.ToString())
+				select num
+			)
+			.TakeAll()
+			.AssertFailure()
+			.Should()
+			.BeEquivalentTo(new[] { "1", "3", "5" });
+
+		[Fact]
+		public Task AsyncEnumerableWhereAsyncSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				where Task.FromResult(Result.Where(true, () => String.Empty))
+				select num
+			)
+			.TakeAll()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+
+		[Fact]
+		public Task AsyncEnumerableWhereAsyncFailure()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				where Task.FromResult(Result.Where(num % 2 == 0, num.ToString()))
+				select num
+			)
+			.TakeAll()
+			.AssertFailure()
+			.Should()
+			.BeEquivalentTo(new[] { "1", "3", "5" });
 	}
 }

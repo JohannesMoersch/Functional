@@ -363,5 +363,21 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.Select(result => result
+					.Match(
+						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						Result.Failure<TResult, TFailure>
+					)
+				)
+				.AsAsyncResultEnumerable();
+		}
 	}
 }
