@@ -69,10 +69,10 @@ namespace Functional.Tests.Results
 			var valueInput = Result.Success<int, string>(VALUE);
 			var valueExceptionInput = Result.Success<int, Exception>(VALUE);
 
-			valueInput.TrySelect(i => i.ToString(), ex => throw new InvalidOperationException()).Should().BeSuccessful(x => x.Should().Be(VALUE.ToString()));
-			valueExceptionInput.TrySelect(i => i.ToString()).Should().BeSuccessful(withoutFailureFactoryResult => withoutFailureFactoryResult.Should().Be(VALUE.ToString()));
+			valueInput.TrySelect(i => i.ToString(), ex => throw new InvalidOperationException()).Should().BeSuccessful(value => value.Should().Be(VALUE.ToString()));
+			valueExceptionInput.TrySelect(i => i.ToString()).Should().BeSuccessful(value => value.Should().Be(VALUE.ToString()));
 
-			(await Task.FromResult(valueInput).TrySelect(i => i.ToString(), ex => throw new InvalidOperationException())).Should().BeSuccessful(withFailureFactoryTaskResult => withFailureFactoryTaskResult.Should().Be(VALUE.ToString()));
+			(await Task.FromResult(valueInput).TrySelect(i => i.ToString(), ex => throw new InvalidOperationException())).Should().BeSuccessful(value => value.Should().Be(VALUE.ToString()));
 			(await Task.FromResult(valueExceptionInput).TrySelect(i => i.ToString())).Should().BeSuccessful(result => result.Should().Be(VALUE.ToString()));
 		}
 
