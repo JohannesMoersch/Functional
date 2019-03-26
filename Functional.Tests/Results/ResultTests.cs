@@ -69,11 +69,11 @@ namespace Functional.Tests.Results
 			var valueInput = Result.Success<int, string>(VALUE);
 			var valueExceptionInput = Result.Success<int, Exception>(VALUE);
 
-			valueInput.TrySelect(i => i.ToString(), ex => throw new System.Exception("Should not be a failure")).Should().BeSuccessful(x => x.Should().Be(VALUE.ToString()));
-			valueExceptionInput.TrySelect(i => (Value: i, Boolean: true)).Should().BeSuccessful(withoutFailureFactoryResult => withoutFailureFactoryResult.Should().BeEquivalentTo((VALUE, true)));
+			valueInput.TrySelect(i => i.ToString(), ex => throw new InvalidOperationException()).Should().BeSuccessful(x => x.Should().Be(VALUE.ToString()));
+			valueExceptionInput.TrySelect(i => i.ToString()).Should().BeSuccessful(withoutFailureFactoryResult => withoutFailureFactoryResult.Should().Be(VALUE.ToString()));
 
-			(await Task.FromResult(valueInput).TrySelect(i => (Value: i, Boolean: true), ex => throw new System.Exception("Should not be a failure"))).Should().BeSuccessful(withFailureFactoryTaskResult => withFailureFactoryTaskResult.Should().BeEquivalentTo((VALUE, true)));
-			(await Task.FromResult(valueExceptionInput).TrySelect(i => (Value: i, Boolean: true))).Should().BeSuccessful(result => result.Should().BeEquivalentTo((VALUE, true)));
+			(await Task.FromResult(valueInput).TrySelect(i => i.ToString(), ex => throw new InvalidOperationException())).Should().BeSuccessful(withFailureFactoryTaskResult => withFailureFactoryTaskResult.Should().Be(VALUE.ToString()));
+			(await Task.FromResult(valueExceptionInput).TrySelect(i => i.ToString())).Should().BeSuccessful(result => result.Should().Be(VALUE.ToString()));
 		}
 
 		[Fact]
@@ -84,10 +84,10 @@ namespace Functional.Tests.Results
 			var faultedInputHoldingMessage = Result.Failure<int, string>(ERROR);
 			var faultedInputHoldingException = Result.Failure<int, Exception>(exception);
 
-			faultedInputHoldingMessage.TrySelect<int, object, string>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).Should().BeFaulted(value => value.Should().Be(ERROR));
+			faultedInputHoldingMessage.TrySelect<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException()).Should().BeFaulted(value => value.Should().Be(ERROR));
 			faultedInputHoldingException.TrySelect(i => (Value: i, Boolean: true)).Should().BeFaulted(value => value.Should().Be(exception));
 
-			(await Task.FromResult(faultedInputHoldingMessage).TrySelect<int, object, string>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure"))).Should().BeFaulted(value => value.Should().Be(ERROR));
+			(await Task.FromResult(faultedInputHoldingMessage).TrySelect<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException())).Should().BeFaulted(value => value.Should().Be(ERROR));
 			(await Task.FromResult(faultedInputHoldingException).TrySelect(i => (Value: i, Boolean: true))).Should().BeFaulted(value => value.Should().Be(exception));
 		}
 
@@ -101,8 +101,8 @@ namespace Functional.Tests.Results
 			objectObjectInput.TrySelect<object, object, string>(s => throw exception, f => f.Message).Should().BeFaulted(value => value.Should().Be(exception.Message));
 			objectExceptionInput.TrySelect<object, object>(o => throw exception).Should().BeFaulted(value => value.Should().Be(exception));
 
-			(await Task.FromResult(objectObjectInput).TrySelect<object, object, string>(o => throw exception, ex => ex.Message)).Should().BeFaulted(value => value.Should().Be(exception.Message));
-			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw exception)).Should().BeFaulted(value => value.Should().Be(exception));
+			(await Task.FromResult(objectObjectInput).TrySelect<object, object, string>(o => throw new InvalidOperationException(), ex => ex.Message)).Should().BeFaulted(value => value.Should().Be(exception.Message));
+			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw new InvalidOperationException())).Should().BeFaulted(value => value.Should().Be(exception));
 		}
 	}
 }
