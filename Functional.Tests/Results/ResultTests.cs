@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Tests.Utilities;
 using Functional.Tests.Utilities.Assertions;
 using Xunit;
 
@@ -66,89 +65,44 @@ namespace Functional.Tests.Results
 		[Fact]
 		public async Task TryWorksCorrectlyWithSuccess()
 		{
-			var objectObjectInput = Result.Success<object, object>(new object());
-			var objectExceptionInput = Result.Success<object, Exception>(new object());
+			const int VALUE = 1337;
+			var valueInput = Result.Success<int, string>(VALUE);
+			var valueExceptionInput = Result.Success<int, Exception>(VALUE);
 
-			objectObjectInput.TrySelect(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure")).Should().BeSuccessful(withFailureFactoryResult =>
-			{
-				withFailureFactoryResult.Object.Should().Be(objectObjectInput.Success().ValueOrDefault());
-				withFailureFactoryResult.Boolean.Should().BeTrue();
-			});
+			valueInput.TrySelect(i => i.ToString(), ex => throw new System.Exception("Should not be a failure")).Should().BeSuccessful(x => x.Should().Be(VALUE.ToString()));
+			valueExceptionInput.TrySelect(i => (Value: i, Boolean: true)).Should().BeSuccessful(withoutFailureFactoryResult => withoutFailureFactoryResult.Should().BeEquivalentTo((VALUE, true)));
 
-			objectExceptionInput.TrySelect(o => (Object: o, Boolean: true)).Should().BeSuccessful(withoutFailureFactoryResult =>
-			{
-				withoutFailureFactoryResult.Object.Should().Be(objectExceptionInput.Success().ValueOrDefault());
-				withoutFailureFactoryResult.Boolean.Should().BeTrue();
-			});
-
-			(await Task.FromResult(objectObjectInput).TrySelect(o => (Object: o, Boolean: true), ex => throw new System.Exception("Should not be a failure"))).Should().BeSuccessful(withFailureFactoryTaskResult =>
-			{
-				withFailureFactoryTaskResult.Object.Should().Be(objectObjectInput.Success().ValueOrDefault());
-				withFailureFactoryTaskResult.Boolean.Should().BeTrue();
-			});
-
-			(await Task.FromResult(objectExceptionInput).TrySelect(o => (Object: o, Boolean: true))).Should().BeSuccessful(result =>
-			{
-				result.Object.Should().Be(objectExceptionInput.Success().ValueOrDefault());
-				result.Boolean.Should().BeTrue();
-			});
+			(await Task.FromResult(valueInput).TrySelect(i => (Value: i, Boolean: true), ex => throw new System.Exception("Should not be a failure"))).Should().BeSuccessful(withFailureFactoryTaskResult => withFailureFactoryTaskResult.Should().BeEquivalentTo((VALUE, true)));
+			(await Task.FromResult(valueExceptionInput).TrySelect(i => (Value: i, Boolean: true))).Should().BeSuccessful(result => result.Should().BeEquivalentTo((VALUE, true)));
 		}
 
 		[Fact]
 		public async Task TryWorksCorrectlyWithFailure()
 		{
-			var objectObjectInput = Result.Failure<object, object>(new object());
-			var objectExceptionInput = Result.Failure<object, Exception>(new Exception());
+			const string ERROR = "some error";
+			var exception = new Exception();
+			var faultedInputHoldingMessage = Result.Failure<int, string>(ERROR);
+			var faultedInputHoldingException = Result.Failure<int, Exception>(exception);
 
-			objectObjectInput.TrySelect<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).Should().BeFaulted(withFailureFactoryResult =>
-			{
-				withFailureFactoryResult.Should().Be(objectObjectInput.Failure().ValueOrDefault());
-			});
+			faultedInputHoldingMessage.TrySelect<int, object, string>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure")).Should().BeFaulted(value => value.Should().Be(ERROR));
+			faultedInputHoldingException.TrySelect(i => (Value: i, Boolean: true)).Should().BeFaulted(value => value.Should().Be(exception));
 
-			objectExceptionInput.TrySelect(o => (Object: o, Boolean: true)).Should().BeFaulted(withoutFailureFactoryResult =>
-			{
-				withoutFailureFactoryResult.Should().Be(objectExceptionInput.Failure().ValueOrDefault());
-			});
-
-			(await Task.FromResult(objectObjectInput).TrySelect<object, object, object>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure"))).Should().BeFaulted(withFailureFactoryTaskResult =>
-			{
-				withFailureFactoryTaskResult.Should().Be(objectObjectInput.Failure().ValueOrDefault());
-			});
-
-			(await Task.FromResult(objectExceptionInput).TrySelect(o => (Object: o, Boolean: true))).Should().BeFaulted(result =>
-			{
-				result.Should().Be(objectExceptionInput.Failure().ValueOrDefault());
-			});
+			(await Task.FromResult(faultedInputHoldingMessage).TrySelect<int, object, string>(o => throw new Exception("Should not be a success"), ex => throw new Exception("Should not be a failure"))).Should().BeFaulted(value => value.Should().Be(ERROR));
+			(await Task.FromResult(faultedInputHoldingException).TrySelect(i => (Value: i, Boolean: true))).Should().BeFaulted(value => value.Should().Be(exception));
 		}
 
 		[Fact]
 		public async Task TryWorksCorrectlyWhenExceptionThrown()
 		{
-			var exception = new Exception();
-			var objectObjectInput = Result.Success<object, (Exception Exception, bool Boolean)>(new object());
+			var exception = new Exception("the error message");
+			var objectObjectInput = Result.Success<object, string>(new object());
 			var objectExceptionInput = Result.Success<object, Exception>(new object());
 
-			objectObjectInput.TrySelect<object, object, (Exception Exception, bool Boolean)>(s => throw exception, f => (f, true)).Should().BeFaulted(withFailureFactoryResult =>
-			{
-				withFailureFactoryResult.Exception.Should().Be(exception);
-				withFailureFactoryResult.Boolean.Should().BeTrue();
-			});
+			objectObjectInput.TrySelect<object, object, string>(s => throw exception, f => f.Message).Should().BeFaulted(value => value.Should().Be(exception.Message));
+			objectExceptionInput.TrySelect<object, object>(o => throw exception).Should().BeFaulted(value => value.Should().Be(exception));
 
-			objectExceptionInput.TrySelect<object, object>(o => throw exception).Should().BeFaulted(withoutFailureFactoryResult =>
-			{
-				withoutFailureFactoryResult.Should().Be(exception);
-			});
-
-			(await Task.FromResult(objectObjectInput).TrySelect<object, object, (Exception Exception, bool Boolean)>(o => throw exception, ex => (ex, true))).Should().BeFaulted(withFailureFactoryTaskResult =>
-			{
-				withFailureFactoryTaskResult.Exception.Should().Be(exception);
-				withFailureFactoryTaskResult.Boolean.Should().BeTrue();
-			});
-
-			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw exception)).Should().BeFaulted(result =>
-			{
-				result.Should().Be(exception);
-			});
+			(await Task.FromResult(objectObjectInput).TrySelect<object, object, string>(o => throw exception, ex => ex.Message)).Should().BeFaulted(value => value.Should().Be(exception.Message));
+			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw exception)).Should().BeFaulted(value => value.Should().Be(exception));
 		}
 	}
 }
