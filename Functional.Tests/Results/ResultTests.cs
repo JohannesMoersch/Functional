@@ -101,8 +101,8 @@ namespace Functional.Tests.Results
 			objectObjectInput.TrySelect<object, object, string>(s => throw exception, f => f.Message).Should().BeFaulted(value => value.Should().Be(exception.Message));
 			objectExceptionInput.TrySelect<object, object>(o => throw exception).Should().BeFaulted(value => value.Should().Be(exception));
 
-			(await Task.FromResult(objectObjectInput).TrySelect<object, object, string>(o => throw new InvalidOperationException(), ex => ex.Message)).Should().BeFaulted(value => value.Should().Be(exception.Message));
-			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw new InvalidOperationException())).Should().BeFaulted(value => value.Should().Be(exception));
+			(await Task.FromResult(objectObjectInput).TrySelect<object, object, string>(o => throw exception, ex => ex.Message)).Should().BeFaulted(value => value.Should().Be(exception.Message));
+			(await Task.FromResult(objectExceptionInput).TrySelect<object, object>(o => throw exception)).Should().BeFaulted(value => value.Should().Be(exception));
 		}
 	}
 }
