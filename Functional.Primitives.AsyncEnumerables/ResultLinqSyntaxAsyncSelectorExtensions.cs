@@ -365,6 +365,22 @@ namespace Functional
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<TResult>> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.SelectAsync(result => result
+					.MatchAsync(
+						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
+					)
+				)
+				.AsAsyncResultEnumerable();
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
 		{
 			if (selector == null)
@@ -375,6 +391,22 @@ namespace Functional
 					.Match(
 						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
 						Result.Failure<TResult, TFailure>
+					)
+				)
+				.AsAsyncResultEnumerable();
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<TResult>> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.SelectAsync(result => result
+					.MatchAsync(
+						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
 					)
 				)
 				.AsAsyncResultEnumerable();

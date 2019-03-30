@@ -26,6 +26,36 @@ namespace Functional.Tests.Results
 			.Should()
 			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
 
+
+		[Fact]
+		public Task SynchronousGroupByTaskSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }
+				from value in Result.Success<int, string>(num)
+				group num by num % 2 == 0 into numGroup
+				select Task.FromResult(numGroup.ToArray())
+			)
+			.TakeUntilFailure()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
+
+		[Fact]
+		public void SynchronousGroupByIntoFromSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }
+				from value in Result.Success<int, string>(num)
+				group num by num % 2 == 0 into numGroup
+				from value in Result.Success<int[], string>(Array.Empty<int>())
+				select numGroup.ToArray()
+			)
+			.TakeUntilFailure()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
+
 		[Fact]
 		public void SynchronousWhereGroupBySuccessful()
 			=>
@@ -47,6 +77,21 @@ namespace Functional.Tests.Results
 				from num in new int[] { 1, 2, 3, 4, 5 }
 				from value in Result.Create(num >= 3, num, num.ToString())
 				group value by value % 2 == 0 into numGroup
+				select numGroup.ToArray()
+			)
+			.TakeAll()
+			.AssertFailure()
+			.Should()
+			.BeEquivalentTo(new[] { "1", "2" });
+
+		[Fact]
+		public void SynchronousGroupByIntoFromFailure()
+		=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }
+				from value in Result.Create(num >= 3, num, num.ToString())
+				group value by value % 2 == 0 into numGroup
+				from value in Result.Success<int[], string>(Array.Empty<int>())
 				select numGroup.ToArray()
 			)
 			.TakeAll()
@@ -83,6 +128,35 @@ namespace Functional.Tests.Results
 			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
 
 		[Fact]
+		public Task AsynchronousGroupByTaskSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				from value in Result.Success<int, string>(num)
+				group num by num % 2 == 0 into numGroup
+				select Task.FromResult(numGroup.ToArray())
+			)
+			.TakeUntilFailure()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
+
+		[Fact]
+		public Task AsynchronousGroupByIntoFromSuccessful()
+			=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				from value in Result.Success<int, string>(num)
+				group num by num % 2 == 0 into numGroup
+				from value in Result.Success<int[], string>(Array.Empty<int>())
+				select numGroup.ToArray()
+			)
+			.TakeUntilFailure()
+			.AssertSuccess()
+			.Should()
+			.BeEquivalentTo(new[] { new[] { 1, 3, 5 }, new[] { 2, 4 } });
+
+		[Fact]
 		public Task AsynchronousWhereGroupBySuccessful()
 			=>
 			(
@@ -104,6 +178,21 @@ namespace Functional.Tests.Results
 				from value in Result.Create(num >= 3, num, num.ToString())
 				group value by value % 2 == 0 into numGroup
 				select numGroup.ToArray()
+			)
+			.TakeAll()
+			.AssertFailure()
+			.Should()
+			.BeEquivalentTo(new[] { "1", "2" });
+
+		[Fact]
+		public Task AsynchronousGroupByIntoFromFailure()
+		=>
+			(
+				from num in new int[] { 1, 2, 3, 4, 5 }.AsAsyncEnumerable()
+				from value in Result.Create(num >= 3, num, num.ToString())
+				group value by value % 2 == 0 into numGroup
+				from value in Result.Success<int[], string>(Array.Empty<int>())
+				select value
 			)
 			.TakeAll()
 			.AssertFailure()
