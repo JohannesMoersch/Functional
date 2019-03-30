@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class OptionLinqSyntaxExtensions
+	public static class OptionLinqSyntaxSelectorExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
@@ -358,5 +358,37 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IOptionEnumerable<TResult> Select<TSuccess, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, TResult> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.Select(result => result
+					.Match(
+						success => Option.Some(selector.Invoke(success)),
+						Option.None<TResult>
+					)
+				)
+				.AsOptionEnumerable();
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncOptionEnumerable<TResult> Select<TSuccess, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, TResult> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.Select(result => result
+					.Match(
+						success => Option.Some(selector.Invoke(success)),
+						Option.None<TResult>
+					)
+				)
+				.AsAsyncOptionEnumerable();
+		}
 	}
 }

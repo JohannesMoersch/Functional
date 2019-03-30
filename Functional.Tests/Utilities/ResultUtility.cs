@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Functional.Tests.Utilities
+namespace Functional
 {
 	public static class ResultUtility
 	{

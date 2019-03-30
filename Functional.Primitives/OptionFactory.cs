@@ -65,5 +65,11 @@ namespace Functional
 				? Some(await valueFactory.Invoke())
 				: None<T>();
 		}
+
+		public static Option<Unit> Unit()
+			=> Some(Functional.Unit.Value);
+
+		public static Option<Unit> Where(bool isSuccess)
+			=> Create(isSuccess, Functional.Unit.Value);
 	}
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Functional.Tests.Utilities;
 using Xunit;
 
 namespace Functional.Tests.Results

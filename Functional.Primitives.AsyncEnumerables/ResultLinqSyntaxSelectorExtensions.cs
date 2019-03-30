@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResultLinqSyntaxExtensions
+	public static class ResultLinqSyntaxSelectorExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
@@ -358,5 +358,37 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.Select(result => result
+					.Match(
+						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						Result.Failure<TResult, TFailure>
+					)
+				)
+				.AsResultEnumerable();
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
+		{
+			if (selector == null)
+				throw new ArgumentNullException(nameof(selector));
+
+			return source
+				.Select(result => result
+					.Match(
+						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						Result.Failure<TResult, TFailure>
+					)
+				)
+				.AsAsyncResultEnumerable();
+		}
 	}
 }
