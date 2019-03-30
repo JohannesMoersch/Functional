@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -113,9 +114,13 @@ namespace Functional
 		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
 			=> result.Do(success, _ => { });
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .Succes() instead.")]
 		public static Option<TSuccess> ToOption<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 			=> result.Match(Option.Some, _ => Option.None<TSuccess>());
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .Succes() instead.")]
 		public static async Task<Option<TSuccess>> ToOption<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> (await result).ToOption();
 
