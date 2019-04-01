@@ -162,10 +162,6 @@ namespace Functional
 		public static Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
 			=> result.Do(success, _ => { });
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Succes() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Succes() instead.")]
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> result.Do(success, failure);
 
@@ -178,9 +174,13 @@ namespace Functional
 		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
 			=> result.Do(success, _ => { });
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .Success() instead.")]
 		public static Option<TSuccess> ToOption<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 			=> result.Match(Option.Some, _ => Option.None<TSuccess>());
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .Success() instead.")]
 		public static async Task<Option<TSuccess>> ToOption<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> (await result).ToOption();
 
