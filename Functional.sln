@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Tests", "Functio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables", "Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj", "{F3FFBCD4-11BB-412C-BAEB-256118C2560F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
