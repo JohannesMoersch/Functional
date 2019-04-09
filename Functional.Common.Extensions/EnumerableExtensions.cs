@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class EnumerableExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class EnumerableExtensions
     {
 		public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
 			=> source

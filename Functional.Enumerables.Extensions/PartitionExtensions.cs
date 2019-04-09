@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace Functional
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class PartitionExtensions
 	{
 		private class ReplayableEnumerableData<T>

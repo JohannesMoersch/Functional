@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class UnionExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class UnionExtensions
     {
 		public static TUnionType Do<TUnionType, TUnionDefinition, TOne>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne>> union, Action<TOne> one)
 			where TUnionType : struct
