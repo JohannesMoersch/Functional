@@ -31,6 +31,7 @@ namespace Functional.Tests.Enumerables
 			var (matches, nonMatches) = CreateEnumerable(counter).Partition(i => i % 2 == 0);
 
 			matches.Take(1).Should().BeEquivalentTo(new[] { 2 });
+			nonMatches.Take(1).Should().BeEquivalentTo(new[] { 1 });
 			counter.Value.Should().Be(2);
 		}
 
