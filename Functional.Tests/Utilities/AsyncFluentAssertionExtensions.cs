@@ -34,6 +34,9 @@ namespace Functional
 		public static async Task<GenericCollectionAssertions<T>> Should<T>(this Task<IEnumerable<T>> source)
 			=> (await source).Should();
 
+		public static async Task<GenericCollectionAssertions<T>> Should<T>(this IAsyncEnumerable<T> source)
+			=> (await source.AsEnumerable()).Should();
+
 		public static async Task<GenericCollectionAssertions<T>> Should<T>(this Task<T[]> source)
 		   => (await source).Should();
 
@@ -42,6 +45,9 @@ namespace Functional
 
 		public static async Task<StringCollectionAssertions> Should<T>(this Task<IEnumerable<string>> source)
 		   => (await source).Should();
+
+		public static async Task<StringCollectionAssertions> Should<T>(this IAsyncEnumerable<string> source)
+		   => (await source.AsEnumerable()).Should();
 
 		public static async Task<StringCollectionAssertions> Should<T>(this Task<string[]> source)
 		   => (await source).Should();
