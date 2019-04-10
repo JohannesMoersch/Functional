@@ -8,7 +8,7 @@ using System.Text;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class PartitionExtensions
+	public static class UnionPartitionExtensions
 	{
 		private class ReplayableEnumerableData<T>
 		{
@@ -99,8 +99,107 @@ namespace Functional
 
 			return new UnionPartition<TOne, TTwo>
 			(
-				values.Where(set => set.matches).Select(set => set.value),
-				values.Where(set => !set.matches).Select(set => set.value)
+				values.WhereOne(),
+				values.WhereTwo()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree, TFour> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree, TFour>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree(),
+				values.WhereFour()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree, TFour, TFive>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree(),
+				values.WhereFour(),
+				values.WhereFive()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree(),
+				values.WhereFour(),
+				values.WhereFive(),
+				values.WhereSix()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree(),
+				values.WhereFour(),
+				values.WhereFive(),
+				values.WhereSix(),
+				values.WhereSeven()
+			);
+		}
+
+		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> source)
+			where TUnionType : struct
+			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+		{
+			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>(source);
+
+			return new UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			(
+				values.WhereOne(),
+				values.WhereTwo(),
+				values.WhereThree(),
+				values.WhereFour(),
+				values.WhereFive(),
+				values.WhereSix(),
+				values.WhereSeven(),
+				values.WhereEight()
 			);
 		}
 	}
