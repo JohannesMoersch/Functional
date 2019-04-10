@@ -587,6 +587,72 @@ namespace Functional.Tests.Results
 					private static Task<Result<Option<bool>, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<Option<bool>, string>(ERROR));
 				}
 			}
+
+			public class WhenApplyIfSome
+			{
+				[Fact]
+				public void ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					Result.Success<Option<int>, string>(Option.Some(1337)).ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public void ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					Result.Success<Option<int>, string>(Option.None<int>()).ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public void ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					Result.Failure<Option<int>, string>("error").ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+			}
+
+			public class WhenApplyIfSomeAsync
+			{
+				[Fact]
+				public async Task ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					await Result.Success<Option<int>, string>(Option.Some(1337)).ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					await Result.Success<Option<int>, string>(Option.None<int>()).ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					await Result.Failure<Option<int>, string>("error").ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
+				}
+			}
 		}
 
 		public class WhenTaskOfResultOfOption
@@ -1166,6 +1232,72 @@ namespace Functional.Tests.Results
 
 					private const string ERROR = "error";
 					private static Task<Result<Option<bool>, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<Option<bool>, string>(ERROR));
+				}
+			}
+
+			public class WhenApplyIfSome
+			{
+				[Fact]
+				public async Task ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Failure<Option<int>, string>("error")).ApplyIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+			}
+
+			public class WhenApplyIfSomeAsync
+			{
+				[Fact]
+				public async Task ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Failure<Option<int>, string>("error")).ApplyIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
 				}
 			}
 		}
