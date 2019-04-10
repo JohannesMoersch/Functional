@@ -10,7 +10,7 @@
     <PackageTags>functional</PackageTags>
     <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <Version>1.10.0</Version>
+    <Version>1.11.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
