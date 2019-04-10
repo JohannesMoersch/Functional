@@ -80,9 +80,7 @@ namespace Functional
 			public IAsyncEnumerator<T> GetEnumerator()
 				=> new ReplayableAsyncEnumerator<T>(_data);
 		}
-
-
-
+		
 		public static AsyncPartition<T> Partition<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 		{
 			var values = new ReplayableAsyncEnumerable<(bool matches, T value)>(source.AsAsyncEnumerable().Select(value => (predicate.Invoke(value), value)));
