@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Title>Functional.Enumerables.Extensions</Title>
+    <Title>Functional.Enumerables.Extensions</Title>
     <Description>This package contains a extension methods for primitives and async enumerables.</Description>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <Authors>Johannes Moersch</Authors>
