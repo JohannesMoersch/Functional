@@ -1,25 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>Functional.All</Title>
     <Description>This package depends on all other packages in the Functional suite.</Description>
-    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
-    <Authors>Johannes Moersch</Authors>
-    <PackageTags>functional</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <Version>1.11.0</Version>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
