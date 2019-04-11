@@ -1,6 +1,7 @@
 language: csharp
 sudo: true
 mono: none
+dotnet: 2.2
 os:
   - osx
   - linux
@@ -24,4 +25,4 @@ matrix:
       dotnet: 2.2
       dist: xenial
     - os: "osx"
-      dotnet: 2.2
+      dotnet: 2.2.203
