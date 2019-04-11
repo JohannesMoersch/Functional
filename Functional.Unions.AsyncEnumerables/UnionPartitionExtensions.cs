@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace Functional
 {
@@ -38,7 +35,9 @@ namespace Functional
 						return true;
 					}
 					else
+					{
 						_complete = true;
+					}
 				}
 
 				value = default;
@@ -63,7 +62,7 @@ namespace Functional
 
 			public bool MoveNext()
 			{
-				if (_index >= 0 && _data.TryGetValue(_index++, out var value))
+				if (_index >= 0 && _data.TryGetValue(_index++, out T value))
 				{
 					Current = value;
 					return true;
@@ -81,8 +80,7 @@ namespace Functional
 		{
 			private readonly ReplayableEnumerableData<T> _data;
 
-			public ReplayableEnumerable(IEnumerable<T> data)
-				=> _data = new ReplayableEnumerableData<T>(data.GetEnumerator());
+			public ReplayableEnumerable(IEnumerable<T> data) => _data = new ReplayableEnumerableData<T>(data.GetEnumerator());
 
 			public IEnumerator<T> GetEnumerator()
 				=> new ReplayableEnumerator<T>(_data);

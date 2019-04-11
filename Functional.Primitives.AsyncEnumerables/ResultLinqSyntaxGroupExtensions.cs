@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -103,7 +102,7 @@ namespace Functional
 							(
 								success =>
 								{
-									if (!_groupings.TryGetValue(success.key, out var items))
+									if (!_groupings.TryGetValue(success.key, out List<TElement> items))
 									{
 										items = new List<TElement>();
 										_groupings.Add(success.key, items);
@@ -122,7 +121,9 @@ namespace Functional
 							);
 
 						if (isFailure)
+						{
 							return true;
+						}
 					}
 
 					_groupingEnumerator = _groupings.GetEnumerator();
@@ -142,6 +143,7 @@ namespace Functional
 			{
 				_successEnumerator.Reset();
 				_groupings.Clear();
+				_groupingEnumerator?.Dispose();
 				_groupingEnumerator = null;
 				Current = default;
 			}
@@ -164,7 +166,7 @@ namespace Functional
 				=> new AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure>(_successEnumerable.GetEnumerator(), _keySelector, _elementSelector);
 		}
 
-		private class AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure> : IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>>
+		private class AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure> : DisposableBase, IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>>
 		{
 			private class Grouping : IGrouping<TKey, TElement>
 			{
@@ -202,8 +204,7 @@ namespace Functional
 				_elementSelector = elementSelector;
 			}
 
-			public void Dispose()
-				=> _groupingEnumerator?.Dispose();
+			protected override void DisposeResources() => _groupingEnumerator?.Dispose();
 
 			public async Task<bool> MoveNext()
 			{
@@ -218,7 +219,7 @@ namespace Functional
 							(
 								success =>
 								{
-									if (!_groupings.TryGetValue(success.key, out var items))
+									if (!_groupings.TryGetValue(success.key, out List<TElement> items))
 									{
 										items = new List<TElement>();
 										_groupings.Add(success.key, items);
@@ -237,7 +238,9 @@ namespace Functional
 							);
 
 						if (isFailure)
+						{
 							return true;
+						}
 					}
 
 					_groupingEnumerator = _groupings.GetEnumerator();

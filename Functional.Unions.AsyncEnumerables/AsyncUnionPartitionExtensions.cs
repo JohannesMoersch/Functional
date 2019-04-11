@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -40,7 +39,7 @@ namespace Functional
 			}
 		}
 
-		private class ReplayableAsyncEnumerator<T> : IAsyncEnumerator<T>
+		private class ReplayableAsyncEnumerator<T> : DisposableBase, IAsyncEnumerator<T>
 		{
 			public T Current { get; private set; }
 
@@ -51,7 +50,10 @@ namespace Functional
 			public ReplayableAsyncEnumerator(ReplayableAsyncEnumerableData<T> data)
 				=> _data = data;
 
-			public void Dispose() { }
+			protected override void DisposeResources()
+			{
+				throw new NotImplementedException();
+			}
 
 			public async Task<bool> MoveNext()
 			{

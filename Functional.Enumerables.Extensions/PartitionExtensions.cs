@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Functional
 {
@@ -39,7 +37,9 @@ namespace Functional
 						return true;
 					}
 					else
+					{
 						_complete = true;
+					}
 				}
 
 				value = default;
@@ -64,7 +64,7 @@ namespace Functional
 
 			public bool MoveNext()
 			{
-				if (_index >= 0 && _data.TryGetValue(_index++, out var value))
+				if (_index >= 0 && _data.TryGetValue(_index++, out T value))
 				{
 					Current = value;
 					return true;
@@ -95,13 +95,15 @@ namespace Functional
 		public static Partition<T> Partition<T>(this IEnumerable<T> source, Func<T, bool> predicate)
 		{
 			if (predicate == null)
+			{
 				throw new ArgumentNullException(nameof(predicate));
+			}
 
 			var values = new ReplayableEnumerable<(bool matches, T value)>(source.Select(value => (predicate.Invoke(value), value)));
 
 			return new Partition<T>
 			(
-				values.Where(set => set.matches).Select(set => set.value), 
+				values.Where(set => set.matches).Select(set => set.value),
 				values.Where(set => !set.matches).Select(set => set.value)
 			);
 		}

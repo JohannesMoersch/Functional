@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Title>Functional.AsyncEnumerables</Title>
     <Description>This package contains a framework and extension methods for asynchronous enumerables.</Description>
   </PropertyGroup>
+
+  <Import Project="..\Functional.Shared\Functional.Shared.projitems" Label="Shared" />
 
 </Project>

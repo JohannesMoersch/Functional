@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class DefaultIfEmptyIterator<TSource> : IAsyncEnumerator<TSource>
+	internal class DefaultIfEmptyIterator<TSource> : DisposableBase, IAsyncEnumerator<TSource>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly TSource _defaultValue;
@@ -46,6 +44,10 @@ namespace Functional
 					break;
 			}
 			return false;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }

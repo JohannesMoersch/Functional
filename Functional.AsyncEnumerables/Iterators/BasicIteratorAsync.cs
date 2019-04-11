@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class BasicIteratorAsync<TSource, TResult> : IAsyncEnumerator<TResult>
+	internal class BasicIteratorAsync<TSource, TResult> : DisposableBase, IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult current)>> _moveNext;
@@ -24,7 +22,7 @@ namespace Functional
 		{
 			while (await _enumerator.MoveNext())
 			{
-				var (type, current) = await _moveNext.Invoke((_enumerator.Current, _count++));
+				(BasicIteratorContinuationType type, TResult current) = await _moveNext.Invoke((_enumerator.Current, _count++));
 
 				switch (type)
 				{
@@ -38,6 +36,10 @@ namespace Functional
 			}
 
 			return false;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }

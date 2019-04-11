@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class AsyncEnumerable<T> : IAsyncEnumerable<T>
+	internal class AsyncEnumerable<T> : DisposableBase, IAsyncEnumerable<T>
 	{
-		private readonly Lazy<Task<IEnumerable<T>>> _source;
+		private readonly AsyncLazy<IEnumerable<T>> _source;
 
 		public AsyncEnumerable(Func<Task<IEnumerable<T>>> source)
-			=> _source = new Lazy<Task<IEnumerable<T>>>(source, LazyThreadSafetyMode.ExecutionAndPublication);
+			=> _source = new AsyncLazy<IEnumerable<T>>(source);
 
 		public IAsyncEnumerator<T> GetEnumerator()
-			=> new AsyncEnumerator<T>(new Lazy<Task<IEnumerator<T>>>(() => _source.Value.ContinueWith(t => t.Result.GetEnumerator(), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously), LazyThreadSafetyMode.PublicationOnly));
+			=> new AsyncEnumerator<T>(new AsyncLazy<IEnumerator<T>>(async () =>
+			{
+				IEnumerable<T> enumerable = await _source.GetValueAsync().ConfigureAwait(false);
+				return enumerable.GetEnumerator();
+			}));
+
+		protected override void DisposeResources()
+		{
+			_source?.Dispose();
+		}
 	}
 
 	public static class AsyncEnumerable

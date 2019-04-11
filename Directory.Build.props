@@ -18,9 +18,9 @@
     <PackageReference Include="Microsoft.Net.Compilers" Version="3.*" Condition=" '$(OS)' == 'Windows_NT' ">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <!-- <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.*">
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" version="16.*">
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference> -->
+    </PackageReference>
     <PackageReference Include="IDisposableAnalyzers" Version="2.*">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

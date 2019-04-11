@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ZipIteratorAsync<TFirst, TSecond, TResult> : IAsyncEnumerator<TResult>
+	internal class ZipIteratorAsync<TFirst, TSecond, TResult> : DisposableBase, IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TFirst> _enumeratorOne;
 		private readonly IAsyncEnumerator<TSecond> _enumeratorTwo;
@@ -25,7 +23,9 @@ namespace Functional
 		public async Task<bool> MoveNext()
 		{
 			if (_complete)
+			{
 				return false;
+			}
 
 			if (await _enumeratorOne.MoveNext() && await _enumeratorTwo.MoveNext())
 			{
@@ -33,9 +33,15 @@ namespace Functional
 				return true;
 			}
 			else
+			{
 				_complete = true;
+			}
 
 			return false;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }

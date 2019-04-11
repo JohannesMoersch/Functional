@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class SelectManyIteratorAsync<TSource, TCollection, TResult> : IAsyncEnumerator<TResult>
+	internal class SelectManyIteratorAsync<TSource, TCollection, TResult> : DisposableBase, IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<TSource, int, IAsyncEnumerable<TCollection>> _collectionSelector;
@@ -27,7 +25,9 @@ namespace Functional
 			while (_subEnumerator == null || !await _subEnumerator.MoveNext())
 			{
 				if (!await _enumerator.MoveNext())
+				{
 					return false;
+				}
 
 				_subEnumerator = _collectionSelector.Invoke(_enumerator.Current, _count++).GetEnumerator();
 			}
@@ -35,6 +35,10 @@ namespace Functional
 			Current = await _resultSelector.Invoke(_enumerator.Current, _subEnumerator.Current);
 
 			return true;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }

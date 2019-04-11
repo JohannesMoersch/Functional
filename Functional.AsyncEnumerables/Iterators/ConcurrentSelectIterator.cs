@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ConcurrentSelectIterator<TSource, TResult> : IAsyncEnumerator<TResult>
+	internal class ConcurrentSelectIterator<TSource, TResult> : DisposableBase, IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<TSource, int, Task<TResult>> _selector;
@@ -32,7 +31,9 @@ namespace Functional
 				try
 				{
 					while (await _enumerator.MoveNext())
+					{
 						taskQueue.Enqueue(_selector.Invoke(_enumerator.Current, _count++));
+					}
 				}
 				catch (Exception ex)
 				{
@@ -44,7 +45,9 @@ namespace Functional
 				try
 				{
 					while (taskQueue.Count > 0)
+					{
 						_resultsQueue.Enqueue(await taskQueue.Dequeue());
+					}
 				}
 				catch (Exception ex)
 				{
@@ -53,7 +56,9 @@ namespace Functional
 			}
 
 			if (_resultsQueue.Count == 0)
+			{
 				return false;
+			}
 
 			Current = _resultsQueue.Dequeue();
 
@@ -77,6 +82,10 @@ namespace Functional
 			}
 
 			return exceptions;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }

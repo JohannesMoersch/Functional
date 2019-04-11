@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Title>Functional.Unions.AsyncEnumerables</Title>
@@ -11,5 +11,7 @@
     <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
   </ItemGroup>
+
+  <Import Project="..\Functional.Shared\Functional.Shared.projitems" Label="Shared" />
 
 </Project>

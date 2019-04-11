@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ConcatIterator<TSource> : IAsyncEnumerator<TSource>
+	internal class ConcatIterator<TSource> : DisposableBase, IAsyncEnumerator<TSource>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumeratorOne;
 		private readonly IAsyncEnumerator<TSource> _enumeratorTwo;
@@ -30,7 +28,9 @@ namespace Functional
 					return true;
 				}
 				else
+				{
 					_state = 1;
+				}
 			}
 
 			if (_state == 1)
@@ -41,10 +41,16 @@ namespace Functional
 					return true;
 				}
 				else
+				{
 					_state = 2;
+				}
 			}
 
 			return false;
+		}
+
+		protected override void DisposeResources()
+		{
 		}
 	}
 }
