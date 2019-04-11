@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net472;</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
+      net472;$(TargetFrameworks)
+    </TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
