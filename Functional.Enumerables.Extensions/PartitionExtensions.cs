@@ -94,6 +94,9 @@ namespace Functional
 
 		public static Partition<T> Partition<T>(this IEnumerable<T> source, Func<T, bool> predicate)
 		{
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
+
 			var values = new ReplayableEnumerable<(bool matches, T value)>(source.Select(value => (predicate.Invoke(value), value)));
 
 			return new Partition<T>
