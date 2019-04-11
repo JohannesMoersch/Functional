@@ -1,10 +1,13 @@
 language: csharp
 sudo: true
 mono: none
-dotnet: 2.0
+dist: xenial
+dotnet:
+  - 2.2
+  - 2.2.203
 os:
-  - osx
   - linux
+  - osx
 branches:
   only:
     - master
@@ -20,14 +23,8 @@ script:
 #    branch: master
 #    os: linux
 matrix:
-  include:
-    - os: "linux"
-      dotnet: 2.2
-      dist: xenial
-    - os: "osx"
-      dotnet: 2.2.203
   exclude:
     - os: "linux"
-      dotnet: 2.0
+      dotnet: 2.2.203
     - os: "osx"
-      dotnet: 2.0
+      dotnet: 2.2
