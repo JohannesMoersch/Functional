@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <Authors>Johannes Moersch</Authors>
     <PackageTags>functional</PackageTags>
-    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
     <Version>1.11.0</Version>
     <IncludeBuildOutput>false</IncludeBuildOutput>
