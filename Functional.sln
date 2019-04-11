@@ -23,7 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Unions.AsyncEnumerables", "Functional.Unions.AsyncEnumerables\Functional.Unions.AsyncEnumerables.csproj", "{2BC81670-210C-4702-8606-6B9A73459FE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions.AsyncEnumerables", "Functional.Unions.AsyncEnumerables\Functional.Unions.AsyncEnumerables.csproj", "{2BC81670-210C-4702-8606-6B9A73459FE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5070C042-BF0A-4756-9157-7B149AE6418F}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
