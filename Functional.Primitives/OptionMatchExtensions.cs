@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class OptionMatchExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class OptionMatchExtensions
     {
 		public static async Task<TResult> Match<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> some, Func<TResult> none)
 			=> (await option).Match(some, none);

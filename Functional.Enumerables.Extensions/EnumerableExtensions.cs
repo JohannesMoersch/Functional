@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class EnumerableExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class EnumerableExtensions
     {
 		public static async Task<TSource> Aggregate<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, TSource, TSource> func)
 			=> (await source).Aggregate(func);

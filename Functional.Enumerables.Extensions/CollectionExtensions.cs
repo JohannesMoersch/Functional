@@ -2,13 +2,15 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class CollectionExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class CollectionExtensions
     {
 		public static async Task<IEnumerable> AsEnumerable(this Task<ICollection> collection)
 			=> await collection;

@@ -1,0 +1,9 @@
+language: csharp
+dist: xenial
+mono: none
+dotnet: 2.1.502
+install:
+- dotnet restore
+script:
+- dotnet build
+- dotnet test Functional.Tests/Functional.Tests.csproj

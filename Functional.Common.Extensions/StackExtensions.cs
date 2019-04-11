@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Functional
 {
-    public static class StackExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class StackExtensions
     {
 		public static Option<T> TryPeek<T>(this Stack<T> source)
 			=> source.Count > 0 ? Option.Some(source.Peek()) : Option.None<T>();
