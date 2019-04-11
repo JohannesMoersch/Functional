@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class OrderedEnumerableExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class OrderedEnumerableExtensions
     {
 		public static async Task<TSource> Aggregate<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, TSource, TSource> func)
 			=> (await source).Aggregate(func);

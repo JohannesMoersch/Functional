@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.10.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Johannes Moersch</Authors>
+    <Title>Functional.Common.Extensions</Title>
     <Description>This package contains extension methods for .NET types.</Description>
-    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
     <PackageTags>functional</PackageTags>
+    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+    <Version>1.11.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

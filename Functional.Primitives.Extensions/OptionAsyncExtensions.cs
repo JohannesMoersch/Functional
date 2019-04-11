@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class OptionAsyncExtensions
 	{
 		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> select)

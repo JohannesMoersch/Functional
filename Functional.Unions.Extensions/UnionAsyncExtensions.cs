@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class UnionAsyncExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class UnionAsyncExtensions
     {
 		public static async Task<TUnionType> DoAsync<TUnionType, TUnionDefinition, TOne>(this IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne>> union, Func<TOne, Task> one)
 			where TUnionType : struct

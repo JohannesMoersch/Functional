@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Title>Functional.Primitives</Title>
-    <Description>This package contains allocation free Option and Result discriminated union types and associated factory methods.</Description>
+    <Title>Functional.Unions.AsyncEnumerables</Title>
+    <Description>This package contains a extension methods for unions and async enumerables.</Description>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <Authors>Johannes Moersch</Authors>
     <PackageTags>functional</PackageTags>
@@ -20,5 +20,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+    <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+  </ItemGroup>
 
 </Project>

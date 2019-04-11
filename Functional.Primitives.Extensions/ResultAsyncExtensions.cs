@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultAsyncExtensions
 	{
 		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> select)

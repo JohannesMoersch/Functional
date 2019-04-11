@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultExtensions
 	{
 		public static bool IsSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
