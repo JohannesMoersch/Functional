@@ -105,7 +105,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo>> Partition<TUnionType, TUnionDefinition, TOne, TTwo>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo>> Partition<TUnionType, TUnionDefinition, TOne, TTwo>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>
 		{
@@ -132,7 +132,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
 		{
@@ -161,7 +161,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
 		{
@@ -192,7 +192,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
 		{
@@ -225,7 +225,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
 		{
@@ -260,7 +260,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
 		{
@@ -297,7 +297,7 @@ namespace Functional
 			);
 		}
 
-		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this Task<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>> source)
+		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 		{

@@ -615,19 +615,6 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Action<T> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.Select(item =>
-				{
-					action.Invoke(item);
-					return item;
-				});
-		}
-
 		public static IAsyncEnumerable<T> Do<T>(this IEnumerable<T> source, Func<T, Task> action)
 		{
 			if (action == null)
@@ -642,19 +629,6 @@ namespace Functional
 		}
 
 		public static IAsyncEnumerable<T> Do<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.SelectAsync(async item =>
-				{
-					await action.Invoke(item);
-					return item;
-				});
-		}
-
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -685,17 +659,6 @@ namespace Functional
 				action.Invoke(item);
 		}
 
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Action<T> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			var enumerator = source.GetEnumerator();
-
-			while (await enumerator.MoveNext())
-				action.Invoke(enumerator.Current);
-		}
-
 		public static async Task Apply<T>(this IEnumerable<T> source, Func<T, Task> action)
 		{
 			if (action == null)
@@ -712,17 +675,6 @@ namespace Functional
 
 			foreach (var item in await source)
 				await action.Invoke(item);
-		}
-
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			var enumerator = source.GetEnumerator();
-
-			while (await enumerator.MoveNext())
-				await action.Invoke(enumerator.Current);
 		}
 	}
 }
