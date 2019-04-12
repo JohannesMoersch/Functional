@@ -96,37 +96,37 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskEnumerablePartitionEmpty()
 		{
-			var (matches, nonMatches) = Task.FromResult(Array.Empty<int>()).AsEnumerable().Partition(i => i % 2 == 0);
+			var (matches, nonMatches) = await Task.FromResult(Array.Empty<int>()).AsEnumerable().Partition(i => i % 2 == 0);
 
-			await matches.Should().BeEquivalentTo(Array.Empty<int>());
-			await nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
+			matches.Should().BeEquivalentTo(Array.Empty<int>());
+			nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
 		}
 
 		[Fact]
 		public async Task TaskEnumerablePartitionSplit()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(i => i % 2 == 0);
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(i => i % 2 == 0);
 
-			await matches.Should().BeEquivalentTo(new[] { 2, 4 });
-			await nonMatches.Should().BeEquivalentTo(new[] { 1, 3, 5 });
+			matches.Should().BeEquivalentTo(new[] { 2, 4 });
+			nonMatches.Should().BeEquivalentTo(new[] { 1, 3, 5 });
 		}
 
 		[Fact]
 		public async Task TaskEnumerablePartitionAllMatches()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => true);
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => true);
 
-			await matches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
-			await nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
+			matches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+			nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
 		}
 
 		[Fact]
 		public async Task TaskEnumerablePartitionAllNonMatches()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => false);
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => false);
 
-			await matches.Should().BeEquivalentTo(Array.Empty<int>());
-			await nonMatches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+			matches.Should().BeEquivalentTo(Array.Empty<int>());
+			nonMatches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
 		}
 
 		[Fact]
