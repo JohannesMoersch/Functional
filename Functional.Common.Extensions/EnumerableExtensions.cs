@@ -10,12 +10,6 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class EnumerableExtensions
     {
-	    public static void Apply<T>(this IEnumerable<T> source, Action<T> action)
-	    {
-		    foreach (var item in source)
-			    action(item);
-	    }
-
 		public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
