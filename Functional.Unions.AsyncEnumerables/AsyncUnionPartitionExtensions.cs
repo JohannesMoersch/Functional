@@ -52,7 +52,6 @@ namespace Functional
 
 			protected override void DisposeResources()
 			{
-				throw new NotImplementedException();
 			}
 
 			public async Task<bool> MoveNext()

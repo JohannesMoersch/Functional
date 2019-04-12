@@ -3,8 +3,6 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <!-- warning NU5125: The 'licenseUrl' element will be deprecated. Consider using the 'license' element instead. -->
-    <NoWarn>NU5125;$(NoWarn)</NoWarn>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <Authors>Johannes Moersch</Authors>
