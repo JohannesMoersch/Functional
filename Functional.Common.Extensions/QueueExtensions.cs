@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Functional
 {
-    public static class QueueExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class QueueExtensions
     {
 		public static Option<T> TryPeek<T>(this Queue<T> source)
 			=> source.Count > 0 ? Option.Some(source.Peek()) : Option.None<T>();

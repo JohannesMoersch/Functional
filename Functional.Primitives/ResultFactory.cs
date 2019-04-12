@@ -76,7 +76,7 @@ namespace Functional
 		}
 
 		public static Result<Unit, Exception> Try(Action successFactory)
-		=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Unit.Value; });
+		=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Functional.Unit.Value; });
 
 
 		public static async Task<Result<TSuccess, Exception>> Try<TSuccess>(Func<Task<TSuccess>> successFactory)
@@ -95,7 +95,7 @@ namespace Functional
 		}
 
 		public static Task<Result<Unit, Exception>> Try(Func<Task> successFactory)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Unit.Value; });
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Functional.Unit.Value; });
 
 		public static Result<TSuccess, TFailure> Try<TSuccess, TFailure>(Func<TSuccess> successFactory, Func<Exception, TFailure> @catch)
 		{
@@ -116,7 +116,7 @@ namespace Functional
 		}
 
 		public static Result<Unit, TFailure> Try<TFailure>(Action successFactory, Func<Exception, TFailure> @catch)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Unit.Value; }, @catch);
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Functional.Unit.Value; }, @catch);
 
 		public static async Task<Result<TSuccess, TFailure>> Try<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
 		{
@@ -137,6 +137,15 @@ namespace Functional
 		}
 
 		public static Task<Result<Unit, TFailure>> Try<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Unit.Value; }, @catch);
+			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(async () => { await successFactory.Invoke(); return Functional.Unit.Value; }, @catch);
+
+		public static Result<Unit, TFailure> Unit<TFailure>()
+			=> Success<Unit, TFailure>(Functional.Unit.Value);
+
+		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, TFailure failure)
+			=> Create(isSuccess, Functional.Unit.Value, failure);
+
+		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, Func<TFailure> failureFactory)
+			=> Create(isSuccess, () => Functional.Unit.Value, failureFactory);
 	}
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class ResultAsyncExtensions
-    {
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class ResultAsyncExtensions
+	{
 		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> select)
 		{
 			if (select == null)
@@ -106,5 +107,25 @@ namespace Functional
 
 		public static async Task<Result<TSuccess, TFailure>> FailureIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TFailure>> failureFactory)
 			=> await (await result).FailureIfNoneAsync(failureFactory);
+
+		public static Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			if (failureFactory == null)
+				throw new ArgumentNullException(nameof(failureFactory));
+
+			return result.BindAsync(success => Result.Try(() => successFactory(success), failureFactory));
+		}
+
+		public static Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)
+		 => TrySelectAsync(result, successFactory, ex => ex);
+
+		public static async Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
+		 => await (await result).TrySelectAsync(successFactory, failureFactory);
+
+		public static async Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, Task<TResult>> successFactory)
+		 => await (await result).TrySelectAsync(successFactory, ex => ex);
 	}
 }

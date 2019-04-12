@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-    public static class UnionValueExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class UnionValueExtensions
     {
 		public static IUnionValue<TUnionDefinition> Value<TUnionDefinition>(this Union<TUnionDefinition> union)
 			where TUnionDefinition : IUnionDefinition

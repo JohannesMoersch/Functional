@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Functional
 {
-    public static class DictionaryExtensions
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public static class DictionaryExtensions
     {
 		public static Option<TValue> TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> source, TKey key)
 			=> source.TryGetValue(key, out var value) ? Option.Some(value) : Option.None<TValue>();

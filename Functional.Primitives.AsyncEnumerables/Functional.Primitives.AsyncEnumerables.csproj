@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>Johannes Moersch</Authors>
-    <Version>1.9.0</Version>
-    <Company>Johannes Moersch</Company>
-    <Description>This package contains a extension methods for primitives and async enumerables.</Description>
-    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Functional.Enumerables.Extensions</Title>
+    <Description>This package contains a extension methods for primitives and async enumerables.</Description>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+    <Version>1.11.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

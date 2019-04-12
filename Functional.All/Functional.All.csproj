@@ -3,16 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Title>Functional.All</Title>
+    <Title>Functional.All</Title>
     <Description>This package depends on all other packages in the Functional suite.</Description>
-		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
-		<Authors>Johannes Moersch</Authors>
-		<Company />
-		<PackageTags>functional</PackageTags>
-		<PackageLicenseUrl>https://github.com/JohannesMoersch/Functional/blob/master/LICENSE</PackageLicenseUrl>
-		<Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-		<Version>1.9.0</Version>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageTags>functional</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
+    <Version>1.11.0</Version>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
