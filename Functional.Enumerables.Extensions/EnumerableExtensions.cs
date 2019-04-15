@@ -588,5 +588,93 @@ namespace Functional
 
 		public static async Task<IEnumerable<TResult>> Zip<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, TResult> resultSelector)
 			=> (await first).Zip(await second, resultSelector);
+
+		public static IEnumerable<T> Do<T>(this IEnumerable<T> source, Action<T> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select(item =>
+				{
+					action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static Task<IEnumerable<T>> Do<T>(this Task<IEnumerable<T>> source, Action<T> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select(item =>
+				{
+					action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static IAsyncEnumerable<T> DoAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async item =>
+				{
+					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static IAsyncEnumerable<T> DoAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async item =>
+				{
+					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static void Apply<T>(this IEnumerable<T> source, Action<T> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in source)
+				action.Invoke(item);
+		}
+
+		public static async Task Apply<T>(this Task<IEnumerable<T>> source, Action<T> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in await source)
+				action.Invoke(item);
+		}
+
+		public static async Task ApplyAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in source)
+				await action.Invoke(item);
+		}
+
+		public static async Task ApplyAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in await source)
+				await action.Invoke(item);
+		}
 	}
 }

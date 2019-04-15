@@ -96,34 +96,70 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskEnumerablePartitionEmpty()
 		{
-			var (matches, nonMatches) = Task.FromResult(Array.Empty<int>()).AsEnumerable().Partition(i => i % 2 == 0);
+			var (matches, nonMatches) = await Task.FromResult(Array.Empty<int>()).AsEnumerable().Partition(i => i % 2 == 0);
+
+			matches.Should().BeEquivalentTo(Array.Empty<int>());
+			nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
+		}
+
+		[Fact]
+		public async Task TaskEnumerablePartitionSplit()
+		{
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(i => i % 2 == 0);
+
+			matches.Should().BeEquivalentTo(new[] { 2, 4 });
+			nonMatches.Should().BeEquivalentTo(new[] { 1, 3, 5 });
+		}
+
+		[Fact]
+		public async Task TaskEnumerablePartitionAllMatches()
+		{
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => true);
+
+			matches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+			nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
+		}
+
+		[Fact]
+		public async Task TaskEnumerablePartitionAllNonMatches()
+		{
+			var (matches, nonMatches) = await Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => false);
+
+			matches.Should().BeEquivalentTo(Array.Empty<int>());
+			nonMatches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
+		}
+
+		[Fact]
+		public async Task TaskEnumerableAsAsyncPartitionEmpty()
+		{
+			var (matches, nonMatches) = Task.FromResult(Array.Empty<int>()).AsEnumerable().Partition(i => i % 2 == 0).AsAsync();
 
 			await matches.Should().BeEquivalentTo(Array.Empty<int>());
 			await nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
 		}
 
 		[Fact]
-		public async Task TaskEnumerablePartitionSplit()
+		public async Task TaskEnumerableAsAsyncPartitionSplit()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(i => i % 2 == 0);
+			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(i => i % 2 == 0).AsAsync();
 
 			await matches.Should().BeEquivalentTo(new[] { 2, 4 });
 			await nonMatches.Should().BeEquivalentTo(new[] { 1, 3, 5 });
 		}
 
 		[Fact]
-		public async Task TaskEnumerablePartitionAllMatches()
+		public async Task TaskEnumerableAsAsyncPartitionAllMatches()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => true);
+			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => true).AsAsync();
 
 			await matches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });
 			await nonMatches.Should().BeEquivalentTo(Array.Empty<int>());
 		}
 
 		[Fact]
-		public async Task TaskEnumerablePartitionAllNonMatches()
+		public async Task TaskEnumerableAsAsyncPartitionAllNonMatches()
 		{
-			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => false);
+			var (matches, nonMatches) = Task.FromResult(new[] { 1, 2, 3, 4, 5 }).AsEnumerable().Partition(_ => false).AsAsync();
 
 			await matches.Should().BeEquivalentTo(Array.Empty<int>());
 			await nonMatches.Should().BeEquivalentTo(new[] { 1, 2, 3, 4, 5 });

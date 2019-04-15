@@ -29,7 +29,16 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskDefinitionPartition()
 		{
-			var (ones, twos) = Task.FromResult(CreateTypesTwoArray()).Value().Partition();
+			var (ones, twos) = await Task.FromResult(CreateTypesTwoArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+		}
+
+		[Fact]
+		public async Task TaskDefinitionPartitionAsAsync()
+		{
+			var (ones, twos) = Task.FromResult(CreateTypesTwoArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -63,7 +72,16 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskTwoPartition()
 		{
-			var (ones, twos) = Task.FromResult(CreateTypesTwoArray()).Value().Partition();
+			var (ones, twos) = await Task.FromResult(CreateTypesTwoArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+		}
+
+		[Fact]
+		public async Task TaskTwoPartitionAsAsync()
+		{
+			var (ones, twos) = Task.FromResult(CreateTypesTwoArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -99,7 +117,17 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskThreePartition()
 		{
-			var (ones, twos, threes) = Task.FromResult(CreateTypesThreeArray()).Value().Partition();
+			var (ones, twos, threes) = await Task.FromResult(CreateTypesThreeArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+		}
+
+		[Fact]
+		public async Task TaskThreePartitionAsAsync()
+		{
+			var (ones, twos, threes) = Task.FromResult(CreateTypesThreeArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -139,7 +167,18 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskFourPartition()
 		{
-			var (ones, twos, threes, fours) = Task.FromResult(CreateTypesFourArray()).Value().Partition();
+			var (ones, twos, threes, fours) = await Task.FromResult(CreateTypesFourArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+			fours.Should().BeEquivalentTo(new[] { (ushort)1 });
+		}
+
+		[Fact]
+		public async Task TaskFourPartitionAsAsync()
+		{
+			var (ones, twos, threes, fours) = Task.FromResult(CreateTypesFourArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -183,7 +222,19 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskFivePartition()
 		{
-			var (ones, twos, threes, fours, fives) = Task.FromResult(CreateTypesFiveArray()).Value().Partition();
+			var (ones, twos, threes, fours, fives) = await Task.FromResult(CreateTypesFiveArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+			fours.Should().BeEquivalentTo(new[] { (ushort)1 });
+			fives.Should().BeEquivalentTo(new[] { 1 });
+		}
+
+		[Fact]
+		public async Task TaskFivePartitionAsAsync()
+		{
+			var (ones, twos, threes, fours, fives) = Task.FromResult(CreateTypesFiveArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -231,7 +282,20 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskSixPartition()
 		{
-			var (ones, twos, threes, fours, fives, sixes) = Task.FromResult(CreateTypesSixArray()).Value().Partition();
+			var (ones, twos, threes, fours, fives, sixes) = await Task.FromResult(CreateTypesSixArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+			fours.Should().BeEquivalentTo(new[] { (ushort)1 });
+			fives.Should().BeEquivalentTo(new[] { 1 });
+			sixes.Should().BeEquivalentTo(new[] { (uint)1 });
+		}
+
+		[Fact]
+		public async Task TaskSixPartitionAsAsync()
+		{
+			var (ones, twos, threes, fours, fives, sixes) = Task.FromResult(CreateTypesSixArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -283,7 +347,21 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskSevenPartition()
 		{
-			var (ones, twos, threes, fours, fives, sixes, sevens) = Task.FromResult(CreateTypesSevenArray()).Value().Partition();
+			var (ones, twos, threes, fours, fives, sixes, sevens) = await Task.FromResult(CreateTypesSevenArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+			fours.Should().BeEquivalentTo(new[] { (ushort)1 });
+			fives.Should().BeEquivalentTo(new[] { 1 });
+			sixes.Should().BeEquivalentTo(new[] { (uint)1 });
+			sevens.Should().BeEquivalentTo(new[] { (long)1 });
+		}
+
+		[Fact]
+		public async Task TaskSevenPartitionAsAsync()
+		{
+			var (ones, twos, threes, fours, fives, sixes, sevens) = Task.FromResult(CreateTypesSevenArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });
@@ -339,7 +417,22 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public async Task TaskEightPartition()
 		{
-			var (ones, twos, threes, fours, fives, sixes, sevens, eights) = Task.FromResult(CreateTypesEightArray()).Value().Partition();
+			var (ones, twos, threes, fours, fives, sixes, sevens, eights) = await Task.FromResult(CreateTypesEightArray()).Value().Partition();
+
+			ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
+			twos.Should().BeEquivalentTo(new[] { (byte)1 });
+			threes.Should().BeEquivalentTo(new[] { (short)1 });
+			fours.Should().BeEquivalentTo(new[] { (ushort)1 });
+			fives.Should().BeEquivalentTo(new[] { 1 });
+			sixes.Should().BeEquivalentTo(new[] { (uint)1 });
+			sevens.Should().BeEquivalentTo(new[] { (long)1 });
+			eights.Should().BeEquivalentTo(new[] { (ulong)1 });
+		}
+
+		[Fact]
+		public async Task TaskEightPartitionAsAsync()
+		{
+			var (ones, twos, threes, fours, fives, sixes, sevens, eights) = Task.FromResult(CreateTypesEightArray()).Value().Partition().AsAsync();
 
 			await ones.Should().BeEquivalentTo(new[] { (sbyte)1 });
 			await twos.Should().BeEquivalentTo(new[] { (byte)1 });

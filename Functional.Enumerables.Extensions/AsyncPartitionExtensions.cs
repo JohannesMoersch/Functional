@@ -43,7 +43,7 @@ namespace Functional
 		private class ReplayableAsyncEnumerator<T> : IAsyncEnumerator<T>
 		{
 			public T Current { get; private set; }
-			
+
 			private readonly ReplayableAsyncEnumerableData<T> _data;
 
 			private int _index = 0;
@@ -79,20 +79,6 @@ namespace Functional
 
 			public IAsyncEnumerator<T> GetEnumerator()
 				=> new ReplayableAsyncEnumerator<T>(_data);
-		}
-		
-		public static AsyncPartition<T> Partition<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
-		{
-			if (predicate == null)
-				throw new ArgumentNullException(nameof(predicate));
-
-			var values = new ReplayableAsyncEnumerable<(bool matches, T value)>(source.AsAsyncEnumerable().Select(value => (predicate.Invoke(value), value)));
-
-			return new AsyncPartition<T>
-			(
-				values.Where(set => set.matches).Select(set => set.value),
-				values.Where(set => !set.matches).Select(set => set.value)
-			);
 		}
 
 		public static AsyncPartition<T> Partition<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
@@ -150,5 +136,18 @@ namespace Functional
 				values.Where(set => !set.matches).Select(set => set.value)
 			);
 		}
+
+		public static AsyncPartition<T> AsAsync<T>(this Task<Partition<T>> partition)
+			=> new AsyncPartition<T>
+			(
+				GetMatches(partition).AsAsyncEnumerable(),
+				GetNonMatches(partition).AsAsyncEnumerable()
+			);
+
+		private static async Task<IEnumerable<T>> GetMatches<T>(this Task<Partition<T>> source)
+			=> (await source).Matches;
+
+		private static async Task<IEnumerable<T>> GetNonMatches<T>(this Task<Partition<T>> source)
+			=> (await source).NonMatches;
 	}
 }
