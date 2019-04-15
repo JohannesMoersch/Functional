@@ -615,32 +615,6 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> DoAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.SelectAsync(async item =>
-				{
-					await action.Invoke(item);
-					return item;
-				});
-		}
-
-		public static IAsyncEnumerable<T> DoAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.SelectAsync(async item =>
-				{
-					await action.Invoke(item);
-					return item;
-				});
-		}
-
 		public static void Apply<T>(this IEnumerable<T> source, Action<T> action)
 		{
 			if (action == null)

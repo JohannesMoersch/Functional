@@ -21,8 +21,4 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -84,8 +84,5 @@ namespace Functional
 
 		public static IAsyncEnumerable<IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> Value<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IAsyncEnumerable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> source)
 			=> source.Select(union => union.Value());
-
-		private static async Task<IEnumerable<TResult>> Select<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TResult> selector)
-			=> (await source).Select(selector);
 	}
 }

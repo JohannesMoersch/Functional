@@ -103,5 +103,55 @@ namespace Functional
 
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
 			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first, second, resultSelector));
+
+		public static IAsyncEnumerable<T> DoAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async item =>
+				{
+					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static IAsyncEnumerable<T> DoAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async item =>
+				{
+					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static IAsyncEnumerable<T> DoAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async item =>
+				{
+					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static async Task ApplyAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var enumerator = source.GetEnumerator();
+
+			while (await enumerator.MoveNext())
+				await action.Invoke(enumerator.Current);
+		}
 	}
 }
