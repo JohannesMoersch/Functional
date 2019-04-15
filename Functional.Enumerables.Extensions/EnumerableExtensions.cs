@@ -615,7 +615,7 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> Do<T>(this IEnumerable<T> source, Func<T, Task> action)
+		public static IAsyncEnumerable<T> DoAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -628,7 +628,7 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> Do<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		public static IAsyncEnumerable<T> DoAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -659,7 +659,7 @@ namespace Functional
 				action.Invoke(item);
 		}
 
-		public static async Task Apply<T>(this IEnumerable<T> source, Func<T, Task> action)
+		public static async Task ApplyAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -668,7 +668,7 @@ namespace Functional
 				await action.Invoke(item);
 		}
 
-		public static async Task Apply<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		public static async Task ApplyAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));

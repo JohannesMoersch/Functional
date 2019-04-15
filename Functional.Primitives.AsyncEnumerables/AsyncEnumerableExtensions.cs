@@ -105,53 +105,5 @@ namespace Functional
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
-
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Action<T> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.Select(item =>
-				{
-					action.Invoke(item);
-					return item;
-				});
-		}
-
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			return source
-				.SelectAsync(async item =>
-				{
-					await action.Invoke(item);
-					return item;
-				});
-		}
-
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Action<T> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			var enumerator = source.GetEnumerator();
-
-			while (await enumerator.MoveNext())
-				action.Invoke(enumerator.Current);
-		}
-
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			var enumerator = source.GetEnumerator();
-
-			while (await enumerator.MoveNext())
-				await action.Invoke(enumerator.Current);
-		}
 	}
 }
