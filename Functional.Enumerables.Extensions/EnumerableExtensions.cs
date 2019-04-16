@@ -28,6 +28,9 @@ namespace Functional
 		public static async Task<bool> Any<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).Any(predicate);
 
+		public static async Task<IEnumerable<TSource>> Append<TSource>(this Task<IEnumerable<TSource>> source, TSource element)
+			=> (await source).Append(element);
+
 		public static async Task<double> Average<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, long> selector)
 			=> (await source).Average(selector);
 

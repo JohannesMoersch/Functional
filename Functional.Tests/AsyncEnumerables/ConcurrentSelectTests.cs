@@ -40,6 +40,39 @@ namespace Functional.Tests.AsyncEnumerables
 		}
 
 		[Fact]
+		public async Task ConcurrencyIsRespected()
+		{
+			var tasks = new[]
+			{
+				new TaskCompletionSource<int>(),
+				new TaskCompletionSource<int>(),
+				new TaskCompletionSource<int>()
+			};
+
+			int count = 0;
+
+			var results = AsyncEnumerable
+				.Create(new[] { 1, 2, 3 })
+				.ConcurrentSelectAsync(i => tasks[count++].Task, 2)
+				.AsEnumerable();
+
+			count.Should().Be(2);
+
+			results.IsCompleted.Should().BeFalse();
+
+			tasks[0].SetResult(4);
+
+			count.Should().Be(3);
+
+			tasks[1].SetResult(5);
+			tasks[2].SetResult(6);
+
+			(await results)
+				.Should()
+				.BeEquivalentTo(new[] { 4, 5, 6 });
+		}
+
+		[Fact]
 		public async Task ExceptionDuringSelectHandledOnAwait()
 		{
 			var exception = new TestException();

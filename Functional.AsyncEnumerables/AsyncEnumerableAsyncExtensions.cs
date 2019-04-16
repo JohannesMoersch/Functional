@@ -41,11 +41,17 @@ namespace Functional
 		}
 
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
+			=> source.ConcurrentSelectAsync(selector, Int32.MaxValue);
+
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<TResult>> selector, int maxConcurrency)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, (o, _) => selector.Invoke(o)));
+				: AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, (o, _) => selector.Invoke(o), maxConcurrency));
 
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector)
-			=> AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, selector));
+			=> source.ConcurrentSelectAsync(selector, Int32.MaxValue);
+
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
+			=> AsyncIteratorEnumerable.Create(() => new ConcurrentSelectIterator<TSource, TResult>(source, selector, maxConcurrency));
 
 		public static Task<TSource> FirstAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
 			=> source.WhereAsync(predicate).First();
