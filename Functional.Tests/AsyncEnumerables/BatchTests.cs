@@ -10,7 +10,8 @@ namespace Functional.Tests.AsyncEnumerables
 	{
 		[Fact]
 		public Task FullBatchesCorrectly()
-			=> Task.FromResult(new[] { 1, 2, 3, 4, 5, 6 })
+			=> Task
+				.FromResult(new[] { 1, 2, 3, 4, 5, 6 })
 				.AsAsyncEnumerable()
 				.Batch(2)
 				.Should()
@@ -18,7 +19,8 @@ namespace Functional.Tests.AsyncEnumerables
 
 		[Fact]
 		public Task PartialBatchesCorrectly()
-			=> Task.FromResult(new[] { 1, 2, 3, 4, 5 })
+			=> Task
+				.FromResult(new[] { 1, 2, 3, 4, 5 })
 				.AsAsyncEnumerable()
 				.Batch(2)
 				.Should()

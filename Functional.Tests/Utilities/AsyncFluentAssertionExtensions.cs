@@ -40,6 +40,9 @@ namespace Functional
 		public static async Task<GenericCollectionAssertions<T>> Should<T>(this Task<T[]> source)
 		   => (await source).Should();
 
+		public static async Task<GenericCollectionAssertions<T>> Should<T>(this Task<List<T>> source)
+		   => (await source).Should();
+
 		public static async Task<AndConstraint<GenericCollectionAssertions<T>>> BeEquivalentTo<T>(this Task<GenericCollectionAssertions<T>> source, params T[] expectations)
 		   => (await source).BeEquivalentTo(expectations);
 
@@ -53,6 +56,8 @@ namespace Functional
 		   => (await source.AsEnumerable()).Should();
 
 		public static async Task<StringCollectionAssertions> Should<T>(this Task<string[]> source)
+		   => (await source).Should();
+		public static async Task<StringCollectionAssertions> Should<T>(this Task<List<string>> source)
 		   => (await source).Should();
 
 		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this Task<StringCollectionAssertions> source, params string[] expectations)

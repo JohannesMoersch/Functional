@@ -47,7 +47,8 @@ namespace Functional.Tests.Enumerables
 
 		[Fact]
 		public Task TaskFullBatchesCorrectly()
-			=> Task.FromResult(new[] { 1, 2, 3, 4, 5, 6 })
+			=> Task
+				.FromResult(new[] { 1, 2, 3, 4, 5, 6 })
 				.AsEnumerable()
 				.Batch(2)
 				.Should()
@@ -55,7 +56,8 @@ namespace Functional.Tests.Enumerables
 
 		[Fact]
 		public Task TaskPartialBatchesCorrectly()
-			=> Task.FromResult(new[] { 1, 2, 3, 4, 5 })
+			=> Task
+				.FromResult(new[] { 1, 2, 3, 4, 5 })
 				.AsEnumerable()
 				.Batch(2)
 				.Should()
