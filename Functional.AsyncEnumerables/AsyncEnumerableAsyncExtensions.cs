@@ -110,7 +110,7 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
 			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first, second, resultSelector));
 
-		public static IAsyncEnumerable<T> DoAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -123,7 +123,7 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> DoAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -136,7 +136,7 @@ namespace Functional
 				});
 		}
 
-		public static IAsyncEnumerable<T> DoAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -149,7 +149,7 @@ namespace Functional
 				});
 		}
 
-		public static async Task ApplyAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task> action)
+		public static async Task ApplyAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));

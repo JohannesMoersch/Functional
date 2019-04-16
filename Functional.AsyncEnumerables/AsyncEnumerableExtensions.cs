@@ -235,7 +235,7 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second, resultSelector));
 
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Action<T> action)
+		public static IAsyncEnumerable<TSource> Do<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -248,7 +248,7 @@ namespace Functional
 				});
 		}
 
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Action<T> action)
+		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -258,5 +258,8 @@ namespace Functional
 			while (await enumerator.MoveNext())
 				action.Invoke(enumerator.Current);
 		}
+
+		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
+			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetEnumerator(), batchSize));
 	}
 }
