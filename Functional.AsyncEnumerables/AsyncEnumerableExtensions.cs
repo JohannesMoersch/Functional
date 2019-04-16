@@ -10,7 +10,21 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class AsyncEnumerableExtensions
 	{
-		public static async Task<IEnumerable<TSource>> AsEnumerable<TSource>(this IAsyncEnumerable<TSource> source)
+		public static Task<IEnumerable<TSource>> AsEnumerable<TSource>(this IAsyncEnumerable<TSource> source)
+			=> source.ToList().AsEnumerable();
+
+		public static async Task<TSource[]> ToArray<TSource>(this IAsyncEnumerable<TSource> source)
+		{
+			var list = await source.ToList();
+
+			var arr = new TSource[list.Count];
+
+			list.CopyTo(arr);
+
+			return arr;
+		}
+
+		public static async Task<List<TSource>> ToList<TSource>(this IAsyncEnumerable<TSource> source)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -22,9 +36,9 @@ namespace Functional
 			while (await enumerator.MoveNext())
 				list.Add(enumerator.Current);
 
-			return list.AsEnumerable();
+			return list;
 		}
-		
+
 		public static async Task<bool> All<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 		{
 			if (source == null)
@@ -235,7 +249,7 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second, resultSelector));
 
-		public static IAsyncEnumerable<T> Do<T>(this IAsyncEnumerable<T> source, Action<T> action)
+		public static IAsyncEnumerable<TSource> Do<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -248,7 +262,7 @@ namespace Functional
 				});
 		}
 
-		public static async Task Apply<T>(this IAsyncEnumerable<T> source, Action<T> action)
+		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -258,5 +272,8 @@ namespace Functional
 			while (await enumerator.MoveNext())
 				action.Invoke(enumerator.Current);
 		}
+
+		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
+			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetEnumerator(), batchSize));
 	}
 }

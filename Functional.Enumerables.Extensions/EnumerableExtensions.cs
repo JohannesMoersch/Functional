@@ -592,7 +592,7 @@ namespace Functional
 		public static async Task<IEnumerable<TResult>> Zip<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, TResult> resultSelector)
 			=> (await first).Zip(await second, resultSelector);
 
-		public static IEnumerable<T> Do<T>(this IEnumerable<T> source, Action<T> action)
+		public static IEnumerable<TSource> Do<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -605,7 +605,7 @@ namespace Functional
 				});
 		}
 
-		public static Task<IEnumerable<T>> Do<T>(this Task<IEnumerable<T>> source, Action<T> action)
+		public static Task<IEnumerable<TSource>> Do<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -618,7 +618,7 @@ namespace Functional
 				});
 		}
 
-		public static void Apply<T>(this IEnumerable<T> source, Action<T> action)
+		public static void Apply<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -627,7 +627,7 @@ namespace Functional
 				action.Invoke(item);
 		}
 
-		public static async Task Apply<T>(this Task<IEnumerable<T>> source, Action<T> action)
+		public static async Task Apply<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource> action)
 		{
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
@@ -636,22 +636,14 @@ namespace Functional
 				action.Invoke(item);
 		}
 
-		public static async Task ApplyAsync<T>(this IEnumerable<T> source, Func<T, Task> action)
+		public static IEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IEnumerable<TSource> source, int batchSize)
+			=> IteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetEnumerator(), batchSize));
+
+		public static async Task<IEnumerable<IReadOnlyList<TSource>>> Batch<TSource>(this Task<IEnumerable<TSource>> source, int batchSize)
 		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
+			var input = await source;
 
-			foreach (var item in source)
-				await action.Invoke(item);
-		}
-
-		public static async Task ApplyAsync<T>(this Task<IEnumerable<T>> source, Func<T, Task> action)
-		{
-			if (action == null)
-				throw new ArgumentNullException(nameof(action));
-
-			foreach (var item in await source)
-				await action.Invoke(item);
+			return IteratorEnumerable.Create(() => new BatchIterator<TSource>(input.GetEnumerator(), batchSize));
 		}
 	}
 }
