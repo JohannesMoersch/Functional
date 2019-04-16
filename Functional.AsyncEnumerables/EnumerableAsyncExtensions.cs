@@ -24,14 +24,26 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector);
 
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> selector, int maxConcurrency)
+			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector, maxConcurrency);
+
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector);
+
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<TResult>> selector, int maxConcurrency)
+			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector, maxConcurrency);
 
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector);
 
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
+			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector, maxConcurrency);
+
 		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector);
+
+		public static IAsyncEnumerable<TResult> ConcurrentSelectAsync<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
+			=> source.AsAsyncEnumerable().ConcurrentSelectAsync(selector, maxConcurrency);
 
 		public static Task<TSource> FirstAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().FirstAsync(predicate);

@@ -10,54 +10,52 @@ namespace Functional
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<TSource, int, Task<TResult>> _selector;
+		private int _maxConcurrency;
+
+		private readonly Queue<Task<TResult>> _taskQueue = new Queue<Task<TResult>>();
 
 		private int _count;
 
-		private Queue<TResult> _resultsQueue;
-
 		public TResult Current { get; private set; }
 
-		public ConcurrentSelectIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector)
+		public ConcurrentSelectIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
 			_selector = selector ?? throw new ArgumentNullException(nameof(selector));
+			_maxConcurrency = maxConcurrency;
+
+			if (_maxConcurrency <= 0)
+				throw new ArgumentOutOfRangeException(nameof(maxConcurrency), "Value must be greater than zero.");
 		}
 
 		public async Task<bool> MoveNext()
 		{
-			if (_resultsQueue == null)
+			try
 			{
-				var taskQueue = new Queue<Task<TResult>>();
-
-				try
-				{
-					while (await _enumerator.MoveNext())
-						taskQueue.Enqueue(_selector.Invoke(_enumerator.Current, _count++));
-				}
-				catch (Exception ex)
-				{
-					throw new AggregateException(Enumerable.Repeat(ex, 1).Concat(await DrainTaskQueue(taskQueue)));
-				}
-
-				_resultsQueue = new Queue<TResult>(taskQueue.Count);
-
-				try
-				{
-					while (taskQueue.Count > 0)
-						_resultsQueue.Enqueue(await taskQueue.Dequeue());
-				}
-				catch (Exception ex)
-				{
-					throw new AggregateException(Enumerable.Repeat(ex, 1).Concat(await DrainTaskQueue(taskQueue)));
-				}
+				while (_taskQueue.Count < _maxConcurrency && await _enumerator.MoveNext())
+					_taskQueue.Enqueue(_selector.Invoke(_enumerator.Current, _count++));
+			}
+			catch (Exception ex)
+			{
+				throw new AggregateException(Enumerable.Repeat(ex, 1).Concat(await DrainTaskQueue(_taskQueue)));
 			}
 
-			if (_resultsQueue.Count == 0)
+			if (_taskQueue.Count == 0)
+			{
+				_maxConcurrency = 0;
+				Current = default;
 				return false;
+			}
 
-			Current = _resultsQueue.Dequeue();
-
-			return true;
+			try
+			{
+				Current = await _taskQueue.Dequeue();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw new AggregateException(Enumerable.Repeat(ex, 1).Concat(await DrainTaskQueue(_taskQueue)));
+			}
 		}
 
 		private async Task<IEnumerable<Exception>> DrainTaskQueue(Queue<Task<TResult>> taskQueue)
