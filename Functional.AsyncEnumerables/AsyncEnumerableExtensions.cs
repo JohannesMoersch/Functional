@@ -275,5 +275,14 @@ namespace Functional
 
 		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
 			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetEnumerator(), batchSize));
+
+		public static IAsyncEnumerable<TSource> PickInto<TSource>(this IAsyncEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, bool> predicate)
+		{
+			var partition = source.Partition(predicate);
+
+			matches = partition.Matches;
+
+			return partition.NonMatches;
+		}
 	}
 }
