@@ -1300,6 +1300,72 @@ namespace Functional.Tests.Results
 					methodCalled.Should().BeFalse();
 				}
 			}
+
+			public class WhenDoIfSome
+			{
+				[Fact]
+				public async Task ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).DoIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).DoIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Failure<Option<int>, string>("error")).DoIfSome(_ => methodCalled = true);
+					methodCalled.Should().BeFalse();
+				}
+			}
+
+			public class WhenDoIfSomeAsync
+			{
+				[Fact]
+				public async Task ShouldInvokeActionWhenSome()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).DoIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeTrue();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenNone()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).DoIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
+				}
+
+				[Fact]
+				public async Task ShouldNotInvokeActionWhenFailure()
+				{
+					bool methodCalled = false;
+					await Task.FromResult(Result.Failure<Option<int>, string>("error")).DoIfSomeAsync(_ =>
+					{
+						methodCalled = true;
+						return Task.CompletedTask;
+					});
+					methodCalled.Should().BeFalse();
+				}
+			}
 		}
 	}
 }
