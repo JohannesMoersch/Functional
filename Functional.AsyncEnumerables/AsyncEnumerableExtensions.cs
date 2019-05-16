@@ -75,6 +75,9 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> Append<TSource>(this IAsyncEnumerable<TSource> source, TSource element)
 			=> AsyncIteratorEnumerable.Create(() => new AppendIterator<TSource>(source, element));
 
+		public static IAsyncEnumerable<TSource> AppendAsync<TSource>(this IAsyncEnumerable<TSource> source, Task<TSource> element)
+			=> AsyncIteratorEnumerable.Create(() => new AppendTaskIterator<TSource>(source, element));
+
 		public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
 			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
 
