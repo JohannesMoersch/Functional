@@ -31,5 +31,13 @@ namespace Functional.Tests.AsyncEnumerables
 				.Append(null)
 				.Should()
 				.BeEquivalentTo(new[] { "A", "B", "C", null });
+
+		[Fact]
+		public Task AppendTask()
+			=> new[] { "A", "B", "C" }
+				.AsAsyncEnumerable()
+				.AppendAsync(Task.FromResult("D"))
+				.Should()
+				.BeEquivalentTo(new[] { "A", "B", "C", "D" });
 	}
 }
