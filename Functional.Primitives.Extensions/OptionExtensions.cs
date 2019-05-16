@@ -38,6 +38,14 @@ namespace Functional
 		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
 
+		public static TValue? ValueOrNull<TValue>(this Option<TValue> option)
+			where TValue : struct
+			=> option.Match(value => (TValue?)value, () => null);
+
+		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
+			where TValue : struct
+			=> (await option).ValueOrNull();
+
 		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.Match(Option.Some, () => Option.Some(defaultValue));
 
