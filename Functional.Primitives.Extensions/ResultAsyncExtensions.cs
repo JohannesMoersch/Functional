@@ -115,6 +115,12 @@ namespace Functional
 		public static Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success)
 			=> result.DoAsync(success, _ => Task.CompletedTask);
 
+		public static Task<Result<Option<TSuccess>, TFailure>> DoIfSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> action)
+			=> result.DoAsync(option => option.ApplyAsync(action));
+
+		public static Task<Result<Option<TSuccess>, TFailure>> DoIfSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> action)
+			=> result.DoAsync(option => option.ApplyAsync(action));
+
 		public static Task ApplyAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success, Func<TFailure, Task> failure)
 			=> result.DoAsync(success, failure);
 
@@ -128,10 +134,10 @@ namespace Functional
 			=> result.DoAsync(success, _ => Task.CompletedTask);
 
 		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> action)
-			=> result.ApplyAsync(option => option.ApplyAsync(action));
+			=> result.DoIfSomeAsync(action);
 
 		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> action)
-			=> result.ApplyAsync(option => option.ApplyAsync(action));
+			=> result.DoIfSomeAsync(action);
 
 		public static Task<Result<TSuccess, TFailure>> FailureIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TFailure>> failureFactory)
 		{

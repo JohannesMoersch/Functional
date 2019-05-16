@@ -133,6 +133,12 @@ namespace Functional
 		public static Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success)
 			=> result.Do(success, _ => { });
 
+		public static Result<Option<TSuccess>, TFailure> DoIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> action)
+			=> result.Do(option => option.Apply(action));
+
+		public static async Task<Result<Option<TSuccess>, TFailure>> DoIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> action)
+			=> (await result).Do(option => option.Apply(action));
+
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> result.Do(success, failure);
 
@@ -146,10 +152,10 @@ namespace Functional
 			=> result.Do(success, _ => { });
 
 		public static void ApplyIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> action)
-			=> result.Apply(option => option.Apply(action));
+			=> result.DoIfSome(action);
 
-		public static async Task ApplyIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> action)
-			=> (await result).Apply(option => option.Apply(action));
+		public static Task ApplyIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> action)
+			=> result.DoIfSome(action);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .Success() instead.")]
