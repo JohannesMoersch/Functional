@@ -373,7 +373,7 @@ namespace Functional
 			return source
 				.SelectAsync(result => result
 					.MatchAsync(
-						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						success => Result.SuccessAsync<TResult, TFailure>(selector.Invoke(success)),
 						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
 					)
 				)
@@ -389,7 +389,7 @@ namespace Functional
 			return source
 				.SelectAsync(result => result
 					.MatchAsync(
-						success => Result.Success<TResult, TFailure>(selector.Invoke(success)),
+						success => Result.SuccessAsync<TResult, TFailure>(selector.Invoke(success)),
 						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
 					)
 				)
