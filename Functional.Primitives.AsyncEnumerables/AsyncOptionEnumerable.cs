@@ -26,15 +26,29 @@ namespace Functional
 			=> new AsyncOptionEnumerable<TValue>(source);
 
 		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IEnumerable<Option<TValue>>> source)
-			=> throw new NotImplementedException();
+			=> source
+				.AsAsyncEnumerable()
+				.AsAsyncOptionEnumerable();
 
 		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IOptionEnumerable<TValue>> source)
-			=> throw new NotImplementedException();
+			=> ConvertEnumerable(source)
+				.AsAsyncEnumerable()
+				.AsAsyncOptionEnumerable();
 
 		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IAsyncEnumerable<Option<TValue>>> source)
-			=> throw new NotImplementedException();
+			=> source
+				.AsAsyncEnumerable()
+				.AsAsyncOptionEnumerable();
 
 		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IAsyncOptionEnumerable<TValue>> source)
-			=> throw new NotImplementedException();
+			=> ConvertAsyncEnumerable(source)
+				.AsAsyncEnumerable()
+				.AsAsyncOptionEnumerable();
+
+		private static async Task<IEnumerable<Option<TValue>>> ConvertEnumerable<TValue>(Task<IOptionEnumerable<TValue>> source)
+			=> await source;
+
+		private static async Task<IAsyncEnumerable<Option<TValue>>> ConvertAsyncEnumerable<TValue>(Task<IAsyncOptionEnumerable<TValue>> source)
+			=> await source;
 	}
 }
