@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,12 @@ namespace Functional
 			return new Option<T>(true, value);
 		}
 
-		public static async Task<Option<T>> Some<T>(Task<T> value)
+		[Obsolete("Please use .SomeAsync() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Option<T>> Some<T>(Task<T> value)
+			=> SomeAsync(value);
+
+		public static async Task<Option<T>> SomeAsync<T>(Task<T> value)
 			=> Some(await value);
 
 		public static Option<T> None<T>()
@@ -27,7 +33,13 @@ namespace Functional
 				? Some(value)
 				: None<T>();
 
-		public static async Task<Option<T>> FromNullable<T>(Task<T> value)
+		[Obsolete("Please use .FromNullableAsync() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Option<T>> FromNullable<T>(Task<T> value)
+			where T : class
+			=> FromNullableAsync(value);
+
+		public static async Task<Option<T>> FromNullableAsync<T>(Task<T> value)
 			where T : class
 			=> FromNullable(await value);
 
@@ -37,7 +49,13 @@ namespace Functional
 				? Some(value.Value)
 				: None<T>();
 
-		public static async Task<Option<T>> FromNullable<T>(Task<T?> value)
+		[Obsolete("Please use .FromNullableAsync() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Option<T>> FromNullable<T>(Task<T?> value)
+			where T : struct
+			=> FromNullableAsync(value);
+
+		public static async Task<Option<T>> FromNullableAsync<T>(Task<T?> value)
 			where T : struct
 			=> FromNullable(await value);
 
@@ -56,7 +74,12 @@ namespace Functional
 				: None<T>();
 		}
 
-		public static async Task<Option<T>> Create<T>(bool isSome, Func<Task<T>> valueFactory)
+		[Obsolete("Please use .CreateAsync() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Option<T>> Create<T>(bool isSome, Func<Task<T>> valueFactory)
+			=> CreateAsync(isSome, valueFactory);
+		
+		public static async Task<Option<T>> CreateAsync<T>(bool isSome, Func<Task<T>> valueFactory)
 		{
 			if (valueFactory == null)
 				throw new ArgumentNullException(nameof(valueFactory));
