@@ -158,7 +158,7 @@ namespace Functional
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return result.BindAsync(success => Result.Try(() => successFactory(success), failureFactory));
+			return result.BindAsync(success => Result.TryAsync(() => successFactory(success), failureFactory));
 		}
 
 		public static Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)

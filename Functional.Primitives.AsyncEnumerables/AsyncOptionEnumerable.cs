@@ -24,5 +24,17 @@ namespace Functional
 	{
 		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this IAsyncEnumerable<Option<TValue>> source)
 			=> new AsyncOptionEnumerable<TValue>(source);
+
+		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IEnumerable<Option<TValue>>> source)
+			=> throw new NotImplementedException();
+
+		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IOptionEnumerable<TValue>> source)
+			=> throw new NotImplementedException();
+
+		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IAsyncEnumerable<Option<TValue>>> source)
+			=> throw new NotImplementedException();
+
+		public static IAsyncOptionEnumerable<TValue> AsAsyncOptionEnumerable<TValue>(this Task<IAsyncOptionEnumerable<TValue>> source)
+			=> throw new NotImplementedException();
 	}
 }
