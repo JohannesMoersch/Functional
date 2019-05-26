@@ -69,7 +69,7 @@ namespace Functional.Tests.Results
 
 		private static readonly Func<IEnumerable<int>, IAsyncResultEnumerable<int, string>> _asyncResultSource =
 			values => 
-				from value in Result.Create(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"))
+				from value in Result.CreateAsync(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"))
 				from result in value
 				select result;
 
@@ -81,13 +81,13 @@ namespace Functional.Tests.Results
 
 		private static readonly Func<IEnumerable<int>, Result<IEnumerable<int>, string>> _resultJoin = values => Result.Create(values != null, () => values, () => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Task<Result<IEnumerable<int>, string>>> _taskResultJoin = values => Result.Create(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"));
+		private static readonly Func<IEnumerable<int>, Task<Result<IEnumerable<int>, string>>> _taskResultJoin = values => Result.CreateAsync(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"));
 
 		private static readonly Func<IEnumerable<int>, Result<IAsyncEnumerable<int>, string>> _asyncResultJoin = values => Result.Create(values != null, () => values.AsAsyncEnumerable(), () => "Failure");
 
 		private static readonly Func<IEnumerable<int>, Result<int[], string>> _resultJoinArray = values => Result.Create(values != null, () => values.ToArray(), () => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Task<Result<int[], string>>> _taskResultJoinArray = values => Result.Create(values != null, () => Task.FromResult(values.ToArray()), () => Task.FromResult("Failure"));
+		private static readonly Func<IEnumerable<int>, Task<Result<int[], string>>> _taskResultJoinArray = values => Result.CreateAsync(values != null, () => Task.FromResult(values.ToArray()), () => Task.FromResult("Failure"));
 
 		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<(int, int)>> _output = values => values.OfType<(int, int)>();
 
