@@ -1,5 +1,4 @@
 # Functional
-
 [![Build status](https://ci.appveyor.com/api/projects/status/72c9ie6jvv7vhvl5/branch/master?svg=true)](https://ci.appveyor.com/project/JohannesMoersch/functional/branch/master)
 
 Functional is a set of libraries that support functional programming patterns in C#.
@@ -9,21 +8,21 @@ Options are immutable types that can either have `Some` which is a typed value, 
 ### Creating an Option Type
 ##### With a value
 ```csharp
-Option<int> option = Option.Some(100);
+Option<int> some = Option.Some(100);
 ```
 ##### With no value
 ```csharp
-Option<int> option = Option.None<int>();
+Option<int> none = Option.None<int>();
 ```
 ##### Conditionally
 ```csharp
-Option<int> option = Option.Create(true, () => 100);
-Option<int> option = Option.Create(false, () => 100);
+Option<int> some = Option.Create(true, () => 100);
+Option<int> none = Option.Create(false, () => 100);
 ```
 ##### From a nullable where null become `None`
 ```csharp
-Option<int> option = Option.FromNullable((int?)100);
-Option<int> option = Option.FromNullable((int?)null);
+Option<int> some = Option.FromNullable((int?)100);
+Option<int> none = Option.FromNullable((int?)null);
 ```
 ### Working with Option Types
 You cannot access the value of an Option type directly. Instead you work with Options functionally. Options only expose one function with the following signature:
@@ -99,3 +98,36 @@ If `Some`, this extension will return a `Success` result with the value, and if 
 Result<int, string> result = Option.Some<int>(100).ToResult(() => "Failure Message"); // Returns Result<int, string> with a success value of 100
 Result<int, string> result = Option.None<int>().ToResult(() => "Failure Message"); // Returns Result<int, string> with a failure value of "Failure Message"
 ```
+
+## Result Types
+Results are immutable types that can either have a `Success` value, or a `Failure` value. Result types should be used in any scenario where code can produce an error, Results are particularly suitable for expected error cases, but can also be used to all error handling. Results force the handling of failures. Instead of throw exceptions or returning a null value, return a `Failure` result.
+### Creating a Result Type
+##### With a success value
+```csharp
+Result<int, string> success = Result.Success<int, string>(100);
+```
+##### With a failure value
+```csharp
+Result<int, string> failure = Result.Failure<int, string>("Failure");
+```
+##### Conditionally
+```csharp
+Result<int, string> success = Result.Create(true, () => 100, () => "Failure");
+Result<int, string> failure = Result.Create(false, () => 100, () => "Failure");
+```
+##### With exception handling
+```csharp
+Result<int, Exception> success = Result.Try(() => 100));
+Result<int, Exception> failure = Result.Try<int>(() => throw new Exception));
+```
+### Working with Result Types
+You cannot access the values of a Result type directly. Instead you work with Results functionally. Results only expose one function with the following signature:
+```csharp
+public TResult Match(Func<TSuccess, TResult> onSuccess, Func<TFailure, TResult> onFailure)
+```
+If the Result is a `Success`, then the delegate in the first parameter is invoked and it's result is returned. If the Result is a `Failure`, then the delegate in the second parameter is invoked instead.
+```csharp
+string value = Result.Success<int, string>(100).Match(s => $"Has success value of {s}", f => "Has failure value of {f}"); // Returns "Has success value of 100"
+string value = Result.Success<int, string>("Failure").Match(s => $"Has success value of {s}", f => "Has failure value of {f}"); // Returns "Has failure value of Failure"
+```
+Working with `Match` can be tedious, but there are many extension methods that make it easy and very powerful.
