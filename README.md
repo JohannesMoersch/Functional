@@ -90,6 +90,6 @@ Option<int> option = Option.None<int>().Do(v => Console.WriteLine(v)); // Return
 ##### Apply
 This extension returns void and is meant only to create side effects. If `Some`, this extension will invoke the delegate parameter, and if `None` it will not. There are overloads that also accept a delegate parameter to execute when `None`.
 ```csharp
-Option.Some(100).Do(v => Console.WriteLine(v)); // Outputs 100 to the console
-Option.None<int>().Do(v => Console.WriteLine(v)); // Does nothing
+Option.Some(100).Apply(v => Console.WriteLine(v)); // Outputs 100 to the console
+Option.None<int>().Apply(v => Console.WriteLine(v)); // Does nothing
 ```
