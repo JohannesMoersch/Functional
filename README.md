@@ -8,6 +8,8 @@ Functional is a set of libraries that support functional programming patterns in
 
 [Result Types](#result-types)
 
+[Query Expressions](#query-expressions)
+
 ## Option Types
 Options are immutable types that can either have `Some` which is a typed value, or `None`. Option types should be used in any scenario where data can be null or empty, because unlike nullables, Options force the handling of the `None` case. Instead of using `null` or `-1` to present an empty id, use `Option<int>` with a value of `None`.
 ### Creating an Option Type
@@ -206,3 +208,53 @@ Result<int, string> result = Result.Success<int, string>(100).Do(s => Console.Wr
 Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Does nothing
 Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console
 ```
+
+## Query Expressions
+Chaining and nested many extensions on Results or Options can quickly become difficult to read. In these scenarios, the query expression syntax can dramatically improve code readability. For the following code snippets, assume the following methods are declared.
+```csharp
+public Result<Value, Error> LoadValue(int id);
+public Result<MappedValue, Error> MapValue(Value value);
+public Result<AdditionalData, Error> LoadAdditionalData(Value value);
+public Result<CombinedData, Error> Combine(MappedValue mappedValue, AdditionalData additionalData);
+```
+Here is a basic example of a `Bind` and then a `Select` written in the standard functional syntax.
+```csharp
+public Result<(int Id, MappedValue Value), Error> LoadAndMapValue(int id)
+	=> LoadValue(id)
+		.Bind(value => MapValue(value))
+		.Select(mappedValue => (id, mappedValue));
+```
+Here is the equivalent code written as a query expression.
+```csharp
+public Result<(int Id, MappedValue Value), Error> LoadAndMapValue(int id)
+	=>
+	from value in LoadValue(id)
+	from mappedValue in MapValue(value)
+	select (id, mappedValue);
+```
+Both are pretty straight forward to read. We load the data, then we map the data, and then we return the data.
+
+Now let's consider a more complex scenario where we don't simply have a linear chain of functions.
+```csharp
+public Result<(int Id, CombinedData Data), Error> LoadAndMapValue(int id)
+	=> LoadValue(id)
+		.Bind(value => LoadAdditionalData(value)
+			.Bind(additionalData => MapValue(value)
+				.Bind(mappedValue => Combine(mappedValue, additionalData))
+			)
+		)
+		.Select(combinedData => (id, combinedData));
+```
+This time the value from `LoadValue` is used by multiple subsequent function calls, and this introduces nesting which damages the readability of the expression.
+
+Here is the equivalent code written using a query expression.
+```csharp
+public Result<(int Id, CombinedData Data), Error> LoadAndMapValue(int id)
+	=>
+	from value in LoadValue(id)
+	from mappedValue in MapValue(value)
+	from additionalData in LoadAdditionalData(value)
+	from combinedData in Combine(mappedValue, additionalData)
+	select (id, combinedData);
+```
+This syntax allows us to keep the chain of function calls more clearly sequential and makes the statement easier to read.
