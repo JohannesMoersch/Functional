@@ -25,6 +25,7 @@ Option<int> some = Option.FromNullable((int?)100);
 Option<int> none = Option.FromNullable((int?)null);
 ```
 ### Working with Option Types
+#### Match
 You cannot access the value of an Option type directly. Instead you work with Options functionally. Options only expose one function with the following signature:
 ```csharp
 public TResult Match(Func<TValue, TResult> onSome, Func<TResult> onNone)
@@ -51,8 +52,8 @@ Option<string> option = Option.None<int>().Bind(v => Option.Some($"{v}")); // Re
 #### HasValue
 If `Some`, this extension will return `true`, and if `None` it will return `false`.
 ```csharp
-bool value = Option.Some(100).HasValue(); // Returns `true`
-bool value = Option.None<int>().HasValue(); // Returns `false`
+bool value = Option.Some(100).HasValue(); // Returns true
+bool value = Option.None<int>().HasValue(); // Returns false
 ```
 #### ValueOrDefault
 If `Some`, this extension will return the value, and if `None` it will return a specified default.
@@ -118,9 +119,11 @@ Result<int, string> failure = Result.Create(false, () => 100, () => "Failure");
 ##### With exception handling
 ```csharp
 Result<int, Exception> success = Result.Try(() => 100));
-Result<int, Exception> failure = Result.Try<int>(() => throw new Exception));
+Result<int, Exception> failure = Result.Try<int>(() => throw new Exception("Exception Message")));
+Result<int, string> failure = Result.Try<int, string>(() => throw new Exception("Exception Message"), ex => ex.Message));
 ```
 ### Working with Result Types
+#### Match
 You cannot access the values of a Result type directly. Instead you work with Results functionally. Results only expose one function with the following signature:
 ```csharp
 public TResult Match(Func<TSuccess, TResult> onSuccess, Func<TFailure, TResult> onFailure)
@@ -131,3 +134,41 @@ string value = Result.Success<int, string>(100).Match(s => $"Has success value o
 string value = Result.Success<int, string>("Failure").Match(s => $"Has success value of {s}", f => "Has failure value of {f}"); // Returns "Has failure value of Failure"
 ```
 Working with `Match` can be tedious, but there are many extension methods that make it easy and very powerful.
+#### Select
+If `Success`, this extension will return a `Success` Result with the value produced by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
+```csharp
+Result<int, string> result = Result.Success<float, string>(1.5).Select(v => (int)v); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Failure<float, string>("Failure").Select(v => (int)v); // Returns Result<int, string> with a failure value of "Failure"
+```
+#### TrySelect
+If `Success`, this extension will execute the first delegate parameter. If an exception is thrown, it will execute the second delegate parameter (if provided), and return a `Failure` Result with the value produced by the second delegate parameter. If no exception is thrown, it will return a `Success` Result with the value produced by the first delegate parameter. If the input Result is a `Failure` it will return a `Failure` Result with the existing failure value.
+```csharp
+Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(v => (int)v); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(v => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, Exception> with a failure value of "Exception Message"
+Result<int, string> result = Result.Failure<float, string>("Failure").Select(v => throw new Exception("Exception Message")); // Returns Result<int, string> with a failure value of "Failure"
+```
+#### Bind
+If `Success`, this extension will return the Result returned by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
+```csharp
+Result<int, string> result = Result.Success<float, string>(1.5).Bind(v => Result.Success<int, string>((int)v)); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Success<float, string>(1.5).Bind(v => Result.Failure<int, string>("Failure")); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Failure<float, string>("Failure").Bind(v => Result.Success<int, string>((int)v)); // Returns Result<int, string> with a failure value of "Failure"
+```
+#### IsSuccess
+If `Success`, this extension will return `true`, and if `Failure` it will return `false`.
+```csharp
+bool value = Result.Success<int, string>(100).IsSuccess(); // Returns true
+bool value = Result.Failure<int, string>("Failure").IsSuccess(); // Returns false
+```
+#### Success
+If `Success`, this extension will return an Option containing the success value, and if `Failure` it will return `None`.
+```csharp
+Option<int> option = Result.Success<int, string>(100).Success(); // Returns Option<int> with a value of 100
+Option<int> option = Result.Failure<int, string>("Failure").Success(); // Returns Option<int> with no value
+```
+#### Failure
+If `Success`, this extension will return `None`, and if `Failure` it will return an Option containing the failure value.
+```csharp
+Option<string> option = Result.Success<int, string>(100).Failure(); // Returns Option<string> with no value
+Option<string> option = Result.Failure<int, string>("Failure").Failure(); // Returns Option<string> with a value of "Failure"
+```
