@@ -11,35 +11,39 @@ namespace Functional
 	public static class OptionLinqSyntaxWhereExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Option<TValue> Where<TValue>(this Option<TValue> source, Func<TValue, Option<Unit>> failurePredicate)
-			=> source
-				.Bind(success => failurePredicate
-					.Invoke(success)
-					.Select(_ => success)
-				);
+		public static Option<TValue> Where<TValue>(this Option<TValue> option, Func<TValue, Option<Unit>> predicate)
+		{
+			if (option.TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var result))
+				return Option.Some(some);
+
+			return Option.None<TValue>();
+		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> source, Func<TValue, Option<Unit>> failurePredicate)
-			=> source
-				.Bind(success => failurePredicate
-					.Invoke(success)
-					.Select(_ => success)
-				);
+		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, Option<Unit>> predicate)
+		{
+			if ((await option).TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var result))
+				return Option.Some(some);
+
+			return Option.None<TValue>();
+		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TValue>> Where<TValue>(this Option<TValue> source, Func<TValue, Task<Option<Unit>>> failurePredicate)
-			=> source
-				.BindAsync(success => failurePredicate
-					.Invoke(success)
-					.Select(_ => success)
-				);
+		public static async Task<Option<TValue>> Where<TValue>(this Option<TValue> option, Func<TValue, Task<Option<Unit>>> predicate)
+		{
+			if (option.TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var result))
+				return Option.Some(some);
+
+			return Option.None<TValue>();
+		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> source, Func<TValue, Task<Option<Unit>>> failurePredicate)
-			=> source
-				.BindAsync(success => failurePredicate
-					.Invoke(success)
-					.Select(_ => success)
-				);
+		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, Task<Option<Unit>>> predicate)
+		{
+			if ((await option).TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var result))
+				return Option.Some(some);
+
+			return Option.None<TValue>();
+		}
 	}
 }

@@ -18,10 +18,10 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.Bind(value => bind
-				.Invoke(value)
-				.Select(obj => resultSelector.Invoke(value, obj))
-			);
+			if (option.TryGetValue(out var some) && bind.Invoke(some).TryGetValue(out var result))
+				return Option.Some(resultSelector.Invoke(some, result));
+
+			return Option.None<TResult>();
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -29,7 +29,7 @@ namespace Functional
 			=> (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, TResult> resultSelector)
+		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -37,10 +37,10 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.BindAsync(value => bind
-				.Invoke(value)
-				.Select(obj => resultSelector.Invoke(value, obj))
-			);
+			if (option.TryGetValue(out var some) && (await bind.Invoke(some)).TryGetValue(out var result))
+				return Option.Some(resultSelector.Invoke(some, result));
+
+			return Option.None<TResult>();
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -48,7 +48,7 @@ namespace Functional
 			=> await (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -56,10 +56,10 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.BindAsync(value => bind
-					.Invoke(value)
-					.SelectAsync(obj => resultSelector.Invoke(value, obj))
-			);
+			if (option.TryGetValue(out var some) && bind.Invoke(some).TryGetValue(out var result))
+				return Option.Some(await resultSelector.Invoke(some, result));
+
+			return Option.None<TResult>();
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -67,7 +67,7 @@ namespace Functional
 			=> await (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -75,10 +75,10 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return option.BindAsync(value => bind
-				.Invoke(value)
-				.SelectAsync(obj => resultSelector.Invoke(value, obj))
-			);
+			if (option.TryGetValue(out var some) && (await bind.Invoke(some)).TryGetValue(out var result))
+				return Option.Some(await resultSelector.Invoke(some, result));
+
+			return Option.None<TResult>();
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

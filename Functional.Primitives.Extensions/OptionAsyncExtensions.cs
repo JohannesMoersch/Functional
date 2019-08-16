@@ -9,12 +9,15 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class OptionAsyncExtensions
 	{
-		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> select)
+		public static async Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> select)
 		{
 			if (select == null)
 				throw new ArgumentNullException(nameof(select));
 
-			return option.Match(async value => Option.Some(await select.Invoke(value)), () => Task.FromResult(Option.None<TResult>()));
+			if (option.TryGetValue(out var some))
+				return Option.Some(await select.Invoke(some));
+
+			return Option.None<TResult>();
 		}
 
 		public static async Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> select)
@@ -26,38 +29,43 @@ namespace Functional
 		public static async Task<Option<TResult>> BindAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TResult>>> bind)
 			=> await (await option).BindAsync(bind);
 
-		public static Task<Option<TValue>> WhereAsync<TValue>(this Option<TValue> option, Func<TValue, Task<bool>> predicate)
+		public static async Task<Option<TValue>> WhereAsync<TValue>(this Option<TValue> option, Func<TValue, Task<bool>> predicate)
 		{
 			if (predicate == null)
 				throw new ArgumentNullException(nameof(predicate));
 
-			return option.Match(async value => Option.Create(await predicate.Invoke(value), value), () => Task.FromResult(Option.None<TValue>()));
+			if (option.TryGetValue(out var some))
+				return Option.Create(await predicate.Invoke(some), some);
+
+			return Option.None<TValue>();
 		}
 
 		public static async Task<Option<TValue>> WhereAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task<bool>> predicate)
 			=> await (await option).WhereAsync(predicate);
 
-		public static Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Option<TValue> option, Func<Task<TFailure>> failureFactory)
+		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Option<TValue> option, Func<Task<TFailure>> failureFactory)
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return option.Match(value => Task.FromResult(Result.Success<TValue, TFailure>(value)), async () => Result.Failure<TValue, TFailure>(await failureFactory.Invoke()));
+			if (option.TryGetValue(out var some))
+				return Result.Success<TValue, TFailure>(some);
+			
+			return Result.Failure<TValue, TFailure>(await failureFactory.Invoke());
 		}
 
 		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Task<Option<TValue>> option, Func<Task<TFailure>> failureFactory)
 			=> await (await option).ToResultAsync(failureFactory);
 
-		public static Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> @do)
+		public static async Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> @do)
 		{
 			if (@do == null)
 				throw new ArgumentNullException(nameof(@do));
 
-			return option.Match(async value =>
-				{
-					await @do.Invoke(value);
-					return option;
-				}, () => Task.FromResult(option));
+			if (option.TryGetValue(out var some))
+				await @do.Invoke(some);
+
+			return option;
 		}
 
 		public static async Task<Option<TValue>> DoAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> @do)
@@ -69,7 +77,7 @@ namespace Functional
 		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
 			=> option.DoAsync(apply);
 
-		public static Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
+		public static async Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
 		{
 			if (doWhenSome == null)
 				throw new ArgumentNullException(nameof(doWhenSome));
@@ -77,16 +85,12 @@ namespace Functional
 			if (doWhenNone == null)
 				throw new ArgumentNullException(nameof(doWhenNone));
 
-			return option.Match(async value =>
-				{
-					await doWhenSome.Invoke(value);
-					return option;
-				},
-				async () =>
-				{
-					await doWhenNone.Invoke();
-					return option;
-				});
+			if (option.TryGetValue(out var some))
+				await doWhenSome.Invoke(some);
+			else
+				await doWhenNone.Invoke();
+
+			return option;
 		}
 
 		public static async Task<Option<TValue>> DoAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)

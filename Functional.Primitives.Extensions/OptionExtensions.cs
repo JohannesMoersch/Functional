@@ -20,7 +20,10 @@ namespace Functional
 			if (select == null)
 				throw new ArgumentNullException(nameof(select));
 
-			return option.Match(value => Option.Some(select.Invoke(value)), Option.None<TResult>);
+			if (option.TryGetValue(out var some))
+				return Option.Some(select.Invoke(some));
+
+			return Option.None<TResult>();
 		}
 
 		public static async Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> select)
@@ -63,7 +66,10 @@ namespace Functional
 			if (predicate == null)
 				throw new ArgumentNullException(nameof(predicate));
 
-			return option.Match(value => Option.Create(predicate.Invoke(value), value), Option.None<TValue>);
+			if (option.TryGetValue(out var some))
+				return Option.Create(predicate.Invoke(some), some);
+
+			return Option.None<TValue>();
 		}
 
 		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, bool> predicate)
@@ -82,7 +88,10 @@ namespace Functional
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return option.Match(Result.Success<TValue, TFailure>, () => Result.Failure<TValue, TFailure>(failureFactory.Invoke()));
+			if (option.TryGetValue(out var some))
+				return Result.Success<TValue, TFailure>(some);
+
+			return Result.Failure<TValue, TFailure>(failureFactory.Invoke());
 		}
 
 		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
@@ -93,11 +102,10 @@ namespace Functional
 			if (@do == null)
 				throw new ArgumentNullException(nameof(@do));
 
-			return option.Match(value =>
-				{
-					@do.Invoke(value);
-					return option;
-				}, () => option);
+			if (option.TryGetValue(out var some))
+				@do.Invoke(some);
+
+			return option;
 		}
 
 		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> @do)
@@ -117,16 +125,12 @@ namespace Functional
 			if (doWhenNone == null)
 				throw new ArgumentNullException(nameof(doWhenNone));
 
-			return option.Match(value =>
-				{
-					doWhenSome.Invoke(value);
-					return option;
-				},
-				() =>
-				{
-					doWhenNone.Invoke();
-					return option;
-				});
+			if (option.TryGetValue(out var some))
+				doWhenSome.Invoke(some);
+			else
+				doWhenNone.Invoke();
+
+			return option;
 		}
 
 		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> doWhenSome, Action doWhenNone)
