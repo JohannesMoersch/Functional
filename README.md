@@ -3,6 +3,11 @@
 
 Functional is a set of libraries that support functional programming patterns in C#.
 
+## Sections
+[Option Types](#option-types)
+
+[Result Types](#result-types)
+
 ## Option Types
 Options are immutable types that can either have `Some` which is a typed value, or `None`. Option types should be used in any scenario where data can be null or empty, because unlike nullables, Options force the handling of the `None` case. Instead of using `null` or `-1` to present an empty id, use `Option<int>` with a value of `None`.
 ### Creating an Option Type
