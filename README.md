@@ -204,9 +204,9 @@ Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Cons
 #### Apply
 This extension returns void and is meant only to create side effects. If `Success`, this extension will invoke the first delegate parameter, and if `Failure` it will invoke the second delegate parameter (if provided).
 ```csharp
-Result<int, string> result = Result.Success<int, string>(100).Do(s => Console.WriteLine(s)); // Outputs "100" to the console
-Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Does nothing
-Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console
+Result.Success<int, string>(100).Do(s => Console.WriteLine(s)); // Outputs "100" to the console
+Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Does nothing
+Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console
 ```
 
 ## Query Expressions
