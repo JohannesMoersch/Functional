@@ -38,7 +38,10 @@ namespace Functional
 			if (select == null)
 				throw new ArgumentNullException(nameof(select));
 
-			return result.Match(success => Result.Success<TResult, TFailure>(select.Invoke(success)), Result.Failure<TResult, TFailure>);
+			if (result.TryGetValue(out var success, out var failure))
+				return Result.Success<TResult, TFailure>(select.Invoke(success));
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		public static async Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> select)
@@ -64,11 +67,10 @@ namespace Functional
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return result.Match
-			(
-				success => predicate.Invoke(success) ? Result.Success<TSuccess, TFailure>(success) : Result.Failure<TSuccess, TFailure>(failureFactory.Invoke(success)),
-				Result.Failure<TSuccess, TFailure>
-			);
+			if (result.TryGetValue(out var success, out var failure))
+				return predicate.Invoke(success) ? Result.Success<TSuccess, TFailure>(success) : Result.Failure<TSuccess, TFailure>(failureFactory.Invoke(success));
+
+			return Result.Failure<TSuccess, TFailure>(failure);
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
@@ -79,7 +81,10 @@ namespace Functional
 			if (mapFailure == null)
 				throw new ArgumentNullException(nameof(mapFailure));
 
-			return result.Match(Result.Success<TSuccess, TResult>, failure => Result.Failure<TSuccess, TResult>(mapFailure.Invoke(failure)));
+			if (result.TryGetValue(out var success, out var failure))
+				return Result.Success<TSuccess, TResult>(success);
+
+			return Result.Failure<TSuccess, TResult>(mapFailure.Invoke(failure));
 		}
 
 		public static async Task<Result<TSuccess, TResult>> MapFailure<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, TResult> mapFailure)
@@ -103,25 +108,20 @@ namespace Functional
 		public static async Task<Result<Option<TResult>, TFailure>> BindIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Result<Option<TResult>, TFailure>> bind)
 			=> (await result).BindIfSome(bind);
 
-		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> success, Action<TFailure> failure)
+		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
 		{
-			if (success == null)
-				throw new ArgumentNullException(nameof(success));
+			if (onSuccess == null)
+				throw new ArgumentNullException(nameof(onSuccess));
 
-			if (failure == null)
-				throw new ArgumentNullException(nameof(failure));
+			if (onFailure == null)
+				throw new ArgumentNullException(nameof(onFailure));
 
-			return result.Match(
-				value =>
-				{
-					success.Invoke(value);
-					return result;
-				},
-				value =>
-				{
-					failure.Invoke(value);
-					return result;
-				});
+			if (result.TryGetValue(out var success, out var failure))
+				onSuccess.Invoke(success);
+			else
+				onFailure.Invoke(failure);
+
+			return result;
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
@@ -172,7 +172,15 @@ namespace Functional
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return result.Match(option => option.Match(Result.Success<TSuccess, TFailure>, () => Result.Failure<TSuccess, TFailure>(failureFactory.Invoke())), failure => Result.Failure<TSuccess, TFailure>(failure));
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (success.TryGetValue(out var some))
+					return Result.Success<TSuccess, TFailure>(some);
+
+				return Result.Failure<TSuccess, TFailure>(failureFactory.Invoke());
+			}
+
+			return Result.Failure<TSuccess, TFailure>(failure);
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> FailureIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TFailure> failureFactory)
@@ -186,7 +194,19 @@ namespace Functional
 			if(failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
 
-			return result.Bind(success => Result.Try(() => successFactory(success), failureFactory));
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				try
+				{
+					return Result.Success<TResult, TFailure>(successFactory.Invoke(success));
+				}
+				catch (Exception ex)
+				{
+					return Result.Failure<TResult, TFailure>(failureFactory.Invoke(ex));
+				}
+			}
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		public static Result<TResult, Exception> TrySelect<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
