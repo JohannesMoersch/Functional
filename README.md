@@ -75,23 +75,25 @@ Option<int> option = Option.Some<object>("100").OfType<int>(); // Returns Option
 Option<int> option = Option.None<object>().OfType<int>(); // Returns Option<int> with no value
 ```
 #### Where
-If `Some`, this extension will invoke the delegate parameter and if true is returned it will return `Some` of the input value. Otherwise `None` is returned.
+If `Some`, this extension will invoke the delegate parameter and if `true` is returned it will return `Some` of the input value. Otherwise `None` is returned.
 ```csharp
 Option<int> option = Option.Some(100).Where(v => true); // Returns Option<int> with a value of 100
 Option<int> option = Option.Some(100).Where(v => false); // Returns Option<int> with no value
 Option<int> option = Option.None<int>().Where(v => true); // Returns Option<int> with no value
 ```
 #### Do
-This extension returns the input Option and is meant only to create side effects. If `Some`, this extension will invoke the delegate parameter, and if `None` it will not. There are overloads that also accept a delegate parameter to execute when `None`.
+This extension returns the input Option and is meant only to create side effects. If `Some`, this extension will invoke the first delegate parameter, and if `None` it will invoke the second delegate parameter (if provided).
 ```csharp
-Option<int> option = Option.Some(100).Do(v => Console.WriteLine(v)); // Outputs 100 to the console and returns Option<int> with a value of 100
+Option<int> option = Option.Some(100).Do(v => Console.WriteLine(v)); // Outputs "100" to the console and returns Option<int> with a value of 100
 Option<int> option = Option.None<int>().Do(v => Console.WriteLine(v)); // Returns Option<int> with no value
+Option<int> option = Option.None<int>().Do(v => Console.WriteLine(v), () => Console.WriteLine("None")); // Outputs "None" to the console and returns Option<int> with no value
 ```
 #### Apply
-This extension returns void and is meant only to create side effects. If `Some`, this extension will invoke the delegate parameter, and if `None` it will not. There are overloads that also accept a delegate parameter to execute when `None`.
+This extension returns void and is meant only to create side effects. If `Some`, this extension will invoke the first delegate parameter, and if `None` it will invoke the second delegate parameter (if provided).
 ```csharp
-Option.Some(100).Apply(v => Console.WriteLine(v)); // Outputs 100 to the console
+Option.Some(100).Apply(v => Console.WriteLine(v)); // Outputs "100" to the console
 Option.None<int>().Apply(v => Console.WriteLine(v)); // Does nothing
+Option.None<int>().Apply(v => Console.WriteLine(v), () => Console.WriteLine("None")); // Outputs "None" to the console
 ```
 #### ToResult
 If `Some`, this extension will return a `Success` result with the value, and if `None` it will a `Failure` result contains the failure produced by the delegate parameter.
@@ -137,22 +139,22 @@ Working with `Match` can be tedious, but there are many extension methods that m
 #### Select
 If `Success`, this extension will return a `Success` Result with the value produced by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp
-Result<int, string> result = Result.Success<float, string>(1.5).Select(v => (int)v); // Returns Result<int, string> with a success value of 1
-Result<int, string> result = Result.Failure<float, string>("Failure").Select(v => (int)v); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Success<float, string>(1.5).Select(s => (int)s); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Failure<float, string>("Failure").Select(s => (int)s); // Returns Result<int, string> with a failure value of "Failure"
 ```
 #### TrySelect
 If `Success`, this extension will execute the first delegate parameter. If an exception is thrown, it will execute the second delegate parameter (if provided), and return a `Failure` Result with the value produced by the second delegate parameter. If no exception is thrown, it will return a `Success` Result with the value produced by the first delegate parameter. If the input Result is a `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp
-Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(v => (int)v); // Returns Result<int, string> with a success value of 1
-Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(v => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, Exception> with a failure value of "Exception Message"
-Result<int, string> result = Result.Failure<float, string>("Failure").Select(v => throw new Exception("Exception Message")); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(s => (int)s); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, Exception> with a failure value of "Exception Message"
+Result<int, string> result = Result.Failure<float, string>("Failure").Select(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, string> with a failure value of "Failure"
 ```
 #### Bind
 If `Success`, this extension will return the Result returned by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp
-Result<int, string> result = Result.Success<float, string>(1.5).Bind(v => Result.Success<int, string>((int)v)); // Returns Result<int, string> with a success value of 1
-Result<int, string> result = Result.Success<float, string>(1.5).Bind(v => Result.Failure<int, string>("Failure")); // Returns Result<int, string> with a failure value of "Failure"
-Result<int, string> result = Result.Failure<float, string>("Failure").Bind(v => Result.Success<int, string>((int)v)); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result.Success<int, string>((int)s)); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result.Failure<int, string>("Failure")); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Failure<float, string>("Failure").Bind(s => Result.Success<int, string>((int)s)); // Returns Result<int, string> with a failure value of "Failure"
 ```
 #### IsSuccess
 If `Success`, this extension will return `true`, and if `Failure` it will return `false`.
@@ -171,4 +173,31 @@ If `Success`, this extension will return `None`, and if `Failure` it will return
 ```csharp
 Option<string> option = Result.Success<int, string>(100).Failure(); // Returns Option<string> with no value
 Option<string> option = Result.Failure<int, string>("Failure").Failure(); // Returns Option<string> with a value of "Failure"
+```
+#### Where
+If `Success`, this extension will invoke the first delegate parameter and if `true` is returned it will return `Success` of the input success value. If `false` is returns from the first delegate parameter it will return a `Failure` Result with the failure value produced by the second delegate parameter. If the input Result is a `Failure` it will return a `Failure` Result with the existing failure value.
+```csharp
+Result<int, string> result = Result.Success<int, string>(100).Where(s => true, s => $"Failed on value {v}"); // Returns Result<int, string> with a success value of 100
+Result<int, string> result = Result.Success<int, string>(100).Where(s => false, s => $"Failed on value {v}"); // Returns Result<int, string> with a failure value of "Failed on value 100"
+Result<int, string> result = Result.Failure<int, string>("Failure").Where(s => true, s => $"Failed on value {v}"); // Returns Result<int, string> with a failure value of "Failure"
+```
+#### MapFailure
+If `Success`, this extension will return a `Success` Result with the existing success value, and if `Failure` it will return a `Failure` Result with the value produced by the delegate parameter.
+```csharp
+Result<int, int> result = Result.Success<int, string>(100).MapFailure(f => f.Length); // Returns Result<int, int> with a success value of 100
+Result<int, int> result = Result.Failure<int, string>("Failure").MapFailure(f => f.Length); // Returns Result<int, int> with a failure value of 7
+```
+#### Do
+This extension returns the input Result and is meant only to create side effects. If `Success`, this extension will invoke the first delegate parameter, and if `Failure` it will invoke the second delegate parameter (if provided).
+```csharp
+Result<int, string> result = Result.Success<int, string>(100).Do(s => Console.WriteLine(s)); // Outputs "100" to the console and returns Result<int, string> with a success value of 100
+Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console and returns Result<int, string> with a failure value of "Failure"
+```
+#### Apply
+This extension returns void and is meant only to create side effects. If `Success`, this extension will invoke the first delegate parameter, and if `Failure` it will invoke the second delegate parameter (if provided).
+```csharp
+Result<int, string> result = Result.Success<int, string>(100).Do(s => Console.WriteLine(s)); // Outputs "100" to the console
+Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Does nothing
+Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console
 ```
