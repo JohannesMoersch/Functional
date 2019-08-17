@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
@@ -47,7 +48,7 @@ namespace Functional
 		}
 
 		public bool Equals(Option<TValue> other)
-			=> _hasValue == other._hasValue && (!_hasValue || Equals(_value, other._value));
+			=> _hasValue == other._hasValue && (!_hasValue || EqualityComparer<TValue>.Default.Equals(_value, other._value));
 
 		public override int GetHashCode()
 			=> _hasValue ? _value.GetHashCode() * 31 : 0;

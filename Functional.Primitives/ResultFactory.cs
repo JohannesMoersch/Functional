@@ -158,7 +158,21 @@ namespace Functional
 		}
 
 		public static Result<Unit, Exception> Try(Action successFactory)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Functional.Unit.Value; });
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			try
+			{
+				successFactory.Invoke();
+
+				return Success<Unit, Exception>(Functional.Unit.Value);
+			}
+			catch (Exception ex)
+			{
+				return Failure<Unit, Exception>(ex);
+			}
+		}
 
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -185,8 +199,22 @@ namespace Functional
 		public static Task<Result<Unit, Exception>> Try(Func<Task> successFactory)
 			=> TryAsync(successFactory);
 
-		public static Task<Result<Unit, Exception>> TryAsync(Func<Task> successFactory)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : TryAsync(async () => { await successFactory.Invoke(); return Functional.Unit.Value; });
+		public static async Task<Result<Unit, Exception>> TryAsync(Func<Task> successFactory)
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			try
+			{
+				await successFactory.Invoke();
+
+				return Success<Unit, Exception>(Functional.Unit.Value);
+			}
+			catch (Exception ex)
+			{
+				return Failure<Unit, Exception>(ex);
+			}
+		}
 
 		public static Result<TSuccess, TFailure> Try<TSuccess, TFailure>(Func<TSuccess> successFactory, Func<Exception, TFailure> @catch)
 		{
@@ -207,7 +235,24 @@ namespace Functional
 		}
 
 		public static Result<Unit, TFailure> Try<TFailure>(Action successFactory, Func<Exception, TFailure> @catch)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : Try(() => { successFactory.Invoke(); return Functional.Unit.Value; }, @catch);
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			if (@catch == null)
+				throw new ArgumentNullException(nameof(@catch));
+
+			try
+			{
+				successFactory.Invoke();
+
+				return Success<Unit, TFailure>(Functional.Unit.Value);
+			}
+			catch (Exception ex)
+			{
+				return Failure<Unit, TFailure>(@catch.Invoke(ex));
+			}
+		}
 
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -237,16 +282,33 @@ namespace Functional
 		public static Task<Result<Unit, TFailure>> Try<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
 			=> TryAsync(successFactory, @catch);
 
-		public static Task<Result<Unit, TFailure>> TryAsync<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
-			=> successFactory == null ? throw new ArgumentNullException(nameof(successFactory)) : TryAsync(async () => { await successFactory.Invoke(); return Functional.Unit.Value; }, @catch);
+		public static async Task<Result<Unit, TFailure>> TryAsync<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			if (@catch == null)
+				throw new ArgumentNullException(nameof(@catch));
+
+			try
+			{
+				await successFactory.Invoke();
+
+				return Success<Unit, TFailure>(Functional.Unit.Value);
+			}
+			catch (Exception ex)
+			{
+				return Failure<Unit, TFailure>(@catch.Invoke(ex));
+			}
+		}
 
 		public static Result<Unit, TFailure> Unit<TFailure>()
 			=> Success<Unit, TFailure>(Functional.Unit.Value);
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, TFailure failure)
-			=> Create(isSuccess, Functional.Unit.Value, failure);
+			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failure);
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, Func<TFailure> failureFactory)
-			=> Create(isSuccess, () => Functional.Unit.Value, failureFactory);
+			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failureFactory.Invoke());
 	}
 }
