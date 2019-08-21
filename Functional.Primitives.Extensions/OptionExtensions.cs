@@ -10,7 +10,7 @@ namespace Functional
 	public static class OptionExtensions
 	{
 		public static bool HasValue<TValue>(this Option<TValue> option)
-			=> option.Match(_ => true, () => false);
+			=> option.Match(Helpers.ValueToTrue<TValue>.Value, Helpers.False.Value);
 
 		public static async Task<bool> HasValue<TValue>(this Task<Option<TValue>> option)
 			=> (await option).HasValue();
@@ -30,33 +30,41 @@ namespace Functional
 			=> (await option).Select(select);
 
 		public static Option<TResult> Bind<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
-			=> option.Match(bind, Option.None<TResult>);
+		{
+			if (bind == null)
+				throw new ArgumentNullException(nameof(bind));
+
+			if (option.TryGetValue(out var some))
+				return bind.Invoke(some);
+			
+			return Option.None<TResult>();
+		}
 
 		public static async Task<Option<TResult>> Bind<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TResult>> bind)
 			=> (await option).Bind(bind);
 
 		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, TValue defaultValue = default)
-			=> option.Match(value => value, () => defaultValue);
+			=> option.TryGetValue(out var some) ? some : defaultValue;
 
 		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
 
 		public static TValue? ValueOrNull<TValue>(this Option<TValue> option)
 			where TValue : struct
-			=> option.Match(value => (TValue?)value, () => null);
+			=> option.TryGetValue(out var some) ? (TValue?)some : null;
 
 		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
 			where TValue : struct
 			=> (await option).ValueOrNull();
 
 		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
-			=> option.Match(Option.Some, () => Option.Some(defaultValue));
+			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);
 
 		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).DefaultIfNone(defaultValue);
 
 		public static Option<TValue> OfType<TValue>(this Option<object> option)
-			=> option.Match(value => Option.Create(value is TValue, () => (TValue)value), Option.None<TValue>);
+			=> option.TryGetValue(out var some) ? (some is TValue value ? Option.Some(value) : Option.None<TValue>()) : Option.None<TValue>();
 
 		public static async Task<Option<TValue>> OfType<TValue>(this Task<Option<object>> option)
 			=> (await option).OfType<TValue>();
@@ -77,7 +85,7 @@ namespace Functional
 
 		public static TValue? ToNullable<TValue>(this Option<TValue> option)
 			where TValue : struct
-			=> option.Match(value => (TValue?)value, () => null);
+			=> option.TryGetValue(out var some) ? (TValue?)some : null;
 
 		public static async Task<TValue?> ToNullable<TValue>(this Task<Option<TValue>> option)
 			where TValue : struct

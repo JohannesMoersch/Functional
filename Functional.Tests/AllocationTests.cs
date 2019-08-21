@@ -15,7 +15,8 @@ namespace Functional.Tests
 	{
 		private Assembly[] Assemblies => new[]
 		{
-			typeof(Option).Assembly
+			typeof(Option).Assembly,
+			typeof(OptionExtensions).Assembly
 		};
 
 		[Fact]
@@ -110,6 +111,6 @@ namespace Functional.Tests
 			=> Enumerable
 				.Empty<ParsedMethodBody>()
 				.Concat(type.GetRuntimeMethods().Select(m => m.GetParsedMethodBody()).WhereSome())
-				.Concat(type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Select(c => c.GetParsedMethodBody()));
+				.Concat(type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Select(c => c.GetParsedMethodBody()));
 	}
 }

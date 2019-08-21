@@ -7,43 +7,57 @@ namespace Functional
 	internal static class Helpers
 	{
 		[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method, AllowMultiple = false)]
-		public class AllowAllocationsAttribute : Attribute { }	
+		public class AllowAllocationsAttribute : Attribute { }
 
-		private class DelegateCache<T>
+		public static class ValueToValue<T>
 		{
-			public static readonly Func<T, T> Passthrough = _ => _;
-
-			public static readonly Func<T, bool> True = _ => true;
+			public static readonly Func<T, T> Value = _ => _;
 		}
 
-		private class OptionDelegateCache<T>
+		public static class ValueToTrue<T>
 		{
-			public static readonly Func<T> Default = () => default;
-
-			public static readonly Func<bool> False = () => false;
+			public static readonly Func<T, bool> Value = _ => true;
 		}
 
-		private class ResultDelegateCache<TIn, TOut>
+		public static class ValueToFalse<T>
 		{
-			public static readonly Func<TIn, TOut> Default = _ => default;
+			public static readonly Func<T, bool> Value = _ => false;
+		}
 
-			public static readonly Func<TIn, bool> False = _ => false;
+		public static class Default<T>
+		{
+			public static readonly Func<T> Value = () => default;
+		}
+
+		public static class False
+		{
+			public static readonly Func<bool> Value = () => false;
+		}
+
+		public static class ValueToDefault<TIn, TOut>
+		{
+			public static readonly Func<TIn, TOut> Value = _ => default;
+		}
+
+		public static class Some<T>
+		{
+			public static readonly Func<T, Option<T>> Value = _ => Option.Some(_);
 		}
 
 		public static bool TryGetValue<TValue>(this Option<TValue> option, out TValue some)
 		{
-			some = option.Match(DelegateCache<TValue>.Passthrough, OptionDelegateCache<TValue>.Default);
+			some = option.Match(ValueToValue<TValue>.Value, Default<TValue>.Value);
 
-			return option.Match(DelegateCache<TValue>.True, OptionDelegateCache<TValue>.False);
+			return option.Match(ValueToTrue<TValue>.Value, False.Value);
 		}
 
 		public static bool TryGetValue<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess success, out TFailure failure)
 		{
-			success = result.Match(DelegateCache<TSuccess>.Passthrough, ResultDelegateCache<TFailure, TSuccess>.Default);
+			success = result.Match(ValueToValue<TSuccess>.Value, ValueToDefault<TFailure, TSuccess>.Value);
 
-			failure = result.Match(ResultDelegateCache<TSuccess, TFailure>.Default, DelegateCache<TFailure>.Passthrough);
+			failure = result.Match(ValueToDefault<TSuccess, TFailure>.Value, ValueToValue<TFailure>.Value);
 
-			return result.Match(DelegateCache<TSuccess>.True, ResultDelegateCache<TFailure, TFailure>.False);
+			return result.Match(ValueToTrue<TSuccess>.Value, ValueToFalse<TFailure>.Value);
 		}
 	}
 }
