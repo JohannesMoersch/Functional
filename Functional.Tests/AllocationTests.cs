@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Functional.Tests.IL;
@@ -28,10 +29,9 @@ namespace Functional.Tests
 
 		private static bool FilterForNewObject(ParsedMethodBody methodBody)
 		{
-			if (methodBody.Parent.Value().Match(c => false, m => typeof(Task).IsAssignableFrom(m.ReturnType)))
-				return false;
+			var isAsyncMethod = methodBody.Parent.Value().Match(c => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
 
-			foreach (var instruction in methodBody.Instructions.Where(i => i.OpCode == OpCodes.Newobj))
+			foreach (var instruction in methodBody.Instructions.Skip(isAsyncMethod ? 1 : 0).Where(i => i.OpCode == OpCodes.Newobj))
 			{
 				if (instruction.Operand.OfType<ConstructorInfo>().Match(constructor => !constructor.ReflectedType.IsValueType && !typeof(Exception).IsAssignableFrom(constructor.ReflectedType), () => false))
 					return true;

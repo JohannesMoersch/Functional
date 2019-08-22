@@ -18,10 +18,15 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.Bind(value => bind
-				.Invoke(value)
-				.Select(obj => resultSelector.Invoke(value, obj))
-			);
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (bind.Invoke(success).TryGetValue(out var s, out var f))
+					return Result.Success<TResult, TFailure>(resultSelector.Invoke(success, s));
+
+				return Result.Failure<TResult, TFailure>(f);
+			}
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -29,7 +34,7 @@ namespace Functional
 			=> (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -37,10 +42,15 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.BindAsync(value => bind
-				.Invoke(value)
-				.Select(obj => resultSelector.Invoke(value, obj))
-			);
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if ((await bind.Invoke(success)).TryGetValue(out var s, out var f))
+					return Result.Success<TResult, TFailure>(resultSelector.Invoke(success, s));
+
+				return Result.Failure<TResult, TFailure>(f);
+			}
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -48,7 +58,7 @@ namespace Functional
 			=> await (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -56,10 +66,15 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.BindAsync(value => bind
-				.Invoke(value)
-				.SelectAsync(obj => resultSelector.Invoke(value, obj))
-			);
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (bind.Invoke(success).TryGetValue(out var s, out var f))
+					return Result.Success<TResult, TFailure>(await resultSelector.Invoke(success, s));
+
+				return Result.Failure<TResult, TFailure>(f);
+			}
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -67,7 +82,7 @@ namespace Functional
 			=> await (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -75,10 +90,15 @@ namespace Functional
 			if (resultSelector == null)
 				throw new ArgumentNullException(nameof(resultSelector));
 
-			return result.BindAsync(value => bind
-				.Invoke(value)
-				.SelectAsync(obj => resultSelector.Invoke(value, obj))
-			);
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if ((await bind.Invoke(success)).TryGetValue(out var s, out var f))
+					return Result.Success<TResult, TFailure>(await resultSelector.Invoke(success, s));
+
+				return Result.Failure<TResult, TFailure>(f);
+			}
+
+			return Result.Failure<TResult, TFailure>(failure);
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]

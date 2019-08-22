@@ -9,11 +9,16 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultAsyncExtensions
 	{
-		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
-			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> onSuccessSome, Func<Task<T>> onSuccessNone, Func<TFailure, Task<T>> onFailure)
+		{
+			if (result.TryGetValue(out var success, out var failure))
+				return success.MatchAsync(onSuccessSome, onSuccessNone);
 
-		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
-			=> result.MatchAsync(x => x.MatchAsync(successSome, successNone), failure);
+			return onFailure.Invoke(failure);
+		}
+
+		public static async Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			=> await (await result).MatchAsync(successSome, successNone, failure);
 
 		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> select)
 		{
@@ -29,8 +34,13 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> select)
 			=> await (await result).SelectAsync(select);
 
-		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
-			=> result.SelectAsync(success => success.SelectAsync(select));
+		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
+		{
+			if (result.TryGetValue(out var success, out var failure))
+				return Result.Success<Option<TResult>, TFailure>(await success.SelectAsync(select));
+
+			return Result.Failure<Option<TResult>, TFailure>(failure);
+		}
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
 			=> await (await result).SelectIfSomeAsync(select);
