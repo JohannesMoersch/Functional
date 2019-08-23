@@ -13,7 +13,7 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TValue> Where<TValue>(this Option<TValue> option, Func<TValue, Option<Unit>> predicate)
 		{
-			if (option.TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var result))
+			if (option.TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var _))
 				return Option.Some(some);
 
 			return Option.None<TValue>();
@@ -22,7 +22,7 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, Option<Unit>> predicate)
 		{
-			if ((await option).TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var result))
+			if ((await option).TryGetValue(out var some) && predicate.Invoke(some).TryGetValue(out var _))
 				return Option.Some(some);
 
 			return Option.None<TValue>();
@@ -31,7 +31,7 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TValue>> Where<TValue>(this Option<TValue> option, Func<TValue, Task<Option<Unit>>> predicate)
 		{
-			if (option.TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var result))
+			if (option.TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var _))
 				return Option.Some(some);
 
 			return Option.None<TValue>();
@@ -40,7 +40,7 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TValue>> Where<TValue>(this Task<Option<TValue>> option, Func<TValue, Task<Option<Unit>>> predicate)
 		{
-			if ((await option).TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var result))
+			if ((await option).TryGetValue(out var some) && (await predicate.Invoke(some)).TryGetValue(out var _))
 				return Option.Some(some);
 
 			return Option.None<TValue>();

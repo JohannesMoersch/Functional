@@ -10,7 +10,7 @@ namespace Functional
 	public static class OptionExtensions
 	{
 		public static bool HasValue<TValue>(this Option<TValue> option)
-			=> option.Match(Helpers.ValueToTrue<TValue>.Value, Helpers.False.Value);
+			=> option.Match(DelegateCache<TValue>.True, DelegateCache.False);
 
 		public static async Task<bool> HasValue<TValue>(this Task<Option<TValue>> option)
 			=> (await option).HasValue();
@@ -105,26 +105,6 @@ namespace Functional
 		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
 			=> (await option).ToResult(failureFactory);
 
-		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> @do)
-		{
-			if (@do == null)
-				throw new ArgumentNullException(nameof(@do));
-
-			if (option.TryGetValue(out var some))
-				@do.Invoke(some);
-
-			return option;
-		}
-
-		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> @do)
-			=> (await option).Do(@do);
-
-		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> apply)
-			=> option.Do(apply);
-
-		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
-			=> option.Do(apply);
-
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> doWhenSome, Action doWhenNone)
 		{
 			if (doWhenSome == null)
@@ -144,10 +124,22 @@ namespace Functional
 		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> doWhenSome, Action doWhenNone)
 			=> (await option).Do(doWhenSome, doWhenNone);
 
+		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> @do)
+			=> option.Do(@do, DelegateCache.Void);
+
+		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> @do)
+			=> (await option).Do(@do, DelegateCache.Void);
+
 		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> applyWhenSome, Action applyWhenNone)
 			=> option.Do(applyWhenSome, applyWhenNone);
 
 		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> applyWhenSome, Action applyWhenNone)
 			=> option.Do(applyWhenSome, applyWhenNone);
+
+		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> apply)
+			=> option.Do(apply);
+
+		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
+			=> option.Do(apply);
 	}
 }

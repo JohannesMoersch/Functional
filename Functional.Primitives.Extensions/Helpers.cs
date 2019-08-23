@@ -1,63 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Functional
 {
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method, AllowMultiple = false)]
+	internal class AllowAllocationsAttribute : Attribute { }
+
+	internal static class DelegateCache
+	{
+		public static readonly Func<bool> True = () => true;
+		public static readonly Func<bool> False = () => false;
+		public static readonly Action Void = () => { };
+		public static readonly Func<Task> Task = () => System.Threading.Tasks.Task.CompletedTask;
+	}
+
+	internal static class DelegateCache<T>
+	{
+		public static readonly Func<T, bool> True = _ => true;
+		public static readonly Func<T, bool> False = _ => false;
+		public static readonly Func<T> Default = () => default;
+		public static readonly Func<T, T> Passthrough = _ => _;
+		public static readonly Func<T, Option<T>> Some = _ => Option.Some(_);
+		public static readonly Action<T> Void = _ => { };
+		public static readonly Func<T, Task> Task = _ => System.Threading.Tasks.Task.CompletedTask;
+	}
+
+	internal static class DelegateCache<TIn, TOut>
+	{
+		public static readonly Func<TIn, TOut> Default = _ => default;
+	}
+
 	internal static class Helpers
 	{
-		[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method, AllowMultiple = false)]
-		public class AllowAllocationsAttribute : Attribute { }
-
-		public static class ValueToValue<T>
-		{
-			public static readonly Func<T, T> Value = _ => _;
-		}
-
-		public static class ValueToTrue<T>
-		{
-			public static readonly Func<T, bool> Value = _ => true;
-		}
-
-		public static class ValueToFalse<T>
-		{
-			public static readonly Func<T, bool> Value = _ => false;
-		}
-
-		public static class Default<T>
-		{
-			public static readonly Func<T> Value = () => default;
-		}
-
-		public static class False
-		{
-			public static readonly Func<bool> Value = () => false;
-		}
-
-		public static class ValueToDefault<TIn, TOut>
-		{
-			public static readonly Func<TIn, TOut> Value = _ => default;
-		}
-
-		public static class Some<T>
-		{
-			public static readonly Func<T, Option<T>> Value = _ => Option.Some(_);
-		}
-
 		public static bool TryGetValue<TValue>(this Option<TValue> option, out TValue some)
 		{
-			some = option.Match(ValueToValue<TValue>.Value, Default<TValue>.Value);
+			some = option.Match(DelegateCache<TValue>.Passthrough, DelegateCache<TValue>.Default);
 
-			return option.Match(ValueToTrue<TValue>.Value, False.Value);
+			return option.Match(DelegateCache<TValue>.True, DelegateCache.False);
 		}
 
 		public static bool TryGetValue<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess success, out TFailure failure)
 		{
-			success = result.Match(ValueToValue<TSuccess>.Value, ValueToDefault<TFailure, TSuccess>.Value);
+			success = result.Match(DelegateCache<TSuccess>.Passthrough, DelegateCache<TFailure, TSuccess>.Default);
 
-			failure = result.Match(ValueToDefault<TSuccess, TFailure>.Value, ValueToValue<TFailure>.Value);
+			failure = result.Match(DelegateCache<TSuccess, TFailure>.Default, DelegateCache<TFailure>.Passthrough);
 
-			return result.Match(ValueToTrue<TSuccess>.Value, ValueToFalse<TFailure>.Value);
+			return result.Match(DelegateCache<TSuccess>.True, DelegateCache<TFailure>.False);
 		}
 	}
 }

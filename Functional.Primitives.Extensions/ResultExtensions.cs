@@ -62,13 +62,17 @@ namespace Functional
 			=> (await result).Select(select);
 
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
-			=> result.TryGetValue(out var success, out var failure) ? Result.Success<Option<TResult>, TFailure>(success.Select(select)) : Result.Failure<Option<TResult>, TFailure>(failure);
+				=> result.TryGetValue(out var success, out var failure) 
+					? Result.Success<Option<TResult>, TFailure>(success.Select(select)) 
+					: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
 			=> (await result).SelectIfSome(select);
 
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Option<TResult>> select)
-			=> result.TryGetValue(out var success, out var failure) ? Result.Success<Option<TResult>, TFailure>(success.Bind(select)) : Result.Failure<Option<TResult>, TFailure>(failure);
+			=> result.TryGetValue(out var success, out var failure) 
+				? Result.Success<Option<TResult>, TFailure>(success.Bind(select)) 
+				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Option<TResult>> select)
 			=> (await result).SelectIfSome(select);
@@ -126,7 +130,7 @@ namespace Functional
 			if (result.TryGetValue(out var success, out var failure))
 			{
 				if (success.TryGetValue(out var some))
-					return bind.Invoke(some).Select(Helpers.Some<TResult>.Value);
+					return bind.Invoke(some).Select(DelegateCache<TResult>.Some);
 
 				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
 			}
@@ -176,15 +180,7 @@ namespace Functional
 			=> (await result).Do(success, failure);
 
 		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess)
-		{
-			if (onSuccess == null)
-				throw new ArgumentNullException(nameof(onSuccess));
-
-			if (result.TryGetValue(out var success, out var failure))
-				onSuccess.Invoke(success);
-
-			return result;
-		}
+			=> result.Do(onSuccess, DelegateCache<TFailure>.Void);
 
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
 			=> (await result).Do(onSuccess);
@@ -212,8 +208,8 @@ namespace Functional
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess)
 			=> result.Do(onSuccess);
 
-		public static async Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
-			=> (await result).Do(onSuccess);
+		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
+			=> result.Do(onSuccess);
 
 		public static void ApplyIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> action)
 			=> result.DoIfSome(action);
@@ -274,13 +270,13 @@ namespace Functional
 		}
 
 		public static Result<TResult, Exception> TrySelect<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
-			=> TrySelect(result, successFactory, Helpers.ValueToValue<Exception>.Value);
+			=> TrySelect(result, successFactory, DelegateCache<Exception>.Passthrough);
 
 		public static async Task<Result<TResult, TFailure>> TrySelect<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 			=> (await result).TrySelect(successFactory, failureFactory);
 
 		public static async Task<Result<TResult, Exception>> TrySelect<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, TResult> successFactory)
-			=> (await result).TrySelect(successFactory, Helpers.ValueToValue<Exception>.Value);
+			=> (await result).TrySelect(successFactory, DelegateCache<Exception>.Passthrough);
 	}
 }
 	

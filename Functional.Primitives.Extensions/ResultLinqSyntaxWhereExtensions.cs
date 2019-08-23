@@ -16,7 +16,7 @@ namespace Functional
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
 
-			if (result.TryGetValue(out var success, out var _) && failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
+			if (result.TryGetValue(out var success, out var _) && !failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return result;
@@ -30,7 +30,7 @@ namespace Functional
 
 			var value = await result;
 
-			if (value.TryGetValue(out var success, out var _) && failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
+			if (value.TryGetValue(out var success, out var _) && !failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return value;
@@ -42,7 +42,7 @@ namespace Functional
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
 
-			if (result.TryGetValue(out var success, out var _) && (await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
+			if (result.TryGetValue(out var success, out var _) && !(await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return result;
@@ -56,7 +56,7 @@ namespace Functional
 
 			var value = await result;
 
-			if (value.TryGetValue(out var success, out var _) && (await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
+			if (value.TryGetValue(out var success, out var _) && !(await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return value;
