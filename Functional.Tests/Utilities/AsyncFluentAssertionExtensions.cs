@@ -16,6 +16,9 @@ namespace Functional
 		public static async Task<AndConstraint<ObjectAssertions>> Be(this Task<ObjectAssertions> source, object expected)
 			=> (await source).Be(expected);
 
+		public static async Task<AndConstraint<ObjectAssertions>> BeOfType<T>(this Task<ObjectAssertions> source)
+			=> (await source).BeOfType<T>();
+
 		public static async Task<StringAssertions> Should(this Task<string> source)
 			=> (await source).Should();
 

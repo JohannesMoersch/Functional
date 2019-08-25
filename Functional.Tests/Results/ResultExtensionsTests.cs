@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -6,1366 +9,628 @@ namespace Functional.Tests.Results
 {
 	public class ResultExtensionsTests
 	{
-		public class WhenResultOfOption
+		public class WhenResultIsSuccess
 		{
-			public class AndMatch
+			private Result<int, string> Value => Result.Success<int, string>(10);
+
+			[Fact]
+			public void IsSuccess()
+				=> Value
+					.IsSuccess()
+					.Should()
+					.BeTrue();
+
+			[Fact]
+			public void Success()
+				=> Value
+					.Success()
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void Failure()
+				=> Value
+					.Failure()
+					.AssertNone();
+
+			[Fact]
+			public void Select()
+				=> Value
+					.Select(i => i * 2)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
+
+			[Fact]
+			public void WhereTrue()
+				=> Value
+					.Where(_ => Result.Unit<string>())
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void WhereFalse()
+				=> Value
+					.Where(_ => Result.Failure<Unit, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("123");
+
+			[Fact]
+			public void MapFailure()
+				=> Value
+					.MapFailure(i => 1.0f)
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void BindSuccess()
+				=> Value
+					.Bind(i => Result.Success<float, string>(i))
+					.AssertSuccess()
+					.Should()
+					.Be(10.0f);
+
+			[Fact]
+			public void BindFailure()
+				=> Value
+					.Bind(i => Result.Failure<float, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("123");
+
+			[Fact]
+			public void DoWithOneParameter()
 			{
-				[Fact]
-				public void ShouldMapOptionSomeToFirstValue() 
-					=> Result
-						.Success<Option<int>, string>(Option.Some(1337))
-						.Match(First, Second, Third)
-						.Should()
-						.Be("1337");
-
-				[Fact]
-				public void ShouldMapOptionNoneToSecondValue() 
-					=> Result
-						.Success<Option<int>, string>(Option.None<int>())
-						.Match(First, Second, Third)
-						.Should()
-						.Be("none");
-
-				[Fact]
-				public void ShouldMapOptionNoneToThirdValue() 
-					=> Result
-						.Failure<Option<int>, string>("error")
-						.Match(First, Second, Third)
-						.Should()
-						.Be("error");
-
-				private static string First(int i) => i.ToString();
-				private static string Second() => "none";
-				private static string Third(string s) => s;
+				bool success = false;
+				Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeTrue();
 			}
 
-			public class AndMatchAsync
+			[Fact]
+			public void DoWithTwoParameters()
 			{
-				[Fact]
-				public Task ShouldMapOptionSomeToFirstValue() 
-					=> Result
-						.Success<Option<int>, string>(Option.Some(1337))
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("1337");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToSecondValue() 
-					=> Result
-						.Success<Option<int>, string>(Option.None<int>())
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("none");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToThirdValue() 
-					=> Result
-						.Failure<Option<int>, string>("error")
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("error");
-
-				private static Task<string> First(int i) => Task.FromResult(i.ToString());
-				private static Task<string> Second() => Task.FromResult("none");
-				private static Task<string> Third(string s) => Task.FromResult(s);
+				bool success = false, failure = false;
+				Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndSelectIfSome
+			[Fact]
+			public void ApplyWithOneParameter()
 			{
-				public class OntoValueProducingFunction
-				{
-					[Fact]
-					public void ShouldMapOptionSomeToOptionSome() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.SelectIfSome(IsEven)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
-
-					[Fact]
-					public void ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.SelectIfSome(IsEven)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public void ShouldDoNothingOnFailure() 
-						=> Result
-							.Failure<Option<int>, string>("some error")
-							.SelectIfSome(IsEven)
-							.AssertFailure();
-
-					private static bool IsEven(int i) => i % 2 == 0;
-				}
-
-				public class OntoOptionProducingFunction
-				{
-					public class OfSome
-					{
-						[Fact]
-						public void ShouldMapOptionSomeToOptionSome() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSome(IsEven)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public void ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSome(IsEven)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.SelectIfSome(IsEven)
-								.AssertFailure();
-
-						private static Option<bool> IsEven(int i) => Option.Some(i % 2 == 0);
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public void ShouldMapOptionSomeToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSome(IsEven)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSome(IsEven)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.SelectIfSome(IsEven)
-								.AssertFailure();
-
-						private static Option<bool> IsEven(int i) => Option.None<bool>();
-					}
-				}
+				bool success = false;
+				Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeTrue();
 			}
 
-			public class AndSelectIfSomeAsync
+			[Fact]
+			public void ApplyWithTwoParameters()
 			{
-				public class OntoValueProducingFunction
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.SelectIfSomeAsync(IsEvenAsync)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.SelectIfSomeAsync(IsEvenAsync)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Result
-							.Failure<Option<int>, string>("some error")
-							.SelectIfSomeAsync(IsEvenAsync)
-							.AssertFailure();
-
-					private static Task<bool> IsEvenAsync(int i) => Task.FromResult(i % 2 == 0);
-				}
-
-				public class OntoOptionProducingFunction
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertFailure();
-
-						private static Task<Option<bool>> IsEvenAsync(int i) => Task.FromResult(Option.Some(i % 2 == 0));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.SelectIfSomeAsync(IsEvenAsync)
-								.AssertFailure();
-
-						private static Task<Option<bool>> IsEvenAsync(int i) => Task.FromResult(Option.None<bool>());
-					}
-				}
+				bool success = false, failure = false;
+				Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndBindIfSome
-			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					[Fact]
-					public void ShouldMapOptionSomeToOptionSome() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSome(IsEvenResult)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
+			[Fact]
+			public void TrySelect()
+				=> Value
+					.TrySelect(i => i * 2, e => e.Message)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
 
-					[Fact]
-					public void ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSome(IsEvenResult)
-							.AssertSuccess()
-							.AssertNone();
+			[Fact]
+			public void TrySelectThrowsException()
+				=> Value
+					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("123");
 
-					[Fact]
-					public void ShouldDoNothingOnFailure() 
-						=> Result
-							.Failure<Option<int>, string>("some error")
-							.BindIfSome(IsEvenResult)
-							.AssertFailure();
+			[Fact]
+			public void TrySelectException()
+				=> Result
+					.Success<int, Exception>(10)
+					.TrySelect(i => i * 2)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
 
-					private static Result<bool, string> IsEvenResult(int i) => Result.Success<bool, string>(i % 2 == 0);
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public void ShouldMapOptionSomeToFaultedResult() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public void ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSome(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public void ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						Result.Failure<Option<int>, string>(EXISTING_ERROR)
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Result<bool, string> ErrorResult(int i) => Result.Failure<bool, string>(ERROR);
-				}
-			}
-
-			public class AndBindIfSomeAsync
-			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Result
-							.Failure<Option<int>, string>("some error")
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertFailure();
-
-					private static Task<Result<bool, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<bool, string>(i % 2 == 0));
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSomeAsync(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Result.Failure<Option<int>, string>(EXISTING_ERROR)
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Task<Result<bool, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<bool, string>(ERROR));
-				}
-			}
-
-			public class AndBindIfSomeToResultOfOptionProducingFunction
-			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					public class OfSome
-					{
-						[Fact]
-						public void ShouldMapOptionSomeToOptionSome() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.BindIfSome(IsEvenResult)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public void ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.BindIfSome(IsEvenResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.BindIfSome(IsEvenResult)
-								.AssertFailure();
-
-						private static Result<Option<bool>, string> IsEvenResult(int i) => Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public void ShouldMapOptionSomeToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.BindIfSome(IsNoneResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.BindIfSome(IsNoneResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public void ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.BindIfSome(IsNoneResult)
-								.AssertFailure();
-
-						private static Result<Option<bool>, string> IsNoneResult(int i) => Result.Success<Option<bool>, string>(Option.None<bool>());
-					}
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public void ShouldMapOptionSomeToFaultedResult() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public void ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSome(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public void ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						Result.Failure<Option<int>, string>(EXISTING_ERROR)
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Result<Option<bool>, string> ErrorResult(int i) => Result.Failure<Option<bool>, string>(ERROR);
-				}
-			}
-
-			public class AndBindIfSomeAsyncToResultOfOptionProducingFunction
-			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertFailure();
-
-						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0)));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.Some(1337))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Result
-								.Success<Option<int>, string>(Option.None<int>())
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Result
-								.Failure<Option<int>, string>("some error")
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertFailure();
-
-						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.None<bool>()));
-					}
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Result
-							.Success<Option<int>, string>(Option.Some(1337))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Result
-							.Success<Option<int>, string>(Option.None<int>())
-							.BindIfSomeAsync(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Result.Failure<Option<int>, string>(EXISTING_ERROR)
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Task<Result<Option<bool>, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<Option<bool>, string>(ERROR));
-				}
-			}
-
-			public class WhenApplyIfSome
-			{
-				[Fact]
-				public void ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					Result.Success<Option<int>, string>(Option.Some(1337)).ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public void ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					Result.Success<Option<int>, string>(Option.None<int>()).ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public void ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					Result.Failure<Option<int>, string>("error").ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
-			}
-
-			public class WhenApplyIfSomeAsync
-			{
-				[Fact]
-				public async Task ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					await Result.Success<Option<int>, string>(Option.Some(1337)).ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					await Result.Success<Option<int>, string>(Option.None<int>()).ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					await Result.Failure<Option<int>, string>("error").ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
-			}
+			[Fact]
+			public void TrySelectExceptionThrowsException()
+				=> Result
+					.Success<int, Exception>(10)
+					.TrySelect<int, int>(i => throw new TestException())
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
 		}
 
-		public class WhenTaskOfResultOfOption
+		public class WhenTaskResultIsSuccess
 		{
-			public class AndMatch
+			private Task<Result<int, string>> Value => Task.FromResult(Result.Success<int, string>(10));
+
+			[Fact]
+			public Task IsSuccess()
+				=> Value
+					.IsSuccess()
+					.Should()
+					.BeTrue();
+
+			[Fact]
+			public Task Success()
+				=> Value
+					.Success()
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public Task Failure()
+				=> Value
+					.Failure()
+					.AssertNone();
+
+			[Fact]
+			public Task Select()
+				=> Value
+					.Select(i => i * 2)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
+
+			[Fact]
+			public Task WhereTrue()
+				=> Value
+					.Where(_ => Result.Unit<string>())
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public Task WhereFalse()
+				=> Value
+					.Where(_ => Result.Failure<Unit, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("123");
+
+			[Fact]
+			public Task MapFailure()
+				=> Value
+					.MapFailure(i => 1.0f)
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public Task BindSuccess()
+				=> Value
+					.Bind(i => Result.Success<float, string>(i))
+					.AssertSuccess()
+					.Should()
+					.Be(10.0f);
+
+			[Fact]
+			public Task BindFailure()
+				=> Value
+					.Bind(i => Result.Failure<float, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("123");
+
+			[Fact]
+			public async Task DoWithOneParameter()
 			{
-				[Fact]
-				public Task ShouldMapOptionSomeToFirstValue() 
-					=> Task
-						.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-						.Match(First, Second, Third)
-						.Should()
-						.Be("1337");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToSecondValue() 
-					=> Task
-						.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-						.Match(First, Second, Third)
-						.Should()
-						.Be("none");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToThirdValue() 
-					=> Task
-						.FromResult(Result.Failure<Option<int>, string>("error"))
-						.Match(First, Second, Third)
-						.Should()
-						.Be("error");
-
-				private static string First(int i) => i.ToString();
-				private static string Second() => "none";
-				private static string Third(string s) => s;
+				bool success = false;
+				await Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeTrue();
 			}
 
-			public class AndMatchAsync
+			[Fact]
+			public async Task DoWithTwoParameters()
 			{
-				[Fact]
-				public Task ShouldMapOptionSomeToFirstValue() 
-					=> Task
-						.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("1337");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToSecondValue() 
-					=> Task
-						.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("none");
-
-				[Fact]
-				public Task ShouldMapOptionNoneToThirdValue() 
-					=> Task
-						.FromResult(Result.Failure<Option<int>, string>("error"))
-						.MatchAsync(First, Second, Third)
-						.Should()
-						.Be("error");
-
-				private static Task<string> First(int i) => Task.FromResult(i.ToString());
-				private static Task<string> Second() => Task.FromResult("none");
-				private static Task<string> Third(string s) => Task.FromResult(s);
+				bool success = false, failure = false;
+				await Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndSelectIfSome
+			[Fact]
+			public async Task ApplyWithOneParameter()
 			{
-				public class OntoValueProducingFunction
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome()
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.SelectIfSome(ToString)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.Be("1337");
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfSome(ToString)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Task
-							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfSome(ToString)
-							.AssertFailure();
-
-					private static string ToString(int i) => i.ToString();
-				}
-
-				public class OntoOptionProducingFunction
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSome(ToString)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.Be("1337");
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSome(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSome(ToString)
-								.AssertFailure();
-
-						private static Option<string> ToString(int i) => Option.Some(i.ToString());
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSome(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSome(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure()
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSome(ToString)
-								.AssertFailure();
-
-						private static Option<string> ToString(int i) => Option.None<string>();
-					}
-				}
+				bool success = false;
+				await Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeTrue();
 			}
 
-			public class AndSelectIfSomeAsync
+			[Fact]
+			public async Task ApplyWithTwoParameters()
 			{
-				public class OntoValueProducingFunction
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.Be("1337");
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Task
-							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
-							.AssertFailure();
-				}
-
-				public class OntoOptionProducingFunction
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSomeAsync(ToString)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.Be("1337");
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSomeAsync(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSomeAsync(ToString)
-								.AssertFailure();
-
-						private static Task<Option<string>> ToString(int i) => Task.FromResult(Option.Some(i.ToString()));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSomeAsync(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSomeAsync(ToString)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSomeAsync(ToString)
-								.AssertFailure();
-
-						private static Task<Option<string>> ToString(int i) => Task.FromResult(Option.None<string>());
-					}
-				}
+				bool success = false, failure = false;
+				await Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndBindIfSome
+			[Fact]
+			public Task TrySelect()
+				=> Value
+					.TrySelect(i => i * 2, e => e.Message)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
+
+			[Fact]
+			public Task TrySelectThrowsException()
+				=> Value
+					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("123");
+
+			[Fact]
+			public Task TrySelectException()
+				=> Task
+					.FromResult(Result
+						.Success<int, Exception>(10)
+					)
+					.TrySelect(i => i * 2)
+					.AssertSuccess()
+					.Should()
+					.Be(20);
+
+			[Fact]
+			public Task TrySelectExceptionThrowsException()
+				=> Task
+					.FromResult(Result
+						.Success<int, Exception>(10)
+					)
+					.TrySelect<int, int>(i => throw new TestException())
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
+		}
+
+		public class WhenResultIsFailure
+		{
+			private Result<int, string> Value => Result.Failure<int, string>("abc");
+
+			[Fact]
+			public void IsSuccess()
+				=> Value
+					.IsSuccess()
+					.Should()
+					.BeFalse();
+
+			[Fact]
+			public void Success()
+				=> Value
+					.Success()
+					.AssertNone();
+
+			[Fact]
+			public void Failure()
+				=> Value
+					.Failure()
+					.AssertSome()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void Select()
+				=> Value
+					.Select(i => i * 2)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void WhereTrue()
+				=> Value
+					.Where(_ => Result.Unit<string>())
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void WhereFalse()
+				=> Value
+					.Where(_ => Result.Failure<Unit, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void MapFailure()
+				=> Value
+					.MapFailure(i => 1.0f)
+					.AssertFailure()
+					.Should()
+					.Be(1.0f);
+
+			[Fact]
+			public void BindSuccess()
+				=> Value
+					.Bind(i => Result.Success<float, string>(i))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void BindFailure()
+				=> Value
+					.Bind(i => Result.Failure<float, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void DoWithOneParameter()
 			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSome(IsEvenResult)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSome(IsEvenResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Task
-							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.BindIfSome(IsEvenResult)
-							.AssertFailure();
-
-					private static Result<bool, string> IsEvenResult(int i) => Result.Success<bool, string>(i % 2 == 0);
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSome(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Task.FromResult(Result.Failure<Option<int>, string>(EXISTING_ERROR))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Result<bool, string> ErrorResult(int i) => Result.Failure<bool, string>(ERROR);
-				}
+				bool success = false;
+				Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndBindIfSomeAsync
+			[Fact]
+			public void DoWithTwoParameters()
 			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToOptionSome() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertSuccess()
-							.AssertSome()
-							.Should()
-							.BeFalse();
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure() 
-						=> Task
-							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.BindIfSomeAsync(IsEvenResultAsync)
-							.AssertFailure();
-
-					private static Task<Result<bool, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<bool, string>(i % 2 == 0));
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Task.FromResult(Result.Failure<Option<int>, string>(EXISTING_ERROR))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Task<Result<bool, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<bool, string>(ERROR));
-				}
+				bool success = false, failure = false;
+				Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
 			}
 
-			public class AndBindIfSomeToResultOfOptionProducingFunction
+			[Fact]
+			public void ApplyWithOneParameter()
 			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.BindIfSome(IsEvenResult)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.BindIfSome(IsEvenResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.BindIfSome(IsEvenResult)
-								.AssertFailure();
-
-						private static Result<Option<bool>, string> IsEvenResult(int i) => Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.BindIfSome(IsNoneResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.BindIfSome(IsNoneResult)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.BindIfSome(IsNoneResult)
-								.AssertFailure();
-
-						private static Result<Option<bool>, string> IsNoneResult(int i) => Result.Success<Option<bool>, string>(Option.None<bool>());
-					}
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSome(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Task.FromResult(Result.Failure<Option<int>, string>(EXISTING_ERROR))
-							.BindIfSome(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Result<Option<bool>, string> ErrorResult(int i) => Result.Failure<Option<bool>, string>(ERROR);
-				}
+				bool success = false;
+				Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeFalse();
 			}
 
-			public class AndBindIfSomeAsyncToResultOfOptionProducingFunction
+			[Fact]
+			public void ApplyWithTwoParameters()
 			{
-				public class AndFunctionProducesSuccessfulResult
-				{
-					public class OfSome
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertSome()
-								.Should()
-								.BeFalse();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertFailure();
-
-						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.Some(i % 2 == 0)));
-					}
-
-					public class OfNone
-					{
-						[Fact]
-						public Task ShouldMapOptionSomeToOptionSome() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldMapOptionNoneToOptionNone() 
-							=> Task
-								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertSuccess()
-								.AssertNone();
-
-						[Fact]
-						public Task ShouldDoNothingOnFailure() 
-							=> Task
-								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.BindIfSomeAsync(IsEvenResultAsync)
-								.AssertFailure();
-
-						private static Task<Result<Option<bool>, string>> IsEvenResultAsync(int i) => Task.FromResult(Result.Success<Option<bool>, string>(Option.None<bool>()));
-					}
-				}
-
-				public class AndFunctionProducesFaultedResult
-				{
-					[Fact]
-					public Task ShouldMapOptionSomeToFaultedResult() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(ERROR);
-
-					[Fact]
-					public Task ShouldMapOptionNoneToOptionNone() 
-						=> Task
-							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertSuccess()
-							.AssertNone();
-
-					[Fact]
-					public Task ShouldDoNothingOnFailure()
-					{
-						const string EXISTING_ERROR = "something strange happened";
-						return Task.FromResult(Result.Failure<Option<int>, string>(EXISTING_ERROR))
-							.BindIfSomeAsync(ErrorResult)
-							.AssertFailure()
-							.Should()
-							.Be(EXISTING_ERROR);
-					}
-
-					private const string ERROR = "error";
-					private static Task<Result<Option<bool>, string>> ErrorResult(int i) => Task.FromResult(Result.Failure<Option<bool>, string>(ERROR));
-				}
+				bool success = false, failure = false;
+				Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
 			}
 
-			public class WhenApplyIfSome
+			[Fact]
+			public void TrySelect()
+				=> Value
+					.TrySelect(i => i * 2, e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void TrySelectThrowsException()
+				=> Value
+					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public void TrySelectException()
+				=> Result
+					.Failure<int, Exception>(new TestException())
+					.TrySelect(i => i * 2)
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
+
+			[Fact]
+			public void TrySelectExceptionThrowsException()
+				=> Result
+					.Failure<int, Exception>(new TestException())
+					.TrySelect<int, int>(i => throw new ArgumentException())
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
+		}
+
+		public class WhenTaskResultIsFailure
+		{
+			private Task<Result<int, string>> Value => Task.FromResult(Result.Failure<int, string>("abc"));
+
+			[Fact]
+			public Task IsSuccess()
+				=> Value
+					.IsSuccess()
+					.Should()
+					.BeFalse();
+
+			[Fact]
+			public Task Success()
+				=> Value
+					.Success()
+					.AssertNone();
+
+			[Fact]
+			public Task Failure()
+				=> Value
+					.Failure()
+					.AssertSome()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task Select()
+				=> Value
+					.Select(i => i * 2)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task WhereTrue()
+				=> Value
+					.Where(_ => Result.Unit<string>())
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task WhereFalse()
+				=> Value
+					.Where(_ => Result.Failure<Unit, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task MapFailure()
+				=> Value
+					.MapFailure(i => 1.0f)
+					.AssertFailure()
+					.Should()
+					.Be(1.0f);
+
+			[Fact]
+			public Task BindSuccess()
+				=> Value
+					.Bind(i => Result.Success<float, string>(i))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task BindFailure()
+				=> Value
+					.Bind(i => Result.Failure<float, string>("123"))
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public async Task DoWithOneParameter()
 			{
-				[Fact]
-				public async Task ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Failure<Option<int>, string>("error")).ApplyIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
+				bool success = false;
+				await Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeFalse();
 			}
 
-			public class WhenApplyIfSomeAsync
+			[Fact]
+			public async Task DoWithTwoParameters()
 			{
-				[Fact]
-				public async Task ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Failure<Option<int>, string>("error")).ApplyIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
+				bool success = false, failure = false;
+				await Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
 			}
 
-			public class WhenDoIfSome
+			[Fact]
+			public async Task ApplyWithOneParameter()
 			{
-				[Fact]
-				public async Task ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).DoIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).DoIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Failure<Option<int>, string>("error")).DoIfSome(_ => methodCalled = true);
-					methodCalled.Should().BeFalse();
-				}
+				bool success = false;
+				await Value.Do(_ => success = true);
+				success
+					.Should()
+					.BeFalse();
 			}
 
-			public class WhenDoIfSomeAsync
+			[Fact]
+			public async Task ApplyWithTwoParameters()
 			{
-				[Fact]
-				public async Task ShouldInvokeActionWhenSome()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).DoIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeTrue();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenNone()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).DoIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
-
-				[Fact]
-				public async Task ShouldNotInvokeActionWhenFailure()
-				{
-					bool methodCalled = false;
-					await Task.FromResult(Result.Failure<Option<int>, string>("error")).DoIfSomeAsync(_ =>
-					{
-						methodCalled = true;
-						return Task.CompletedTask;
-					});
-					methodCalled.Should().BeFalse();
-				}
+				bool success = false, failure = false;
+				await Value.Do(_ => success = true, _ => failure = true);
+				success
+					.Should()
+					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
 			}
+
+			[Fact]
+			public Task TrySelect()
+				=> Value
+					.TrySelect(i => i * 2, e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task TrySelectThrowsException()
+				=> Value
+					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.AssertFailure()
+					.Should()
+					.Be("abc");
+
+			[Fact]
+			public Task TrySelectException()
+				=> Task
+					.FromResult(Result
+						.Failure<int, Exception>(new TestException())
+					)
+					.TrySelect(i => i * 2)
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
+
+			[Fact]
+			public Task TrySelectExceptionThrowsException()
+				=> Task
+					.FromResult(Result
+						.Failure<int, Exception>(new TestException())
+					)
+					.TrySelect<int, int>(i => throw new ArgumentException())
+					.AssertFailure()
+					.Should()
+					.BeOfType<TestException>();
 		}
 	}
 }
