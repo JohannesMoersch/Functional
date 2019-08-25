@@ -43,7 +43,7 @@ namespace Functional.Tests.Results
 					.Be(20);
 
 			[Fact]
-			public void WhereTrue()
+			public void WhereSuccess()
 				=> Value
 					.Where(_ => Result.Unit<string>())
 					.AssertSuccess()
@@ -51,7 +51,7 @@ namespace Functional.Tests.Results
 					.Be(10);
 
 			[Fact]
-			public void WhereFalse()
+			public void WhereFailure()
 				=> Value
 					.Where(_ => Result.Failure<Unit, string>("123"))
 					.AssertFailure()
@@ -197,7 +197,7 @@ namespace Functional.Tests.Results
 					.Be(20);
 
 			[Fact]
-			public Task WhereTrue()
+			public Task WhereSuccess()
 				=> Value
 					.Where(_ => Result.Unit<string>())
 					.AssertSuccess()
@@ -205,7 +205,7 @@ namespace Functional.Tests.Results
 					.Be(10);
 
 			[Fact]
-			public Task WhereFalse()
+			public Task WhereFailure()
 				=> Value
 					.Where(_ => Result.Failure<Unit, string>("123"))
 					.AssertFailure()
@@ -355,7 +355,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public void WhereTrue()
+			public void WhereSuccess()
 				=> Value
 					.Where(_ => Result.Unit<string>())
 					.AssertFailure()
@@ -363,7 +363,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public void WhereFalse()
+			public void WhereFailure()
 				=> Value
 					.Where(_ => Result.Failure<Unit, string>("123"))
 					.AssertFailure()
@@ -509,7 +509,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public Task WhereTrue()
+			public Task WhereSuccess()
 				=> Value
 					.Where(_ => Result.Unit<string>())
 					.AssertFailure()
@@ -517,7 +517,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public Task WhereFalse()
+			public Task WhereFailure()
 				=> Value
 					.Where(_ => Result.Failure<Unit, string>("123"))
 					.AssertFailure()
