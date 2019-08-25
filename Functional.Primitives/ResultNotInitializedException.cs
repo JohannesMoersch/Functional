@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Functional
 {
-	[Helpers.AllowAllocations]
+	[AllowAllocations]
     public class ResultNotInitializedException : Exception
     {
     }

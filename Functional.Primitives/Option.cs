@@ -29,7 +29,7 @@ namespace Functional
 				_value = default;
 		}
 
-		[Helpers.AllowAllocations]
+		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue(nameof(_hasValue), _hasValue);
@@ -57,7 +57,7 @@ namespace Functional
 		public override bool Equals(object obj)
 			=> obj is Option<TValue> option && Equals(option);
 
-		[Helpers.AllowAllocations]
+		[AllowAllocations]
 		public override string ToString()
 			=> _hasValue ? $"Some:{_value}" : "None";
 

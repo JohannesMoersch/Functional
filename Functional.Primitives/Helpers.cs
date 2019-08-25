@@ -4,8 +4,6 @@ using System.Text;
 
 namespace Functional
 {
-	internal static class Helpers
-	{
-		public class AllowAllocationsAttribute : Attribute { }
-	}
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method, AllowMultiple = false)]
+	internal class AllowAllocationsAttribute : Attribute { }
 }

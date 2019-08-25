@@ -40,7 +40,7 @@ namespace Functional
 			}
 		}
 
-		[Helpers.AllowAllocations]
+		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			var isSuccess = IsSuccess();
@@ -76,7 +76,7 @@ namespace Functional
 		public override bool Equals(object obj)
 			=> obj is Result<TSuccess, TFailure> result && Equals(result);
 
-		[Helpers.AllowAllocations]
+		[AllowAllocations]
 		public override string ToString()
 			=> IsSuccess() ? $"Success:{_success}" : $"Failure:{_failure}";
 

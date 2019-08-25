@@ -100,7 +100,7 @@ namespace Functional.Tests
 			=> String.Join(", ", parameters.Select(p => p.ParameterType.Name));
 
 		private static bool ContainsAllowAllocations(IEnumerable<Attribute> attributes)
-			=> attributes.Any(att => att.GetType().FullName == "Functional.Helpers+AllowAllocationsAttribute");
+			=> attributes.Any(att => att.GetType().FullName == "Functional.AllowAllocationsAttribute");
 
 		private static IEnumerable<ParsedMethodBody> GetMethodBodiesInAssembly(Assembly assembly)
 			=> assembly
