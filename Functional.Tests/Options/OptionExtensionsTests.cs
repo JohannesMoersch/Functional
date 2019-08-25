@@ -87,20 +87,6 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public void WhereSome()
-				=> Value
-					.Where(i => Option.Unit())
-					.AssertSome()
-					.Should()
-					.Be(10);
-
-			[Fact]
-			public void WhereNone()
-				=> Value
-					.Where(i => Option.None<Unit>())
-					.AssertNone();
-
-			[Fact]
 			public void ToNullable()
 				=> Value
 					.ToNullable()
@@ -142,7 +128,7 @@ namespace Functional.Tests.Options
 			public void ApplyWithOneParameter()
 			{
 				bool some = false;
-				Value.Do(_ => some = true);
+				Value.Apply(_ => some = true);
 				some
 					.Should()
 					.BeTrue();
@@ -152,7 +138,7 @@ namespace Functional.Tests.Options
 			public void ApplyWithTwoParameters()
 			{
 				bool some = false, none = false;
-				Value.Do(_ => some = true, () => none = true);
+				Value.Apply(_ => some = true, () => none = true);
 				some
 					.Should()
 					.BeTrue();
@@ -244,20 +230,6 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task WhereSome()
-				=> Value
-					.Where(i => Option.Unit())
-					.AssertSome()
-					.Should()
-					.Be(10);
-
-			[Fact]
-			public Task WhereNone()
-				=> Value
-					.Where(i => Option.None<Unit>())
-					.AssertNone();
-
-			[Fact]
 			public Task ToNullable()
 				=> Value
 					.ToNullable()
@@ -299,7 +271,7 @@ namespace Functional.Tests.Options
 			public async Task ApplyWithOneParameter()
 			{
 				bool some = false;
-				await Value.Do(_ => some = true);
+				await Value.Apply(_ => some = true);
 				some
 					.Should()
 					.BeTrue();
@@ -309,7 +281,7 @@ namespace Functional.Tests.Options
 			public async Task ApplyWithTwoParameters()
 			{
 				bool some = false, none = false;
-				await Value.Do(_ => some = true, () => none = true);
+				await Value.Apply(_ => some = true, () => none = true);
 				some
 					.Should()
 					.BeTrue();
@@ -389,18 +361,6 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public void WhereSome()
-				=> Value
-					.Where(i => Option.Unit())
-					.AssertNone();
-
-			[Fact]
-			public void WhereNone()
-				=> Value
-					.Where(i => Option.None<Unit>())
-					.AssertNone();
-
-			[Fact]
 			public void ToNullable()
 				=> Value
 					.ToNullable()
@@ -442,7 +402,7 @@ namespace Functional.Tests.Options
 			public void ApplyWithOneParameter()
 			{
 				bool some = false;
-				Value.Do(_ => some = true);
+				Value.Apply(_ => some = true);
 				some
 					.Should()
 					.BeFalse();
@@ -452,7 +412,7 @@ namespace Functional.Tests.Options
 			public void ApplyWithTwoParameters()
 			{
 				bool some = false, none = false;
-				Value.Do(_ => some = true, () => none = true);
+				Value.Apply(_ => some = true, () => none = true);
 				some
 					.Should()
 					.BeFalse();
@@ -536,18 +496,6 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task WhereSome()
-				=> Value
-					.Where(i => Option.Unit())
-					.AssertNone();
-
-			[Fact]
-			public Task WhereNone()
-				=> Value
-					.Where(i => Option.None<Unit>())
-					.AssertNone();
-
-			[Fact]
 			public Task ToNullable()
 				=> Value
 					.ToNullable()
@@ -589,7 +537,7 @@ namespace Functional.Tests.Options
 			public async Task ApplyWithOneParameter()
 			{
 				bool some = false;
-				await Value.Do(_ => some = true);
+				await Value.Apply(_ => some = true);
 				some
 					.Should()
 					.BeFalse();
@@ -599,7 +547,7 @@ namespace Functional.Tests.Options
 			public async Task ApplyWithTwoParameters()
 			{
 				bool some = false, none = false;
-				await Value.Do(_ => some = true, () => none = true);
+				await Value.Apply(_ => some = true, () => none = true);
 				some
 					.Should()
 					.BeFalse();

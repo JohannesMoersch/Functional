@@ -43,17 +43,17 @@ namespace Functional.Tests.Results
 					.Be(20);
 
 			[Fact]
-			public void WhereSuccess()
+			public void WhereTrue()
 				=> Value
-					.Where(_ => Result.Unit<string>())
+					.Where(_ => true, i => "123")
 					.AssertSuccess()
 					.Should()
 					.Be(10);
 
 			[Fact]
-			public void WhereFailure()
+			public void WhereFalse()
 				=> Value
-					.Where(_ => Result.Failure<Unit, string>("123"))
+					.Where(_ => false, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -109,7 +109,7 @@ namespace Functional.Tests.Results
 			public void ApplyWithOneParameter()
 			{
 				bool success = false;
-				Value.Do(_ => success = true);
+				Value.Apply(_ => success = true);
 				success
 					.Should()
 					.BeTrue();
@@ -119,7 +119,7 @@ namespace Functional.Tests.Results
 			public void ApplyWithTwoParameters()
 			{
 				bool success = false, failure = false;
-				Value.Do(_ => success = true, _ => failure = true);
+				Value.Apply(_ => success = true, _ => failure = true);
 				success
 					.Should()
 					.BeTrue();
@@ -197,17 +197,17 @@ namespace Functional.Tests.Results
 					.Be(20);
 
 			[Fact]
-			public Task WhereSuccess()
+			public Task WhereTrue()
 				=> Value
-					.Where(_ => Result.Unit<string>())
+					.Where(_ => true, i => "123")
 					.AssertSuccess()
 					.Should()
 					.Be(10);
 
 			[Fact]
-			public Task WhereFailure()
+			public Task WhereFalse()
 				=> Value
-					.Where(_ => Result.Failure<Unit, string>("123"))
+					.Where(_ => false, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -263,7 +263,7 @@ namespace Functional.Tests.Results
 			public async Task ApplyWithOneParameter()
 			{
 				bool success = false;
-				await Value.Do(_ => success = true);
+				await Value.Apply(_ => success = true);
 				success
 					.Should()
 					.BeTrue();
@@ -273,7 +273,7 @@ namespace Functional.Tests.Results
 			public async Task ApplyWithTwoParameters()
 			{
 				bool success = false, failure = false;
-				await Value.Do(_ => success = true, _ => failure = true);
+				await Value.Apply(_ => success = true, _ => failure = true);
 				success
 					.Should()
 					.BeTrue();
@@ -355,17 +355,17 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public void WhereSuccess()
+			public void WhereTrue()
 				=> Value
-					.Where(_ => Result.Unit<string>())
+					.Where(_ => true, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("abc");
 
 			[Fact]
-			public void WhereFailure()
+			public void WhereFalse()
 				=> Value
-					.Where(_ => Result.Failure<Unit, string>("123"))
+					.Where(_ => false, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -421,7 +421,7 @@ namespace Functional.Tests.Results
 			public void ApplyWithOneParameter()
 			{
 				bool success = false;
-				Value.Do(_ => success = true);
+				Value.Apply(_ => success = true);
 				success
 					.Should()
 					.BeFalse();
@@ -431,7 +431,7 @@ namespace Functional.Tests.Results
 			public void ApplyWithTwoParameters()
 			{
 				bool success = false, failure = false;
-				Value.Do(_ => success = true, _ => failure = true);
+				Value.Apply(_ => success = true, _ => failure = true);
 				success
 					.Should()
 					.BeFalse();
@@ -509,17 +509,17 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public Task WhereSuccess()
+			public Task WhereTrue()
 				=> Value
-					.Where(_ => Result.Unit<string>())
+					.Where(_ => true, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("abc");
 
 			[Fact]
-			public Task WhereFailure()
+			public Task WhereFalse()
 				=> Value
-					.Where(_ => Result.Failure<Unit, string>("123"))
+					.Where(_ => false, i => "123")
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -575,7 +575,7 @@ namespace Functional.Tests.Results
 			public async Task ApplyWithOneParameter()
 			{
 				bool success = false;
-				await Value.Do(_ => success = true);
+				await Value.Apply(_ => success = true);
 				success
 					.Should()
 					.BeFalse();
@@ -585,7 +585,7 @@ namespace Functional.Tests.Results
 			public async Task ApplyWithTwoParameters()
 			{
 				bool success = false, failure = false;
-				await Value.Do(_ => success = true, _ => failure = true);
+				await Value.Apply(_ => success = true, _ => failure = true);
 				success
 					.Should()
 					.BeFalse();
