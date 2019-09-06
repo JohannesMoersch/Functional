@@ -1,0 +1,12 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
+    <Authors>Johannes Moersch + contributers</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2019 Johannes Moersch</Copyright>
+    <Version>1.15.0</Version>
+  </PropertyGroup>
+
+</Project>

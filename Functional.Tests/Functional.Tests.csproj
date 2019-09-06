@@ -6,14 +6,6 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.8.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />

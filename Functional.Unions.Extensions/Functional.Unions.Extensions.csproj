@@ -5,20 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>Functional.Unions.Extensions</Title>
     <Description>This package contains extension methods for working with Union types.</Description>
-    <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
-    <Authors>Johannes Moersch</Authors>
     <PackageTags>functional</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright © 2018 Johannes Moersch</Copyright>
-    <Version>1.14.0</Version>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
