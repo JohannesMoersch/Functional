@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -41,5 +43,41 @@ namespace Functional.Tests.Common
 			=> new Dictionary<int, int?>() { { 1, null } }
 				.TryGetValue(1)
 				.AssertNone();
+	}
+
+	public class One
+	{
+		[Fact]
+		public void TestA() => Thread.Sleep(1000);
+
+		[Fact]
+		public void TestB() => Thread.Sleep(1000);
+	}
+
+	public class Two
+	{
+		[Fact]
+		public void TestA() => Thread.Sleep(1000);
+
+		[Fact]
+		public void TestB() => Thread.Sleep(1000);
+	}
+
+	public class Three
+	{
+		[Fact]
+		public void TestA() => Thread.Sleep(1000);
+
+		[Fact]
+		public void TestB() => Thread.Sleep(1000);
+	}
+
+	public class Four
+	{
+		[Fact]
+		public void TestA() => Thread.Sleep(1000);
+
+		[Fact]
+		public void TestB() => Thread.Sleep(1000);
 	}
 }

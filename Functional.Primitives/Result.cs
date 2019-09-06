@@ -40,6 +40,7 @@ namespace Functional
 			}
 		}
 
+		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			var isSuccess = IsSuccess();
@@ -67,7 +68,7 @@ namespace Functional
 
 		public bool Equals(Result<TSuccess, TFailure> other)
 			=> IsSuccess() == other.IsSuccess()
-				&& (IsSuccess() ? Equals(_success, other._success) : Equals(_failure, other._failure));
+				&& (IsSuccess() ? EqualityComparer<TSuccess>.Default.Equals(_success, other._success) : EqualityComparer<TFailure>.Default.Equals(_failure, other._failure));
 
 		public override int GetHashCode()
 			=> IsSuccess() ? _success.GetHashCode() * 31 : _failure.GetHashCode() * 31;
@@ -75,6 +76,7 @@ namespace Functional
 		public override bool Equals(object obj)
 			=> obj is Result<TSuccess, TFailure> result && Equals(result);
 
+		[AllowAllocations]
 		public override string ToString()
 			=> IsSuccess() ? $"Success:{_success}" : $"Failure:{_failure}";
 

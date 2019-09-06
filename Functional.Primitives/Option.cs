@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace Functional
 				_value = default;
 		}
 
+		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue(nameof(_hasValue), _hasValue);
@@ -47,7 +49,7 @@ namespace Functional
 		}
 
 		public bool Equals(Option<TValue> other)
-			=> _hasValue == other._hasValue && (!_hasValue || Equals(_value, other._value));
+			=> _hasValue == other._hasValue && (!_hasValue || EqualityComparer<TValue>.Default.Equals(_value, other._value));
 
 		public override int GetHashCode()
 			=> _hasValue ? _value.GetHashCode() * 31 : 0;
@@ -55,6 +57,7 @@ namespace Functional
 		public override bool Equals(object obj)
 			=> obj is Option<TValue> option && Equals(option);
 
+		[AllowAllocations]
 		public override string ToString()
 			=> _hasValue ? $"Some:{_value}" : "None";
 
