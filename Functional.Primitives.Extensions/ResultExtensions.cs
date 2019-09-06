@@ -199,3 +199,4 @@ namespace Functional
 			=> (await result).TrySelect(successFactory, ex => ex);
 	}
 }
+	
