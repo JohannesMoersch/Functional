@@ -102,7 +102,7 @@ namespace Functional.Tests.Options
 				.AssertNone();
 
 		[Fact]
-		public Task CreateDelegateAsyncTrue()
+		public Task CreateAsyncDelegateTrue()
 			=> Option
 				.CreateAsync(true, () => Helpers.DelayedTask(10))
 				.AssertSome()
@@ -110,7 +110,7 @@ namespace Functional.Tests.Options
 				.Be(10);
 
 		[Fact]
-		public Task CreateDelegateAsyncFalse()
+		public Task CreateAsyncDelegateFalse()
 			=> Option
 				.CreateAsync(false, () => Helpers.DelayedTask(10))
 				.AssertNone();
