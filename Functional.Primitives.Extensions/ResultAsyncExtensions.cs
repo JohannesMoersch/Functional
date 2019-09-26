@@ -53,13 +53,17 @@ namespace Functional
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> select)
-			=> await result.SelectAsync(async success => success.DefaultIfNone(await select()));
+			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
+				? Result.Success<Option<TSuccess>, TFailure>(Option.Some(await select()))
+				: result;
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> select)
 			=> await (await result).SelectIfNoneAsync(select);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> select)
-			=> await result.SelectAsync(success => success.MatchAsync(value => Task.FromResult(Option.Some(value)), select));
+			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
+				? Result.Success<Option<TSuccess>, TFailure>(await select())
+				: result;
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> select)
 			=> await (await result).SelectIfNoneAsync(select);
@@ -148,13 +152,27 @@ namespace Functional
 			=> await (await result).BindIfSomeAsync(bind);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<TSuccess, TFailure>>> bind)
-			=> await result.BindAsync(success => success.MatchAsync(s => Task.FromResult(Result.Success<Option<TSuccess>, TFailure>(Option.Some(s))), () => bind().Select(Option.Some)));
+		{
+			if (bind == null)
+				throw new ArgumentNullException(nameof(bind));
+
+			return result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
+				? await bind().Select(DelegateCache<TSuccess>.Some)
+				: result;
+		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<TSuccess, TFailure>>> bind)
 			=> await (await result).BindIfNoneAsync(bind);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
-			=> await result.BindAsync(success => success.MatchAsync(s => Task.FromResult(Result.Success<Option<TSuccess>, TFailure>(Option.Some(s))), bind));
+		{
+			if (bind == null)
+				throw new ArgumentNullException(nameof(bind));
+
+			return result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
+				? await bind()
+				: result;
+		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
 			=> await (await result).BindIfNoneAsync(bind);
