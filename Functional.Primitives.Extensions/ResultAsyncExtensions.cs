@@ -79,21 +79,17 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 			=> await (await result).BindAsync(bind);
 
-		public static async Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
 		{
-			if (bind == null)
-				throw new ArgumentNullException(nameof(bind));
+			if (bind == null) throw new ArgumentNullException(nameof(bind));
 
-			if (result.TryGetValue(out var success, out var failure))
-			{
-				if (success.TryGetValue(out var some))
-					return await bind.Invoke(some).Select(DelegateCache<TResult>.Some);
-
-				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
-			}
-
-			return Result.Failure<Option<TResult>, TFailure>(failure);
+			return !result.TryGetValue(out _, out var failure)
+				? await bind.Invoke(failure)
+				: result;
 		}
+
+		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+			=> await (await result).BindIfFailureAsync(bind);
 
 		public static async Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> onSuccess, Func<TFailure, Task> onFailure)
 		{

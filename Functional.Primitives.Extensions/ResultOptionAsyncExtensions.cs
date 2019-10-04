@@ -41,6 +41,22 @@ namespace Functional
 		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> select)
 			=> await (await result).SelectIfNoneAsync(select);
 
+		public static async Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+		{
+			if (bind == null)
+				throw new ArgumentNullException(nameof(bind));
+
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (success.TryGetValue(out var some))
+					return await bind.Invoke(some).Select(DelegateCache<TResult>.Some);
+
+				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
+			}
+
+			return Result.Failure<Option<TResult>, TFailure>(failure);
+		}
+
 		public static async Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 			=> await (await result).BindIfSomeAsync(bind);
 
