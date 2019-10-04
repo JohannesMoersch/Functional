@@ -70,6 +70,12 @@ namespace Functional
 		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).DefaultIfNone(defaultValue);
 
+		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
+			=> option.TryGetValue(out _) ? option : bind();
+
+		public static async Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
+			=> (await option).BindIfNone(bind);
+
 		public static Option<TValue> OfType<TValue>(this Option<object> option)
 			=> option.TryGetValue(out var some) ? (some is TValue value ? Option.Some(value) : Option.None<TValue>()) : Option.None<TValue>();
 
