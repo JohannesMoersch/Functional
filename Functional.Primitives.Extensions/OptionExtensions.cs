@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -56,6 +57,12 @@ namespace Functional
 		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
 			where TValue : struct
 			=> (await option).ValueOrNull();
+
+		public static IEnumerable<TValue> ValueOrEmpty<TValue>(this Option<IEnumerable<TValue>> option)
+			=> option.ValueOrDefault(Enumerable.Empty<TValue>());
+
+		public static async Task<IEnumerable<TValue>> ValueOrEmpty<TValue>(this Task<Option<IEnumerable<TValue>>> option)
+			=> (await option).ValueOrEmpty();
 
 		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);

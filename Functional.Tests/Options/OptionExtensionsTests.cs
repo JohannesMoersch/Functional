@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -55,6 +56,20 @@ namespace Functional.Tests.Options
 					.ValueOrNull()
 					.Should()
 					.Be(10);
+
+			[Fact]
+			public void ValueOrEmptyForCollection()
+				=> Option.Some(Enumerable.Range(1, 10))
+					.ValueOrEmpty()
+					.Should()
+					.BeEquivalentTo(Enumerable.Range(1, 10));
+			
+			[Fact]
+			public void ValueOrEmptyForEmptyCollection()
+				=> Option.Some(Enumerable.Empty<int>())
+					.ValueOrEmpty()
+					.Should()
+					.BeEmpty();
 
 			[Fact]
 			public void OfTypeMatching()
@@ -194,6 +209,13 @@ namespace Functional.Tests.Options
 					.ValueOrNull()
 					.Should()
 					.Be(10);
+
+			[Fact]
+			public void ValueOrEmpty()
+				=> Option.None<IEnumerable<int>>()
+					.ValueOrEmpty()
+					.Should()
+					.BeEmpty();
 
 			[Fact]
 			public Task OfTypeMatching()
