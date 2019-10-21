@@ -213,26 +213,6 @@ Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Consol
 ## Query Expressions
 Chaining and nested many extensions on Results or Options can quickly become difficult to read. In these scenarios, the query expression syntax can dramatically improve code readability.
 
-### Options
-For the following code snippets, assume the following methods are declared.
-```csharp
-public Option<Guid> GetID();
-public Option<string> GetInfo();
-public Option<int> GetValue();
-```
-
-To combine the return values of the above three functions into a single Option, use the following query syntax.
-```csharp
-public Option<(Guid ID, string Info, int Value)> GetTuple()
-	=>
-	from id in GetID() // 'id' is Guid type
-	from info in GetInfo() // 'info' is string type
-	from value in GetValue() // 'value' is int type
-	select (id, info, value); // produces Option<(Guid, string ,int)>
-```
-
-If any of the three Option-producing functions return `Option.None<T>`, then the value returned from `GetTuple` will be `Option.None<(Guid, string, int)>`.
-
 ### Results
 For the following code snippets, assume the following methods are declared.
 ```csharp
@@ -282,3 +262,23 @@ public Result<(int Id, CombinedData Data), Error> LoadAndMapValue(int id)
 	select (id, combinedData);
 ```
 This syntax allows us to keep the chain of function calls more clearly sequential and makes the statement easier to read.
+
+### Options
+The query syntax is also available for Options and behaves in a similar way. For the following code snippets, assume the following methods are declared.
+```csharp
+public Option<Guid> GetID();
+public Option<string> GetInfo();
+public Option<int> GetValue();
+```
+
+To combine the return values of the above three functions into a single Option, use the following query syntax.
+```csharp
+public Option<(Guid ID, string Info, int Value)> GetTuple()
+	=>
+	from id in GetID() // 'id' is Guid type
+	from info in GetInfo() // 'info' is string type
+	from value in GetValue() // 'value' is int type
+	select (id, info, value); // produces Option<(Guid, string ,int)>
+```
+
+If any of the three Option-producing functions return `Option.None<T>`, then the value returned from `GetTuple` will be `Option.None<(Guid, string, int)>`.
