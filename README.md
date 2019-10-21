@@ -264,7 +264,7 @@ public Result<(int Id, CombinedData Data), Error> LoadAndMapValue(int id)
 This syntax allows us to keep the chain of function calls more clearly sequential and makes the statement easier to read.
 
 ### Options
-The query syntax is also available for Options and behaves in a similar way. For the following code snippets, assume the following methods are declared.
+The query syntax is also available for Options and behaves in a similar way. For the following code snippet, assume the following methods are declared.
 ```csharp
 public Option<Guid> GetID();
 public Option<string> GetInfo();
