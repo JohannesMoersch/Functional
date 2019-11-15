@@ -6,7 +6,7 @@
     <Authors>Johannes Moersch + contributers</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2019 Johannes Moersch</Copyright>
-    <Version>1.17.0</Version>
+    <Version>1.18.0</Version>
   </PropertyGroup>
 
 </Project>

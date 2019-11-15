@@ -27,26 +27,6 @@ namespace Functional
 		public static async Task<Option<TFailure>> Failure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> (await result).Failure();
 
-		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> onSuccessSome, Func<T> onSuccessNone, Func<TFailure, T> onFailure)
-		{
-			if (onSuccessSome == null)
-				throw new ArgumentNullException(nameof(onSuccessSome));
-
-			if (onSuccessNone == null)
-				throw new ArgumentNullException(nameof(onSuccessNone));
-
-			if (onFailure == null)
-				throw new ArgumentNullException(nameof(onFailure));
-
-			if (result.TryGetValue(out var success, out var failure))
-				return success.Match(onSuccessSome, onSuccessNone);
-
-			return onFailure.Invoke(failure);
-		}
-
-		public static async Task<T> Match<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
-			=> (await result).Match(successSome, successNone, failure);
-
 		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> select)
 		{
 			if (select == null)
@@ -105,6 +85,18 @@ namespace Functional
 
 		public static async Task<Result<TResult, TFailure>> Bind<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<TResult, TFailure>> bind)
 			=> (await result).Bind(bind);
+
+		public static Result<TSuccess, TFailure> BindIfFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
+		{
+			if (bind == null) throw new ArgumentNullException(nameof(bind));
+
+			return !result.TryGetValue(out _, out var failure)
+				? bind.Invoke(failure)
+				: result;
+		}
+
+		public static async Task<Result<TSuccess, TFailure>> BindIfFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
+			=> (await result).BindIfFailure(bind);
 
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> (await result).Do(success, failure);

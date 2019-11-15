@@ -7,6 +7,25 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultOptionExtensions
 	{
+		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> onSuccessSome, Func<T> onSuccessNone, Func<TFailure, T> onFailure)
+		{
+			if (onSuccessSome == null)
+				throw new ArgumentNullException(nameof(onSuccessSome));
+
+			if (onSuccessNone == null)
+				throw new ArgumentNullException(nameof(onSuccessNone));
+
+			if (onFailure == null)
+				throw new ArgumentNullException(nameof(onFailure));
+
+			return result.TryGetValue(out var success, out var failure)
+				? success.Match(onSuccessSome, onSuccessNone)
+				: onFailure.Invoke(failure);
+		}
+
+		public static async Task<T> Match<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, T> successSome, Func<T> successNone, Func<TFailure, T> failure)
+			=> (await result).Match(successSome, successNone, failure);
+
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
 			=> result.TryGetValue(out var success, out var failure)
 				? Result.Success<Option<TResult>, TFailure>(success.Select(select))

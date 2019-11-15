@@ -11,7 +11,8 @@ namespace Functional.Tests.Options
 	{
 		public class WhenOptionIsSome
 		{
-			private Option<int> Value => Option.Some(10);
+			private static Option<int> Value => Option.Some(10);
+			private static Option<int> NoValue => Option.None<int>();
 
 			[Fact]
 			public Task Select()
@@ -34,6 +35,22 @@ namespace Functional.Tests.Options
 				=> Value
 					.BindAsync(i => Task.FromResult(Option.None<int>()))
 					.AssertNone();
+
+			[Fact]
+			public Task BindIfNoneWhenSome()
+				=> Value
+					.BindIfNoneAsync(() => Task.FromResult(Option.Some(20)))
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public Task BindIfNoneWhenNone()
+				=> NoValue
+					.BindIfNoneAsync(() => Task.FromResult(Option.Some(20)))
+					.AssertSome()
+					.Should()
+					.Be(20);
 
 			[Fact]
 			public Task WhereTrue()

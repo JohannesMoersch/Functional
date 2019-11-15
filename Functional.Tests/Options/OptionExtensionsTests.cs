@@ -12,7 +12,8 @@ namespace Functional.Tests.Options
 	{
 		public class WhenOptionIsSome
 		{
-			private Option<int> Value => Option.Some(10);
+			private static Option<int> Value => Option.Some(10);
+			private static Option<int> NoValue => Option.None<int>();
 
 			[Fact]
 			public void HasValue()
@@ -56,6 +57,22 @@ namespace Functional.Tests.Options
 					.ValueOrNull()
 					.Should()
 					.Be(10);
+
+			[Fact]
+			public void BindIfNoneWhenSome()
+				=> Value
+					.BindIfNone(() => Option.Some(20))
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void BindIfNoneWhenNone()
+				=> NoValue
+					.BindIfNone(() => Option.Some(20))
+					.AssertSome()
+					.Should()
+					.Be(20);
 
 			[Fact]
 			public void ValueOrEmptyForCollection()
