@@ -174,9 +174,9 @@ Result<int, string> result = Result.Failure<float, string>("Failure").Bind(s => 
 #### BindIfFailure
 If `Success`, this extension will return the original Result.  If `Failure`, it will return the Result returned by the delegate parameter.
 ```csharp
-Result<float, string> result = Result.Success<float, string>(1.5).BindIfNone(s => Result.Success<float, string>(s * 2)); // Returns Result<float, string> with a success value of 1.5
-Result<float, string> result = Result.Failure<float, string>("Failure").BindIfNone(s => Result.Success<float, string>(1337)); // Returns Result<float, string> with a success value of 1337
-Result<float, string> result = Result.Failure<float, string>("Failure").BindIfNone(s => Result.Failure<float, string>("More failure")); // Returns Result<float, string> with a failure value of "More failure"
+Result<float, string> result = Result.Success<float, string>(1.5).BindIfFailure(f => Result.Success<float, string>(s * 2)); // Returns Result<float, string> with a success value of 1.5
+Result<float, string> result = Result.Failure<float, string>("Failure").BindIfFailure(f => Result.Success<float, string>(1337)); // Returns Result<float, string> with a success value of 1337
+Result<float, string> result = Result.Failure<float, string>("Failure").BindIfFailure(f => Result.Failure<float, string>("More failure")); // Returns Result<float, string> with a failure value of "More failure"
 ```
 #### IsSuccess
 If `Success`, this extension will return `true`, and if `Failure` it will return `false`.
