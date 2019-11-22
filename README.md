@@ -69,6 +69,12 @@ If `Some`, this extension will return the value, and if `None` it will return a 
 int value = Option.Some(100).ValueOrDefault(50); // Returns 100
 int value = Option.None<int>().ValueOrDefault(50); // Returns 50
 ```
+#### BindIfNone
+If `Some`, this extension will return the value, and if `None` it will return the Option produced by the delegate parameter.
+```csharp
+Option<int> value = Option.Some(100).BindIfNone(50); // Returns 100
+Option<int> value = Option.None<int>().BindIfNone(50); // Returns 50
+```
 #### ToNullable
 This extension only works on value types. If `Some`, this extension will return the value, and if `None` it will return null.
 ```csharp
@@ -163,6 +169,13 @@ If `Success`, this extension will return the Result returned by the delegate par
 Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result.Success<int, string>((int)s)); // Returns Result<int, string> with a success value of 1
 Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result.Failure<int, string>("Failure")); // Returns Result<int, string> with a failure value of "Failure"
 Result<int, string> result = Result.Failure<float, string>("Failure").Bind(s => Result.Success<int, string>((int)s)); // Returns Result<int, string> with a failure value of "Failure"
+```
+#### BindIfFailure
+If `Success`, this extension will return the original Result.  If `Failure`, it will return the Result returned by the delegate parameter.
+```csharp
+Result<float, string> result = Result.Success<float, string>(1.5).BindIfNone(s => Result.Success<float, string>(s * 2)); // Returns Result<float, string> with a success value of 1.5
+Result<float, string> result = Result.Failure<float, string>("Failure").BindIfNone(s => Result.Success<float, string>(1337)); // Returns Result<float, string> with a success value of 1337
+Result<float, string> result = Result.Failure<float, string>("Failure").BindIfNone(s => Result.Failure<float, string>("More failure")); // Returns Result<float, string> with a failure value of "More failure"
 ```
 #### IsSuccess
 If `Success`, this extension will return `true`, and if `Failure` it will return `false`.
