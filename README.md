@@ -72,8 +72,9 @@ int value = Option.None<int>().ValueOrDefault(50); // Returns 50
 #### BindIfNone
 If `Some`, this extension will return the value, and if `None` it will return the Option produced by the delegate parameter.
 ```csharp
-Option<int> value = Option.Some(100).BindIfNone(50); // Returns 100
-Option<int> value = Option.None<int>().BindIfNone(50); // Returns 50
+Option<int> value = Option.Some(100).BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 100
+Option<int> value = Option.None<int>().BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 50
+Option<int> value = Option.None<int>().BindIfNone(() => Option.None<int>()); // Returns Option<int> with no value
 ```
 #### ToNullable
 This extension only works on value types. If `Some`, this extension will return the value, and if `None` it will return null.
