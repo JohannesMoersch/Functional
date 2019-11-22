@@ -70,7 +70,7 @@ int value = Option.Some(100).ValueOrDefault(50); // Returns 100
 int value = Option.None<int>().ValueOrDefault(50); // Returns 50
 ```
 #### BindIfNone
-If `Some`, this extension will return the value, and if `None` it will return the Option produced by the delegate parameter.
+If `Some`, this extension will return the original Option.  If `None`, it will return the Option returned by the delegate parameter.
 ```csharp
 Option<int> value = Option.Some(100).BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 100
 Option<int> value = Option.None<int>().BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 50
