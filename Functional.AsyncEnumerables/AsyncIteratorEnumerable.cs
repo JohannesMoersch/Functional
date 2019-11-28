@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Functional
 {
@@ -11,7 +13,7 @@ namespace Functional
 		public AsyncIteratorEnumerable(Func<IAsyncEnumerator<T>> iteratorFactory)
 			=> _iteratorFactory = iteratorFactory;
 
-		public IAsyncEnumerator<T> GetEnumerator()
+		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
 			=> _iteratorFactory.Invoke();
 	}
 

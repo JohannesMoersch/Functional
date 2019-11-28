@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Functional.Unions.AsyncEnumerables.NetStandard2</Title>
+    <Description>This package contains a extension methods for unions and async enumerables.</Description>
+    <PackageTags>functional</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.AsyncEnumerables.NetStandard2\Functional.AsyncEnumerables.NetStandard2.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+    <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+  </ItemGroup>
+
+</Project>

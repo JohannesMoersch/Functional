@@ -16,11 +16,14 @@ namespace Functional
 		public AsyncTaskAsyncEnumerator(Task<IAsyncEnumerator<T>> asyncEnumeratorTask)
 			=> _asyncEnumeratorTask = asyncEnumeratorTask ?? throw new ArgumentNullException(nameof(asyncEnumeratorTask));
 
-		public async Task<bool> MoveNext()
-		{
-			var enumerator = _asyncEnumerator ?? (_asyncEnumerator = (await _asyncEnumeratorTask));
+		public async ValueTask DisposeAsync()
+			=> await (_asyncEnumerator ??= await _asyncEnumeratorTask).DisposeAsync();
 
-			if (await enumerator.MoveNext())
+		public async ValueTask<bool> MoveNextAsync()
+		{
+			var enumerator = _asyncEnumerator ??= await _asyncEnumeratorTask;
+
+			if (await enumerator.MoveNextAsync())
 			{
 				Current = enumerator.Current;
 				return true;

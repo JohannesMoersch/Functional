@@ -16,13 +16,16 @@ namespace Functional
 
 		public BasicIterator(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult current)> onNext)
 		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_moveNext = onNext ?? throw new ArgumentNullException(nameof(onNext));
 		}
 
-		public async Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
-			while (await _enumerator.MoveNext())
+			while (await _enumerator.MoveNextAsync())
 			{
 				var (type, current) = _moveNext.Invoke((_enumerator.Current, _count++));
 

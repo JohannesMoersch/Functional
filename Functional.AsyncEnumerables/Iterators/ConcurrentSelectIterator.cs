@@ -20,7 +20,7 @@ namespace Functional
 
 		public ConcurrentSelectIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
 		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_selector = selector ?? throw new ArgumentNullException(nameof(selector));
 			_maxConcurrency = maxConcurrency;
 
@@ -28,11 +28,14 @@ namespace Functional
 				throw new ArgumentOutOfRangeException(nameof(maxConcurrency), "Value must be greater than zero.");
 		}
 
-		public async Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			try
 			{
-				while (_taskQueue.Count < _maxConcurrency && await _enumerator.MoveNext())
+				while (_taskQueue.Count < _maxConcurrency && await _enumerator.MoveNextAsync())
 					_taskQueue.Enqueue(_selector.Invoke(_enumerator.Current, _count++));
 			}
 			catch (Exception ex)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -88,7 +89,11 @@ namespace Functional
 			}
 
 			public void Dispose()
-				=> _groupingEnumerator?.Dispose();
+			{
+				_groupingEnumerator?.Dispose();
+
+				_successEnumerator.Dispose();
+			}
 
 			public bool MoveNext()
 			{
@@ -160,8 +165,8 @@ namespace Functional
 				_elementSelector = elementSelector;
 			}
 
-			public IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>> GetEnumerator()
-				=> new AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure>(_successEnumerable.GetEnumerator(), _keySelector, _elementSelector);
+			public IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+				=> new AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure>(_successEnumerable.GetAsyncEnumerator(cancellationToken), _keySelector, _elementSelector);
 		}
 
 		private class AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure> : IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>>
@@ -202,14 +207,18 @@ namespace Functional
 				_elementSelector = elementSelector;
 			}
 
-			public void Dispose()
-				=> _groupingEnumerator?.Dispose();
+			public ValueTask DisposeAsync()
+			{
+				_groupingEnumerator?.Dispose();
 
-			public async Task<bool> MoveNext()
+				return _successEnumerator.DisposeAsync();
+			}
+
+			public async ValueTask<bool> MoveNextAsync()
 			{
 				if (_groupingEnumerator == null)
 				{
-					while (await _successEnumerator.MoveNext())
+					while (await _successEnumerator.MoveNextAsync())
 					{
 						var isFailure = _successEnumerator
 							.Current

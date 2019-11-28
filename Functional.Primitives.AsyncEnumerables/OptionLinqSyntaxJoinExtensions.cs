@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -160,8 +161,8 @@ namespace Functional
 				_innerKeySelector = innerKeySelector ?? throw new ArgumentNullException(nameof(innerKeySelector));
 			}
 
-			public IAsyncEnumerator<Option<(TOuter outer, IEnumerable<TInner> inner)>> GetEnumerator()
-				=> new AsyncOptionGroupJoinEnumerator<TOuter, TInner, TKey>(_outer.GetEnumerator(), _inner, _outerKeySelector, _innerKeySelector);
+			public IAsyncEnumerator<Option<(TOuter outer, IEnumerable<TInner> inner)>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+				=> new AsyncOptionGroupJoinEnumerator<TOuter, TInner, TKey>(_outer.GetAsyncEnumerator(cancellationToken), _inner, _outerKeySelector, _innerKeySelector);
 		}
 
 		private class AsyncOptionGroupJoinEnumerator<TOuter, TInner, TKey> : IAsyncEnumerator<Option<(TOuter outer, IEnumerable<TInner> inner)>>
@@ -185,9 +186,17 @@ namespace Functional
 				_innerKeySelector = innerKeySelector ?? throw new ArgumentNullException(nameof(innerKeySelector));
 			}
 
-			public async Task<bool> MoveNext()
+			public async ValueTask DisposeAsync()
 			{
-				if (await _outer.MoveNext())
+				if (_lookup == null)
+					await _inner;
+
+				await _outer.DisposeAsync();
+			}
+
+			public async ValueTask<bool> MoveNextAsync()
+			{
+				if (await _outer.MoveNextAsync())
 				{
 					Current = await _outer
 					   .Current

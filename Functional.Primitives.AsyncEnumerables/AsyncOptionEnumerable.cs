@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -16,8 +17,8 @@ namespace Functional
 		public AsyncOptionEnumerable(IAsyncEnumerable<Option<TValue>> source) 
 			=> _source = source ?? throw new ArgumentNullException(nameof(source));
 
-		public IAsyncEnumerator<Option<TValue>> GetEnumerator()
-			=> _source.GetEnumerator();
+		public IAsyncEnumerator<Option<TValue>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+			=> _source.GetAsyncEnumerator(cancellationToken);
 	}
 
 	internal static class AsyncOptionEnumerable

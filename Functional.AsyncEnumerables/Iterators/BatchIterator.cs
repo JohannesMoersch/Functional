@@ -23,14 +23,17 @@ namespace Functional
 				throw new ArgumentOutOfRangeException(nameof(batchSize), "Value must be greater than zero.");
 		}
 
-		public async Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			if (_ended)
 				return false;
 
 			var batch = new T[_batchSize];
 			int count = 0;
-			while (count < _batchSize && await _enumerator.MoveNext())
+			while (count < _batchSize && await _enumerator.MoveNextAsync())
 				batch[count++] = _enumerator.Current;
 
 			if (count > 0)

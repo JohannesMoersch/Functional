@@ -17,19 +17,27 @@ namespace Functional
 
 		public SelectManyIteratorAsync(IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_collectionSelector = collectionSelector ?? throw new ArgumentNullException(nameof(collectionSelector));
 			_resultSelector = resultSelector ?? throw new ArgumentNullException(nameof(resultSelector));
 		}
 
-		public async Task<bool> MoveNext()
+		public async ValueTask DisposeAsync()
 		{
-			while (_subEnumerator == null || !await _subEnumerator.MoveNext())
+			if (_subEnumerator != null)
+				await _subEnumerator.DisposeAsync();
+
+			await _enumerator.DisposeAsync();
+		}
+
+		public async ValueTask<bool> MoveNextAsync()
+		{
+			while (_subEnumerator == null || !await _subEnumerator.MoveNextAsync())
 			{
-				if (!await _enumerator.MoveNext())
+				if (!await _enumerator.MoveNextAsync())
 					return false;
 
-				_subEnumerator = _collectionSelector.Invoke(_enumerator.Current, _count++).GetEnumerator();
+				_subEnumerator = _collectionSelector.Invoke(_enumerator.Current, _count++).GetAsyncEnumerator();
 			}
 
 			Current = await _resultSelector.Invoke(_enumerator.Current, _subEnumerator.Current);

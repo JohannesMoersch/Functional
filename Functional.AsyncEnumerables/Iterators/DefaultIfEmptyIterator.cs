@@ -16,16 +16,19 @@ namespace Functional
 
 		public DefaultIfEmptyIterator(IAsyncEnumerable<TSource> source, TSource defaultValue)
 		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_defaultValue = defaultValue;
 		}
 
-		public async Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			switch (_state)
 			{
 				case 0:
-					if (await _enumerator.MoveNext())
+					if (await _enumerator.MoveNextAsync())
 					{
 						_state = 1;
 						Current = _enumerator.Current;
@@ -37,7 +40,7 @@ namespace Functional
 					}
 					return true;
 				case 1:
-					if (await _enumerator.MoveNext())
+					if (await _enumerator.MoveNextAsync())
 					{
 						Current = _enumerator.Current;
 						return true;

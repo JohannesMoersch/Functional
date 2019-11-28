@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives", "Functional.Primitives\Functional.Primitives.csproj", "{77BA7FE8-AF44-47B0-BE4A-39787D45B04E}"
 EndProject
@@ -29,6 +29,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions.AsyncEnumerables.NetStandard2", "Functional.Unions.AsyncEnumerables.NetStandard2\Functional.Unions.AsyncEnumerables.NetStandard2.csproj", "{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables.NetStandard2", "Functional.Primitives.AsyncEnumerables.NetStandard2\Functional.Primitives.AsyncEnumerables.NetStandard2.csproj", "{62470C59-88FA-4E07-A36A-EEB475CD5A93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables.NetStandard2", "Functional.AsyncEnumerables.NetStandard2\Functional.AsyncEnumerables.NetStandard2.csproj", "{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.All.NetStandard2", "Functional.All.NetStandard2\Functional.All.NetStandard2.csproj", "{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +88,22 @@ Global
 		{2BC81670-210C-4702-8606-6B9A73459FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BC81670-210C-4702-8606-6B9A73459FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BC81670-210C-4702-8606-6B9A73459FE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

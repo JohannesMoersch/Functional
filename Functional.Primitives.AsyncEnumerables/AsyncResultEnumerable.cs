@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -16,8 +17,8 @@ namespace Functional
 		public AsyncResultEnumerable(IAsyncEnumerable<Result<TSuccess, TFailure>> source) 
 			=> _source = source ?? throw new ArgumentNullException(nameof(source));
 
-		public IAsyncEnumerator<Result<TSuccess, TFailure>> GetEnumerator()
-			=> _source.GetEnumerator();
+		public IAsyncEnumerator<Result<TSuccess, TFailure>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+			=> _source.GetAsyncEnumerator(cancellationToken);
 	}
 
 	internal static class AsyncResultEnumerable

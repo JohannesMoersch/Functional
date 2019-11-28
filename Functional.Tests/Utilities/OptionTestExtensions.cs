@@ -59,10 +59,10 @@ namespace Functional
 		{
 			var successes = new TSuccess[4];
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var index = 0;
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 			{
 				var value = enumerator.Current;
 
