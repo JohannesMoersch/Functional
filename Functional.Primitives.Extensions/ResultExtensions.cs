@@ -27,19 +27,29 @@ namespace Functional
 		public static async Task<Option<TFailure>> Failure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
 			=> (await result).Failure();
 
-		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> select)
+		public static Result<TResult, TFailure> Map<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (result.TryGetValue(out var success, out var failure))
-				return Result.Success<TResult, TFailure>(select.Invoke(success));
+				return Result.Success<TResult, TFailure>(map.Invoke(success));
 
 			return Result.Failure<TResult, TFailure>(failure);
 		}
 
-		public static async Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> select)
-			=> (await result).Select(select);
+		public static async Task<Result<TResult, TFailure>> Map<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
+			=> (await result).Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use Map instead.")]
+		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
+			=> result.Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use Map instead.")]
+		public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
+			=> result.Map(map);
 
 		public static Result<TSuccess, TFailure> Where<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
 		{

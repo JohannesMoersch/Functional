@@ -22,7 +22,7 @@ namespace Functional
 			return source
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsOptionEnumerable();
 		}
@@ -40,7 +40,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncOptionEnumerable();
 		}
@@ -58,7 +58,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncOptionEnumerable();
 		}
@@ -76,7 +76,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncOptionEnumerable();
 		}
@@ -93,7 +93,7 @@ namespace Functional
 			return source
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncOptionEnumerable();
 		}
@@ -110,7 +110,7 @@ namespace Functional
 			return source
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncOptionEnumerable();
 		}
@@ -197,7 +197,7 @@ namespace Functional
 					.Match(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						Option.None<TResult>
 					)
 				)
@@ -219,7 +219,7 @@ namespace Functional
 					.MatchAsync(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						() => Task.FromResult(Option.None<TResult>())
 					)
 				)
@@ -307,7 +307,7 @@ namespace Functional
 					.Match(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						Option.None<TResult>
 					)
 				)
@@ -328,7 +328,7 @@ namespace Functional
 					.MatchAsync(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						() => Task.FromResult(Option.None<TResult>())
 					)
 				)

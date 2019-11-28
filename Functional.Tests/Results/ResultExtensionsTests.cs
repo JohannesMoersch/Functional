@@ -39,7 +39,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -209,7 +209,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -383,7 +383,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -553,7 +553,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.Be("abc");

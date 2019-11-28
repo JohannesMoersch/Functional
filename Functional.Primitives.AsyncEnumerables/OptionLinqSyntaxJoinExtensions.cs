@@ -92,7 +92,7 @@ namespace Functional
 				{
 					Current = _outer
 					   .Current
-					   .Select(outerValue => (outerValue, GetLookup()[_outerKeySelector.Invoke(outerValue)]));
+					   .Map(outerValue => (outerValue, GetLookup()[_outerKeySelector.Invoke(outerValue)]));
 
 					return true;
 				}
@@ -200,7 +200,7 @@ namespace Functional
 				{
 					Current = await _outer
 					   .Current
-					   .SelectAsync(async outerValue => (outerValue, (await GetLookup())[_outerKeySelector.Invoke(outerValue)]));
+					   .MapAsync(async outerValue => (outerValue, (await GetLookup())[_outerKeySelector.Invoke(outerValue)]));
 
 					return true;
 				}
@@ -252,11 +252,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> outer.Join(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> DoJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
@@ -281,11 +281,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> outer.Join(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> DoJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		private static Task<IEnumerable<Option<TValue>>> DoJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
 			=> inner
@@ -317,11 +317,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> DoJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> DoJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		// ------------------------- //
 
@@ -372,11 +372,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> outer.Join(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
-			=> outer.Join(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
@@ -468,11 +468,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> outer.GroupJoin(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> DoGroupJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
@@ -497,11 +497,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> outer.GroupJoin(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> DoGroupJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		private static Task<IEnumerable<Option<TValue>>> DoGroupJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
 			=> inner
@@ -533,11 +533,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> DoGroupJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> DoGroupJoin(outer, inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
+			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		// ------------------------- //
 
@@ -588,11 +588,11 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> outer.GroupJoin(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
-			=> outer.GroupJoin(inner.Select(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
+			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)

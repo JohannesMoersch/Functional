@@ -20,19 +20,29 @@ namespace Functional
 		public static async Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
 			=> await (await result).MatchAsync(successSome, successNone, failure);
 
-		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> select)
+		public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (result.TryGetValue(out var success, out var failure))
-				return Result.Success<TResult, TFailure>(await select.Invoke(success));
+				return Result.Success<TResult, TFailure>(await map.Invoke(success));
 			
 			return Result.Failure<TResult, TFailure>(failure);
 		}
 
-		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> select)
-			=> await (await result).SelectAsync(select);
+		public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> map)
+			=> await (await result).MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapAsync instead.")]
+		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
+			=> result.MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapAsync instead.")]
+		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> map)
+			=> result.MapAsync(map);
 
 		public static async Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
 		{

@@ -13,9 +13,9 @@ namespace Functional
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Where<TValue>(this IEnumerable<TValue> source, Func<TValue, Option<Unit>> failurePredicate)
 			=> source
-				.Select(success => failurePredicate
-					.Invoke(success)
-					.Select(_ => success)
+				.Select((Func<TValue, Option<TValue>>)(success => (Option<TValue>)OptionExtensions.Map<Unit, TValue>(failurePredicate
+					.Invoke((TValue)success)
+, (Func<Unit, TValue>)(_ => (TValue)success)))
 				)
 				.AsOptionEnumerable();
 
@@ -24,7 +24,7 @@ namespace Functional
 			=> source
 				.SelectAsync(success => failurePredicate
 					.Invoke(success)
-					.Select(_ => success)
+					.Map(_ => success)
 				)
 				.AsAsyncOptionEnumerable();
 
@@ -33,7 +33,7 @@ namespace Functional
 			=> source
 				.Select(success => failurePredicate
 					.Invoke(success)
-					.Select(_ => success)
+					.Map(_ => success)
 				)
 				.AsAsyncOptionEnumerable();
 
@@ -42,18 +42,18 @@ namespace Functional
 			=> source
 				.SelectAsync(success => failurePredicate
 					.Invoke(success)
-					.Select(_ => success)
+					.Map(_ => success)
 				)
 				.AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Where<TValue>(this IOptionEnumerable<TValue> source, Func<TValue, Option<Unit>> failurePredicate)
 			=> source
-				.Select(value => value
-					.Bind(success => failurePredicate
-						.Invoke(success)
-						.Select(_ => success)
-					)
+				.Select((Func<Option<TValue>, Option<TValue>>)(value => value
+					.Bind((Func<TValue, Option<TValue>>)(success => (Option<TValue>)OptionExtensions.Map<Unit, TValue>(failurePredicate
+						.Invoke((TValue)success)
+, (Func<Unit, TValue>)(_ => (TValue)success)))
+					))
 				)
 				.AsOptionEnumerable();
 
@@ -63,7 +63,7 @@ namespace Functional
 				.SelectAsync(value => value
 					.BindAsync(success => failurePredicate
 						.Invoke(success)
-						.Select(_ => success)
+						.Map(_ => success)
 					)
 				)
 				.AsAsyncOptionEnumerable();
@@ -74,7 +74,7 @@ namespace Functional
 				.Select(value => value
 					.Bind(success => failurePredicate
 						.Invoke(success)
-						.Select(_ => success)
+						.Map(_ => success)
 					)
 				)
 				.AsAsyncOptionEnumerable();
@@ -85,7 +85,7 @@ namespace Functional
 				.SelectAsync(value => value
 					.BindAsync(success => failurePredicate
 						.Invoke(success)
-						.Select(_ => success)
+						.Map(_ => success)
 					)
 				)
 				.AsAsyncOptionEnumerable();

@@ -22,7 +22,7 @@ namespace Functional
 			return source
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsResultEnumerable();
 		}
@@ -40,7 +40,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncResultEnumerable();
 		}
@@ -58,7 +58,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncResultEnumerable();
 		}
@@ -76,7 +76,7 @@ namespace Functional
 				.AsAsyncEnumerable()
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncResultEnumerable();
 		}
@@ -93,7 +93,7 @@ namespace Functional
 			return source
 				.Select(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncResultEnumerable();
 		}
@@ -110,7 +110,7 @@ namespace Functional
 			return source
 				.SelectAsync(value => bind
 					.Invoke(value)
-					.Select(success => resultSelector.Invoke(value, success))
+					.Map(success => resultSelector.Invoke(value, success))
 				)
 				.AsAsyncResultEnumerable();
 		}
@@ -197,7 +197,7 @@ namespace Functional
 					.Match(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						Result.Failure<TResult, TFailure>
 					)
 				)
@@ -219,7 +219,7 @@ namespace Functional
 					.MatchAsync(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
 					)
 				)
@@ -307,7 +307,7 @@ namespace Functional
 					.Match(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						Result.Failure<TResult, TFailure>
 					)
 				)
@@ -328,7 +328,7 @@ namespace Functional
 					.MatchAsync(success =>
 						bind
 						.Invoke(success)
-						.Select(value => resultSelector.Invoke(success, value)),
+						.Map(value => resultSelector.Invoke(success, value)),
 						failure => Task.FromResult(Result.Failure<TResult, TFailure>(failure))
 					)
 				)

@@ -35,8 +35,8 @@ namespace Functional.Tests.IL
 		public static Option<ParsedMethodBody> GetParsedMethodBody(this MethodInfo method)
 			=> Option
 				.FromNullable(method.GetMethodBody())
-				.Select(methodBody => GetInstructionsFromILByteArray(methodBody.GetILAsByteArray(), method.Module, method.ReflectedType.GetGenericArguments(), method.GetGenericArguments()))
-				.Select(instructions => ParsedMethodBody.Create(method, instructions.ToArray()));
+				.Map(methodBody => GetInstructionsFromILByteArray(methodBody.GetILAsByteArray(), method.Module, method.ReflectedType.GetGenericArguments(), method.GetGenericArguments()))
+				.Map(instructions => ParsedMethodBody.Create(method, instructions.ToArray()));
 
 		private static IEnumerable<Instruction> GetInstructionsFromILByteArray(byte[] bytes, Module module, Type[] typeGenerics, Type[] methodGenerics)
 		{

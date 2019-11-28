@@ -9,7 +9,7 @@ namespace Functional
 	{
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
 			=> result.TryGetValue(out var success, out var failure)
-				? Result.Success<Option<TResult>, TFailure>(await success.SelectAsync(select))
+				? Result.Success<Option<TResult>, TFailure>(await success.MapAsync(select))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
@@ -49,7 +49,7 @@ namespace Functional
 			if (result.TryGetValue(out var success, out var failure))
 			{
 				if (success.TryGetValue(out var some))
-					return await bind.Invoke(some).Select(DelegateCache<TResult>.Some);
+					return await bind.Invoke(some).Map(DelegateCache<TResult>.Some);
 
 				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
 			}
@@ -85,7 +85,7 @@ namespace Functional
 				throw new ArgumentNullException(nameof(bind));
 
 			return result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
-				? await bind().Select(DelegateCache<TSuccess>.Some)
+				? await bind().Map(DelegateCache<TSuccess>.Some)
 				: result;
 		}
 

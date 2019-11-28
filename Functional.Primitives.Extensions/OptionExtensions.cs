@@ -16,19 +16,29 @@ namespace Functional
 		public static async Task<bool> HasValue<TValue>(this Task<Option<TValue>> option)
 			=> (await option).HasValue();
 
-		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> select)
+		public static Option<TResult> Map<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (option.TryGetValue(out var some))
-				return Option.Some(select.Invoke(some));
+				return Option.Some(map.Invoke(some));
 
 			return Option.None<TResult>();
 		}
 
-		public static async Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> select)
-			=> (await option).Select(select);
+		public static async Task<Option<TResult>> Map<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+			=> (await option).Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use Map instead.")]
+		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
+			=> option.Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use Map instead.")]
+		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+			=> option.Map(map);
 
 		public static Option<TResult> Bind<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
 		{

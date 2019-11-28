@@ -25,7 +25,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSome()
 					.Should()
 					.Be(20);
@@ -194,7 +194,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSome()
 					.Should()
 					.Be(20);
@@ -344,7 +344,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertNone();
 
 			[Fact]
@@ -475,7 +475,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertNone();
 
 			[Fact]

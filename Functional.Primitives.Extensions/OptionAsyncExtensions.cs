@@ -9,19 +9,29 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class OptionAsyncExtensions
 	{
-		public static async Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> select)
+		public static async Task<Option<TResult>> MapAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (option.TryGetValue(out var some))
-				return Option.Some(await select.Invoke(some));
+				return Option.Some(await map.Invoke(some));
 
 			return Option.None<TResult>();
 		}
 
-		public static async Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> select)
-			=> await (await option).SelectAsync(select);
+		public static async Task<Option<TResult>> MapAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
+			=> await (await option).MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapAsync instead.")]
+		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
+			=> option.MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapAsync instead.")]
+		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
+			=> option.MapAsync(map);
 
 		public static async Task<Option<TResult>> BindAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TResult>>> bind)
 		{

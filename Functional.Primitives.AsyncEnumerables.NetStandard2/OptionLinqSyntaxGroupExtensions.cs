@@ -98,7 +98,7 @@ namespace Functional
 					{
 						var isFailure = _successEnumerator
 							.Current
-							.Select(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
+							.Map(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
 							.Match
 							(
 								success =>
@@ -213,7 +213,7 @@ namespace Functional
 					{
 						var isFailure = _successEnumerator
 							.Current
-							.Select(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
+							.Map(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
 							.Match
 							(
 								success =>

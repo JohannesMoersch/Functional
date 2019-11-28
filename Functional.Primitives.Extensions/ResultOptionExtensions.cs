@@ -28,7 +28,7 @@ namespace Functional
 
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
 			=> result.TryGetValue(out var success, out var failure)
-				? Result.Success<Option<TResult>, TFailure>(success.Select(select))
+				? Result.Success<Option<TResult>, TFailure>(success.Map(select))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
@@ -66,7 +66,7 @@ namespace Functional
 			if (result.TryGetValue(out var success, out var failure))
 			{
 				if (success.TryGetValue(out var some))
-					return bind.Invoke(some).Select(DelegateCache<TResult>.Some);
+					return bind.Invoke(some).Map(DelegateCache<TResult>.Some);
 
 				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
 			}
@@ -102,7 +102,7 @@ namespace Functional
 				throw new ArgumentNullException(nameof(bind));
 
 			return result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
-				? bind().Select(DelegateCache<TSuccess>.Some)
+				? bind().Map(DelegateCache<TSuccess>.Some)
 				: result;
 		}
 

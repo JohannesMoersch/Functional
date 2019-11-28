@@ -17,7 +17,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.SelectAsync(i => Task.FromResult(i * 2))
+					.MapAsync(i => Task.FromResult(i * 2))
 					.AssertSome()
 					.Should()
 					.Be(20);
@@ -128,7 +128,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.SelectAsync(i => Task.FromResult(i * 2))
+					.MapAsync(i => Task.FromResult(i * 2))
 					.AssertSome()
 					.Should()
 					.Be(20);
@@ -223,7 +223,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.SelectAsync(i => Task.FromResult(i * 2))
+					.MapAsync(i => Task.FromResult(i * 2))
 					.AssertNone();
 
 			[Fact]
@@ -312,7 +312,7 @@ namespace Functional.Tests.Options
 			[Fact]
 			public Task Select()
 				=> Value
-					.SelectAsync(i => Task.FromResult(i * 2))
+					.MapAsync(i => Task.FromResult(i * 2))
 					.AssertNone();
 
 			[Fact]
