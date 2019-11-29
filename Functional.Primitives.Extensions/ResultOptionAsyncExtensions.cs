@@ -7,39 +7,77 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultOptionAsyncExtensions
 	{
-		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
+		public static async Task<Result<Option<TResult>, TFailure>> MapIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> map)
 			=> result.TryGetValue(out var success, out var failure)
-				? Result.Success<Option<TResult>, TFailure>(await success.MapAsync(select))
+				? Result.Success<Option<TResult>, TFailure>(await success.MapAsync(map))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
-		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
-			=> await (await result).SelectIfSomeAsync(select);
+		public static async Task<Result<Option<TResult>, TFailure>> MapIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> map)
+			=> await (await result).MapIfSomeAsync(map);
 
-		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Option<TResult>>> select)
+		public static async Task<Result<Option<TResult>, TFailure>> MapIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Option<TResult>>> map)
 			=> result.TryGetValue(out var success, out var failure)
-				? Result.Success<Option<TResult>, TFailure>(await success.BindAsync(select))
+				? Result.Success<Option<TResult>, TFailure>(await success.BindAsync(map))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
-		public static async Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Option<TResult>>> select)
-			=> (await result).TryGetValue(out var success, out var failure)
-				? Result.Success<Option<TResult>, TFailure>(await success.BindAsync(select))
-				: Result.Failure<Option<TResult>, TFailure>(failure);
+		public static async Task<Result<Option<TResult>, TFailure>> MapIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Option<TResult>>> map)
+			=> await (await result).MapIfSomeAsync(map);
 
-		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> select)
+		public static async Task<Result<Option<TSuccess>, TFailure>> MapIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> map)
 			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
-				? Result.Success<Option<TSuccess>, TFailure>(Option.Some(await select()))
+				? Result.Success<Option<TSuccess>, TFailure>(Option.Some(await map()))
 				: result;
 
-		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> select)
-			=> await (await result).SelectIfNoneAsync(select);
+		public static async Task<Result<Option<TSuccess>, TFailure>> MapIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> map)
+			=> await (await result).MapIfNoneAsync(map);
 
-		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> select)
+		public static async Task<Result<Option<TSuccess>, TFailure>> MapIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> map)
 			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
-				? Result.Success<Option<TSuccess>, TFailure>(await select())
+				? Result.Success<Option<TSuccess>, TFailure>(await map())
 				: result;
 
-		public static async Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> select)
-			=> await (await result).SelectIfNoneAsync(select);
+		public static async Task<Result<Option<TSuccess>, TFailure>> MapIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> map)
+			=> await (await result).MapIfNoneAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfSomeAsync instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
+			=> result.MapIfSomeAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfSomeAsync instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
+			=> result.MapIfSomeAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfSomeAsync instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Option<TResult>>> select)
+			=> result.MapIfSomeAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfSomeAsync instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Option<TResult>>> select)
+			=> result.MapIfSomeAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfNoneAsync instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> select)
+			=> result.MapIfNoneAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfNoneAsync instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> select)
+			=> result.MapIfNoneAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfNoneAsync instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> select)
+			=> result.MapIfNoneAsync(select);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use MapIfNoneAsync instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> select)
+			=> result.MapIfNoneAsync(select);
 
 		public static async Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 		{

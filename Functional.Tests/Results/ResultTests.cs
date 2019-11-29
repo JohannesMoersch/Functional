@@ -69,27 +69,27 @@ namespace Functional.Tests.Results
 			var valueExceptionInput = Result.Success<int, Exception>(VALUE);
 
 			valueInput
-				.TrySelect(i => i.ToString(), ex => throw new InvalidOperationException())
+				.TryMap(i => i.ToString(), ex => throw new InvalidOperationException())
 				.AssertSuccess()
 				.Should()
 				.Be(VALUE.ToString());
 
 			valueExceptionInput
-				.TrySelect(i => i.ToString())
+				.TryMap(i => i.ToString())
 				.AssertSuccess()
 				.Should()
 				.Be(VALUE.ToString());
 
 			await Task
 				.FromResult(valueInput)
-				.TrySelect(i => i.ToString(), ex => throw new InvalidOperationException())
+				.TryMap(i => i.ToString(), ex => throw new InvalidOperationException())
 				.AssertSuccess()
 				.Should()
 				.Be(VALUE.ToString());
 
 			await Task
 				.FromResult(valueExceptionInput)
-				.TrySelect(i => i.ToString())
+				.TryMap(i => i.ToString())
 				.AssertSuccess()
 				.Should()
 				.Be(VALUE.ToString());
@@ -104,27 +104,27 @@ namespace Functional.Tests.Results
 			var faultedInputHoldingException = Result.Failure<int, Exception>(exception);
 
 			faultedInputHoldingMessage
-				.TrySelect<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException())
+				.TryMap<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException())
 				.AssertFailure()
 				.Should()
 				.Be(ERROR);
 
 			faultedInputHoldingException
-				.TrySelect(i => (Value: i, Boolean: true))
+				.TryMap(i => (Value: i, Boolean: true))
 				.AssertFailure()
 				.Should()
 				.Be(exception);
 
 			await Task
 				.FromResult(faultedInputHoldingMessage)
-				.TrySelect<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException())
+				.TryMap<int, object, string>(o => throw new InvalidOperationException(), ex => throw new InvalidOperationException())
 				.AssertFailure()
 				.Should()
 				.Be(ERROR);
 
 			await Task
 				.FromResult(faultedInputHoldingException)
-				.TrySelect(i => (Value: i, Boolean: true))
+				.TryMap(i => (Value: i, Boolean: true))
 				.AssertFailure()
 				.Should()
 				.Be(exception);
@@ -138,27 +138,27 @@ namespace Functional.Tests.Results
 			var objectExceptionInput = Result.Success<object, Exception>(new object());
 
 			objectObjectInput
-				.TrySelect<object, object, string>(s => throw exception, f => f.Message)
+				.TryMap<object, object, string>(s => throw exception, f => f.Message)
 				.AssertFailure()
 				.Should()
 				.Be(exception.Message);
 
 			objectExceptionInput
-				.TrySelect<object, object>(o => throw exception)
+				.TryMap<object, object>(o => throw exception)
 				.AssertFailure()
 				.Should()
 				.Be(exception);
 
 			await Task
 				.FromResult(objectObjectInput)
-				.TrySelect<object, object, string>(o => throw exception, ex => ex.Message)
+				.TryMap<object, object, string>(o => throw exception, ex => ex.Message)
 				.AssertFailure()
 				.Should()
 				.Be(exception.Message);
 
 			await Task
 				.FromResult(objectExceptionInput)
-				.TrySelect<object, object>(o => throw exception)
+				.TryMap<object, object>(o => throw exception)
 				.AssertFailure()
 				.Should()
 				.Be(exception);

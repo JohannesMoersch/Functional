@@ -78,7 +78,7 @@ namespace Functional.Tests.Results
 					public void ShouldMapOptionSomeToOptionSome() 
 						=> Result
 							.Success<Option<int>, string>(Option.Some(1337))
-							.SelectIfSome(IsEven)
+							.MapIfSome(IsEven)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -88,7 +88,7 @@ namespace Functional.Tests.Results
 					public void ShouldMapOptionNoneToOptionNone() 
 						=> Result
 							.Success<Option<int>, string>(Option.None<int>())
-							.SelectIfSome(IsEven)
+							.MapIfSome(IsEven)
 							.AssertSuccess()
 							.AssertNone();
 
@@ -96,7 +96,7 @@ namespace Functional.Tests.Results
 					public void ShouldDoNothingOnFailure() 
 						=> Result
 							.Failure<Option<int>, string>("some error")
-							.SelectIfSome(IsEven)
+							.MapIfSome(IsEven)
 							.AssertFailure();
 
 					private static bool IsEven(int i) => i % 2 == 0;
@@ -110,7 +110,7 @@ namespace Functional.Tests.Results
 						public void ShouldMapOptionSomeToOptionSome() 
 							=> Result
 								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -120,7 +120,7 @@ namespace Functional.Tests.Results
 						public void ShouldMapOptionNoneToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -128,7 +128,7 @@ namespace Functional.Tests.Results
 						public void ShouldDoNothingOnFailure() 
 							=> Result
 								.Failure<Option<int>, string>("some error")
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertFailure();
 
 						private static Option<bool> IsEven(int i) => Option.Some(i % 2 == 0);
@@ -140,7 +140,7 @@ namespace Functional.Tests.Results
 						public void ShouldMapOptionSomeToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -148,7 +148,7 @@ namespace Functional.Tests.Results
 						public void ShouldMapOptionNoneToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -156,7 +156,7 @@ namespace Functional.Tests.Results
 						public void ShouldDoNothingOnFailure() 
 							=> Result
 								.Failure<Option<int>, string>("some error")
-								.SelectIfSome(IsEven)
+								.MapIfSome(IsEven)
 								.AssertFailure();
 
 						private static Option<bool> IsEven(int i) => Option.None<bool>();
@@ -172,7 +172,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionSomeToOptionSome() 
 						=> Result
 							.Success<Option<int>, string>(Option.Some(1337))
-							.SelectIfSomeAsync(IsEvenAsync)
+							.MapIfSomeAsync(IsEvenAsync)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -182,7 +182,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionNoneToOptionNone() 
 						=> Result
 							.Success<Option<int>, string>(Option.None<int>())
-							.SelectIfSomeAsync(IsEvenAsync)
+							.MapIfSomeAsync(IsEvenAsync)
 							.AssertSuccess()
 							.AssertNone();
 
@@ -190,7 +190,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnFailure() 
 						=> Result
 							.Failure<Option<int>, string>("some error")
-							.SelectIfSomeAsync(IsEvenAsync)
+							.MapIfSomeAsync(IsEvenAsync)
 							.AssertFailure();
 
 					private static Task<bool> IsEvenAsync(int i) => Task.FromResult(i % 2 == 0);
@@ -204,7 +204,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionSome() 
 							=> Result
 								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -214,7 +214,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -222,7 +222,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure() 
 							=> Result
 								.Failure<Option<int>, string>("some error")
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertFailure();
 
 						private static Task<Option<bool>> IsEvenAsync(int i) => Task.FromResult(Option.Some(i % 2 == 0));
@@ -234,7 +234,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.Some(1337))
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -242,7 +242,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Result
 								.Success<Option<int>, string>(Option.None<int>())
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -250,7 +250,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure() 
 							=> Result
 								.Failure<Option<int>, string>("some error")
-								.SelectIfSomeAsync(IsEvenAsync)
+								.MapIfSomeAsync(IsEvenAsync)
 								.AssertFailure();
 
 						private static Task<Option<bool>> IsEvenAsync(int i) => Task.FromResult(Option.None<bool>());
@@ -599,7 +599,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnSuccessWithSomeValue()
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-							.SelectIfNone(OtherValue)
+							.MapIfNone(OtherValue)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -609,7 +609,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionNoneToOptionSomeContainingExpectedValue()
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfNone(OtherValue)
+							.MapIfNone(OtherValue)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -619,7 +619,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnFailure()
 						=> Task
 							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfNone(OtherValue)
+							.MapIfNone(OtherValue)
 							.AssertFailure();
 
 					private static int OtherValue() => EXPECTED_VALUE;
@@ -633,7 +633,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnSuccessWithSomeValue()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-								.SelectIfNone(OtherOption)
+								.MapIfNone(OtherOption)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -643,7 +643,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionSomeContainingExpectedValue()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfNone(OtherOption)
+								.MapIfNone(OtherOption)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -653,7 +653,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure()
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfNone(OtherOption)
+								.MapIfNone(OtherOption)
 								.AssertFailure();
 
 						private static Option<int> OtherOption() => Option.Some(EXPECTED_VALUE);
@@ -665,7 +665,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionNone()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-								.SelectIfNone(Nothing)
+								.MapIfNone(Nothing)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -675,7 +675,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfNone(Nothing)
+								.MapIfNone(Nothing)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -683,7 +683,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure()
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfNone(Nothing)
+								.MapIfNone(Nothing)
 								.AssertFailure();
 
 						private static Option<int> Nothing() => Option.None<int>();
@@ -702,7 +702,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnSuccessWithSomeValue()
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-							.SelectIfNoneAsync(OtherValue)
+							.MapIfNoneAsync(OtherValue)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -712,7 +712,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionNoneToOptionSomeContainingExpectedValue()
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfNoneAsync(OtherValue)
+							.MapIfNoneAsync(OtherValue)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -722,7 +722,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnFailure()
 						=> Task
 							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfNoneAsync(OtherValue)
+							.MapIfNoneAsync(OtherValue)
 							.AssertFailure();
 
 					private static Task<int> OtherValue() => Task.FromResult(EXPECTED_VALUE);
@@ -736,7 +736,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnSuccessWithSomeValue()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-								.SelectIfNoneAsync(OtherValue)
+								.MapIfNoneAsync(OtherValue)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -746,7 +746,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionSomeContainingExpectedValue()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfNoneAsync(OtherValue)
+								.MapIfNoneAsync(OtherValue)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -756,7 +756,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure()
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfNoneAsync(OtherValue)
+								.MapIfNoneAsync(OtherValue)
 								.AssertFailure();
 
 						private static Task<Option<int>> OtherValue() => Task.FromResult(Option.Some(EXPECTED_VALUE));
@@ -768,7 +768,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnSuccessWithSomeValue()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(INITIAL_VALUE)))
-								.SelectIfNoneAsync(Nothing)
+								.MapIfNoneAsync(Nothing)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -778,7 +778,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone()
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfNoneAsync(Nothing)
+								.MapIfNoneAsync(Nothing)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -786,7 +786,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure()
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfNoneAsync(Nothing)
+								.MapIfNoneAsync(Nothing)
 								.AssertFailure();
 
 						private static Task<Option<int>> Nothing() => Task.FromResult(Option.None<int>());
@@ -1291,7 +1291,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionSomeToOptionSome()
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.SelectIfSome(ToString)
+							.MapIfSome(ToString)
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -1301,7 +1301,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionNoneToOptionNone() 
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfSome(ToString)
+							.MapIfSome(ToString)
 							.AssertSuccess()
 							.AssertNone();
 
@@ -1309,7 +1309,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnFailure() 
 						=> Task
 							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfSome(ToString)
+							.MapIfSome(ToString)
 							.AssertFailure();
 
 					private static string ToString(int i) => i.ToString();
@@ -1323,7 +1323,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionSome() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -1333,7 +1333,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1341,7 +1341,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure() 
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertFailure();
 
 						private static Option<string> ToString(int i) => Option.Some(i.ToString());
@@ -1353,7 +1353,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1361,7 +1361,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1369,7 +1369,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure()
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSome(ToString)
+								.MapIfSome(ToString)
 								.AssertFailure();
 
 						private static Option<string> ToString(int i) => Option.None<string>();
@@ -1385,7 +1385,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionSomeToOptionSome() 
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
+							.MapIfSomeAsync(i => Task.FromResult(i.ToString()))
 							.AssertSuccess()
 							.AssertSome()
 							.Should()
@@ -1395,7 +1395,7 @@ namespace Functional.Tests.Results
 					public Task ShouldMapOptionNoneToOptionNone() 
 						=> Task
 							.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
+							.MapIfSomeAsync(i => Task.FromResult(i.ToString()))
 							.AssertSuccess()
 							.AssertNone();
 
@@ -1403,7 +1403,7 @@ namespace Functional.Tests.Results
 					public Task ShouldDoNothingOnFailure() 
 						=> Task
 							.FromResult(Result.Failure<Option<int>, string>("some error"))
-							.SelectIfSomeAsync(i => Task.FromResult(i.ToString()))
+							.MapIfSomeAsync(i => Task.FromResult(i.ToString()))
 							.AssertFailure();
 				}
 
@@ -1415,7 +1415,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionSome() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertSuccess()
 								.AssertSome()
 								.Should()
@@ -1425,7 +1425,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1433,7 +1433,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure() 
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertFailure();
 
 						private static Task<Option<string>> ToString(int i) => Task.FromResult(Option.Some(i.ToString()));
@@ -1445,7 +1445,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionSomeToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.Some(1337)))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1453,7 +1453,7 @@ namespace Functional.Tests.Results
 						public Task ShouldMapOptionNoneToOptionNone() 
 							=> Task
 								.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertSuccess()
 								.AssertNone();
 
@@ -1461,7 +1461,7 @@ namespace Functional.Tests.Results
 						public Task ShouldDoNothingOnFailure() 
 							=> Task
 								.FromResult(Result.Failure<Option<int>, string>("some error"))
-								.SelectIfSomeAsync(ToString)
+								.MapIfSomeAsync(ToString)
 								.AssertFailure();
 
 						private static Task<Option<string>> ToString(int i) => Task.FromResult(Option.None<string>());
