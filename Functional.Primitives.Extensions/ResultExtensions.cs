@@ -42,12 +42,12 @@ namespace Functional
 			=> (await result).Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use Map instead.")]
+		[Obsolete("Please use .Map() instead.")]
 		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
 			=> result.Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use Map instead.")]
+		[Obsolete("Please use .Map() instead.")]
 		public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
 			=> result.Map(map);
 
@@ -172,22 +172,22 @@ namespace Functional
 			=> (await result).TryMap(successFactory, DelegateCache<Exception>.Passthrough);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMap instead.")]
+		[Obsolete("Please use .TryMap() instead.")]
 		public static Result<TResult, TFailure> TrySelect<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 			=> result.TryMap(successFactory, failureFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMap instead.")]
+		[Obsolete("Please use .TryMap() instead.")]
 		public static Result<TResult, Exception> TrySelect<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
 			=> result.TryMap(successFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMap instead.")]
+		[Obsolete("Please use .TryMap() instead.")]
 		public static Task<Result<TResult, TFailure>> TrySelect<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 			=> result.TryMap(successFactory, failureFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMap instead.")]
+		[Obsolete("Please use .TryMap() instead.")]
 		public static Task<Result<TResult, Exception>> TrySelect<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, TResult> successFactory)
 			=> result.TryMap(successFactory);
 	}

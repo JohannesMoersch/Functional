@@ -31,12 +31,12 @@ namespace Functional
 			=> (await option).Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use Map instead.")]
+		[Obsolete("Please use .Map() instead.")]
 		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
 			=> option.Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use Map instead.")]
+		[Obsolete("Please use .Map() instead.")]
 		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
 			=> option.Map(map);
 

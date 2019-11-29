@@ -35,12 +35,12 @@ namespace Functional
 			=> await (await result).MapAsync(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapAsync instead.")]
+		[Obsolete("Please use .MapAsync() instead.")]
 		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
 			=> result.MapAsync(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapAsync instead.")]
+		[Obsolete("Please use .MapAsync() instead.")]
 		public static Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> map)
 			=> result.MapAsync(map);
 
@@ -173,22 +173,22 @@ namespace Functional
 			=> await (await result).TryMapAsync(successFactory, DelegateCache<Exception>.Passthrough);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMapAsync instead.")]
+		[Obsolete("Please use .TryMapAsync() instead.")]
 		public static Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
 			=> result.TryMapAsync(successFactory, failureFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMapAsync instead.")]
+		[Obsolete("Please use .TryMapAsync() instead.")]
 		public static Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)
 			=> result.TryMapAsync(successFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMapAsync instead.")]
+		[Obsolete("Please use .TryMapAsync() instead.")]
 		public static Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
 			=> result.TryMapAsync(successFactory, failureFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use TryMapAsync instead.")]
+		[Obsolete("Please use .TryMapAsync() instead.")]
 		public static Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, Task<TResult>> successFactory)
 			=> result.TryMapAsync(successFactory);
 	}

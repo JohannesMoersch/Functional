@@ -24,12 +24,12 @@ namespace Functional
 			=> await (await option).MapAsync(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapAsync instead.")]
+		[Obsolete("Please use .MapAsync() instead.")]
 		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
 			=> option.MapAsync(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapAsync instead.")]
+		[Obsolete("Please use .MapAsync() instead.")]
 		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
 			=> option.MapAsync(map);
 

@@ -59,42 +59,42 @@ namespace Functional
 			=> (await result).MapIfNone(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfSome instead.")]
+		[Obsolete("Please use .MapIfSome() instead.")]
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
 			=> result.MapIfSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfSome instead.")]
+		[Obsolete("Please use .MapIfSome() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
 			=> result.MapIfSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfSome instead.")]
+		[Obsolete("Please use .MapIfSome() instead.")]
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Option<TResult>> select)
 			=> result.MapIfSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfSome instead.")]
+		[Obsolete("Please use .MapIfSome() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Option<TResult>> select)
 			=> result.MapIfSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfNone instead.")]
+		[Obsolete("Please use .MapIfNone() instead.")]
 		public static Result<Option<TSuccess>, TFailure> SelectIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess> select)
 			=> result.MapIfNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfNone instead.")]
+		[Obsolete("Please use .MapIfNone() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess> select)
 			=> result.MapIfNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfNone instead.")]
+		[Obsolete("Please use .MapIfNone() instead.")]
 		public static Result<Option<TSuccess>, TFailure> SelectIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Option<TSuccess>> select)
 			=> result.MapIfNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use MapIfNone instead.")]
+		[Obsolete("Please use .MapIfNone() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Option<TSuccess>> select)
 			=> result.MapIfNone(select);
 
