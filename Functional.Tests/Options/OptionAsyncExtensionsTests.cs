@@ -37,17 +37,17 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task BindIfNoneWhenSome()
+			public Task BindOnNoneWhenSome()
 				=> Value
-					.BindIfNoneAsync(() => Task.FromResult(Option.Some(20)))
+					.BindOnNoneAsync(() => Task.FromResult(Option.Some(20)))
 					.AssertSome()
 					.Should()
 					.Be(10);
 
 			[Fact]
-			public Task BindIfNoneWhenNone()
+			public Task BindOnNoneWhenNone()
 				=> NoValue
-					.BindIfNoneAsync(() => Task.FromResult(Option.Some(20)))
+					.BindOnNoneAsync(() => Task.FromResult(Option.Some(20)))
 					.AssertSome()
 					.Should()
 					.Be(20);

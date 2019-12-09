@@ -51,7 +51,7 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
 			=> await (await result).WhereAsync(predicate, failureFactory);
 
-		public static async Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<TResult>> mapFailure)
+		public static async Task<Result<TSuccess, TResult>> MapOnFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<TResult>> mapFailure)
 		{
 			if (mapFailure == null)
 				throw new ArgumentNullException(nameof(mapFailure));
@@ -62,8 +62,8 @@ namespace Functional
 			return Result.Failure<TSuccess, TResult>(await mapFailure.Invoke(failure));
 		}
 
-		public static async Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<TResult>> mapFailure)
-			=> await (await result).MapFailureAsync(mapFailure);
+		public static async Task<Result<TSuccess, TResult>> MapOnFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<TResult>> mapFailure)
+			=> await (await result).MapOnFailureAsync(mapFailure);
 
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 		{
@@ -79,7 +79,7 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 			=> await (await result).BindAsync(bind);
 
-		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
 		{
 			if (bind == null) throw new ArgumentNullException(nameof(bind));
 
@@ -88,8 +88,8 @@ namespace Functional
 				: result;
 		}
 
-		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
-			=> await (await result).BindIfFailureAsync(bind);
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+			=> await (await result).BindOnFailureAsync(bind);
 
 		public static async Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> onSuccess, Func<TFailure, Task> onFailure)
 		{

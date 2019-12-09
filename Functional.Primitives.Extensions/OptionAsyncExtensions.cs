@@ -37,11 +37,11 @@ namespace Functional
 		public static async Task<Option<TResult>> BindAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TResult>>> bind)
 			=> await (await option).BindAsync(bind);
 
-		public static async Task<Option<TValue>> BindIfNoneAsync<TValue>(this Option<TValue> option, Func<Task<Option<TValue>>> bind)
+		public static async Task<Option<TValue>> BindOnNoneAsync<TValue>(this Option<TValue> option, Func<Task<Option<TValue>>> bind)
 			=> option.TryGetValue(out _) ? option : await bind();
 
-		public static async Task<Option<TValue>> BindIfNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task<Option<TValue>>> bind)
-			=> await (await option).BindIfNoneAsync(bind);
+		public static async Task<Option<TValue>> BindOnNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task<Option<TValue>>> bind)
+			=> await (await option).BindOnNoneAsync(bind);
 
 		public static async Task<Option<TValue>> WhereAsync<TValue>(this Option<TValue> option, Func<TValue, Task<bool>> predicate)
 		{

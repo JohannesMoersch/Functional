@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Functional.Primitives.Extensions
+namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ObsoleteOptionExtensions
@@ -38,5 +38,25 @@ namespace Functional.Primitives.Extensions
 		[Obsolete("Please use .MapAsync() instead.")]
 		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
 			=> option.MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
+			=> option.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
+			=> option.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Option<TValue>> BindIfNoneAsync<TValue>(this Option<TValue> option, Func<Task<Option<TValue>>> bind)
+			=> option.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Option<TValue>> BindIfNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task<Option<TValue>>> bind)
+			=> option.BindOnNoneAsync(bind);
 	}
 }

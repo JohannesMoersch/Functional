@@ -64,11 +64,11 @@ namespace Functional
 		public static async Task<IEnumerable<TValue>> ValueOrEmpty<TValue>(this Task<Option<IEnumerable<TValue>>> option)
 			=> (await option).ValueOrEmpty();
 
-		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
+		public static Option<TValue> BindOnNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
 			=> option.TryGetValue(out _) ? option : bind();
 
-		public static async Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
-			=> (await option).BindIfNone(bind);
+		public static async Task<Option<TValue>> BindOnNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
+			=> (await option).BindOnNone(bind);
 
 		public static Option<TValue> OfType<TValue>(this Option<object> option)
 			=> option.TryGetValue(out var some) ? (some is TValue value ? Option.Some(value) : Option.None<TValue>()) : Option.None<TValue>();

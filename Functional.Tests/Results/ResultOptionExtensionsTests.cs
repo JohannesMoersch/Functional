@@ -794,7 +794,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfNone
+			public class AndBindOnNone
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;
@@ -866,7 +866,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfNoneAsync
+			public class AndBindOnNoneAsync
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;
@@ -938,7 +938,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfNoneToResultOfOptionProducingFunction
+			public class AndBindOnNoneToResultOfOptionProducingFunction
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;
@@ -1046,7 +1046,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfNoneAsyncToResultOfOptionProducingFunction
+			public class AndBindOnNoneAsyncToResultOfOptionProducingFunction
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;

@@ -42,7 +42,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailureAsync(i => Task.FromResult(1.0f))
+					.MapOnFailureAsync(i => Task.FromResult(1.0f))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -66,7 +66,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureSuccess()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -74,7 +74,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureFailure()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -191,7 +191,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailureAsync(i => Task.FromResult(1.0f))
+					.MapOnFailureAsync(i => Task.FromResult(1.0f))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -215,7 +215,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureSuccess()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -223,7 +223,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureFailure()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -344,7 +344,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailureAsync(i => Task.FromResult(1.0f))
+					.MapOnFailureAsync(i => Task.FromResult(1.0f))
 					.AssertFailure()
 					.Should()
 					.Be(1.0f);
@@ -368,7 +368,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureSuccess()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
@@ -376,7 +376,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureFailure()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -493,7 +493,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailureAsync(i => Task.FromResult(1.0f))
+					.MapOnFailureAsync(i => Task.FromResult(1.0f))
 					.AssertFailure()
 					.Should()
 					.Be(1.0f);
@@ -517,7 +517,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureSuccess()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
@@ -525,7 +525,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindIfFailureFailure()
 				=> Value
-					.BindIfFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
 					.AssertFailure()
 					.Should()
 					.Be("123");

@@ -59,17 +59,17 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
-			public void BindIfNoneWhenSome()
+			public void BindOnNoneWhenSome()
 				=> Value
-					.BindIfNone(() => Option.Some(20))
+					.BindOnNone(() => Option.Some(20))
 					.AssertSome()
 					.Should()
 					.Be(10);
 
 			[Fact]
-			public void BindIfNoneWhenNone()
+			public void BindOnNoneWhenNone()
 				=> NoValue
-					.BindIfNone(() => Option.Some(20))
+					.BindOnNone(() => Option.Some(20))
 					.AssertSome()
 					.Should()
 					.Be(20);
