@@ -80,84 +80,84 @@ namespace Functional
 			=> result.TryMapAsync(successFactory);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSomeAsync() instead.")]
+		[Obsolete("Please use .MapOnSomeAsync() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> select)
-			=> result.MapIfSomeAsync(select);
+			=> result.MapOnSomeAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSomeAsync() instead.")]
+		[Obsolete("Please use .MapOnSomeAsync() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> select)
-			=> result.MapIfSomeAsync(select);
+			=> result.MapOnSomeAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSomeAsync() instead.")]
+		[Obsolete("Please use .MapOnSomeAsync() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Option<TResult>>> select)
-			=> result.MapIfSomeAsync(select);
+			=> result.MapOnSomeAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSomeAsync() instead.")]
+		[Obsolete("Please use .MapOnSomeAsync() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Option<TResult>>> select)
-			=> result.MapIfSomeAsync(select);
+			=> result.MapOnSomeAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNoneAsync() instead.")]
+		[Obsolete("Please use .MapOnNoneAsync() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> select)
-			=> result.MapIfNoneAsync(select);
+			=> result.MapOnNoneAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNoneAsync() instead.")]
+		[Obsolete("Please use .MapOnNoneAsync() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> select)
-			=> result.MapIfNoneAsync(select);
+			=> result.MapOnNoneAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNoneAsync() instead.")]
+		[Obsolete("Please use .MapOnNoneAsync() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> select)
-			=> result.MapIfNoneAsync(select);
+			=> result.MapOnNoneAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNoneAsync() instead.")]
+		[Obsolete("Please use .MapOnNoneAsync() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> select)
-			=> result.MapIfNoneAsync(select);
+			=> result.MapOnNoneAsync(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSome() instead.")]
+		[Obsolete("Please use .MapOnSome() instead.")]
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, TResult> select)
-			=> result.MapIfSome(select);
+			=> result.MapOnSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSome() instead.")]
+		[Obsolete("Please use .MapOnSome() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, TResult> select)
-			=> result.MapIfSome(select);
+			=> result.MapOnSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSome() instead.")]
+		[Obsolete("Please use .MapOnSome() instead.")]
 		public static Result<Option<TResult>, TFailure> SelectIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Option<TResult>> select)
-			=> result.MapIfSome(select);
+			=> result.MapOnSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfSome() instead.")]
+		[Obsolete("Please use .MapOnSome() instead.")]
 		public static Task<Result<Option<TResult>, TFailure>> SelectIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Option<TResult>> select)
-			=> result.MapIfSome(select);
+			=> result.MapOnSome(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNone() instead.")]
+		[Obsolete("Please use .MapOnNone() instead.")]
 		public static Result<Option<TSuccess>, TFailure> SelectIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess> select)
-			=> result.MapIfNone(select);
+			=> result.MapOnNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNone() instead.")]
+		[Obsolete("Please use .MapOnNone() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess> select)
-			=> result.MapIfNone(select);
+			=> result.MapOnNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNone() instead.")]
+		[Obsolete("Please use .MapOnNone() instead.")]
 		public static Result<Option<TSuccess>, TFailure> SelectIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Option<TSuccess>> select)
-			=> result.MapIfNone(select);
+			=> result.MapOnNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapIfNone() instead.")]
+		[Obsolete("Please use .MapOnNone() instead.")]
 		public static Task<Result<Option<TSuccess>, TFailure>> SelectIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Option<TSuccess>> select)
-			=> result.MapIfNone(select);
+			=> result.MapOnNone(select);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .BindOnFailure() instead.")]
@@ -198,5 +198,145 @@ namespace Functional
 		[Obsolete("Please use .MapOnFailureAsync() instead.")]
 		public static Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<TResult>> mapFailure)
 			=> result.MapOnFailureAsync(mapFailure);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSome() instead.")]
+		public static Result<Option<TResult>, TFailure> BindIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Result<TResult, TFailure>> bind)
+			=> result.BindOnSome(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSome() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Result<TResult, TFailure>> bind)
+			=> result.BindOnSome(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSome() instead.")]
+		public static Result<Option<TResult>, TFailure> BindIfSome<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Result<Option<TResult>, TFailure>> bind)
+			=> result.BindOnSome(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSome() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSome<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Result<Option<TResult>, TFailure>> bind)
+			=> result.BindOnSome(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Result<Option<TSuccess>, TFailure> BindIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Result<TSuccess, TFailure>> bind)
+			=> result.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Result<TSuccess, TFailure>> bind)
+			=> result.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Result<Option<TSuccess>, TFailure> BindIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Result<Option<TSuccess>, TFailure>> bind)
+			=> result.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNone() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Result<Option<TSuccess>, TFailure>> bind)
+			=> result.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .FailOnNone() instead.")]
+		public static Result<TSuccess, TFailure> FailureIfNone<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TFailure> failureFactory)
+			=> result.FailOnNone(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .FailOnNone() instead.")]
+		public static Task<Result<TSuccess, TFailure>> FailureIfNone<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TFailure> failureFactory)
+			=> result.FailOnNone(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .DoOnSome() instead.")]
+		public static Result<Option<TSuccess>, TFailure> DoIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> onSuccessSome)
+			=> result.DoOnSome(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .DoOnSome() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> DoIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
+			=> result.DoOnSome(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ApplyOnSome() instead.")]
+		public static void ApplyIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> onSuccessSome)
+			=> result.ApplyOnSome(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ApplyOnSome() instead.")]
+		public static Task ApplyIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
+			=> result.ApplyOnSome(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSomeAsync() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+			=> result.BindOnSomeAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSomeAsync() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+			=> result.BindOnSomeAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSomeAsync() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<Option<TResult>, TFailure>>> bind)
+			=> result.BindOnSomeAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnSomeAsync() instead.")]
+		public static Task<Result<Option<TResult>, TFailure>> BindIfSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Result<Option<TResult>, TFailure>>> bind)
+			=> result.BindOnSomeAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<TSuccess, TFailure>>> bind)
+			=> result.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<TSuccess, TFailure>>> bind)
+			=> result.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
+			=> result.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .BindOnNoneAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> BindIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
+			=> result.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .FailOnNoneAsync() instead.")]
+		public static Task<Result<TSuccess, TFailure>> FailureIfNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TFailure>> failureFactory)
+			=> result.FailOnNoneAsync(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .FailOnNoneAsync() instead.")]
+		public static Task<Result<TSuccess, TFailure>> FailureIfNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TFailure>> failureFactory)
+			=> result.FailOnNoneAsync(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .DoOnSomeAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> DoIfSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> onSuccessSome)
+			=> result.DoOnSomeAsync(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .DoOnSomeAsync() instead.")]
+		public static Task<Result<Option<TSuccess>, TFailure>> DoIfSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> onSuccessSome)
+			=> result.DoOnSomeAsync(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ApplyOnSomeAsync() instead.")]
+		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> onSuccessSome)
+			=> result.ApplyOnSomeAsync(onSuccessSome);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ApplyOnSomeAsync() instead.")]
+		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> onSuccessSome)
+			=> result.ApplyOnSomeAsync(onSuccessSome);
 	}
 }

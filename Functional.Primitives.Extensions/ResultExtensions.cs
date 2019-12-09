@@ -98,6 +98,22 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> BindOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
 			=> (await result).BindOnFailure(bind);
 
+		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
+		{
+			if (onSuccess == null)
+				throw new ArgumentNullException(nameof(onSuccess));
+
+			if (onFailure == null)
+				throw new ArgumentNullException(nameof(onFailure));
+
+			if (result.TryGetValue(out var success, out var failure))
+				onSuccess.Invoke(success);
+			else
+				onFailure.Invoke(failure);
+
+			return result;
+		}
+
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> (await result).Do(success, failure);
 
