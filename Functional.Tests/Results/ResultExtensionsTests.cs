@@ -85,7 +85,7 @@ namespace Functional.Tests.Results
 					.Be("123");
 
 			[Fact]
-			public void BindIfFailureSuccess()
+			public void BindOnFailureSuccess()
 				=> Value
 					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
@@ -93,7 +93,7 @@ namespace Functional.Tests.Results
 					.Be(VALUE);
 
 			[Fact]
-			public void BindIfFailureFailure()
+			public void BindOnFailureFailure()
 				=> Value
 					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertSuccess()
@@ -255,7 +255,7 @@ namespace Functional.Tests.Results
 					.Be("123");
 
 			[Fact]
-			public Task BindIfFailureSuccess()
+			public Task BindOnFailureSuccess()
 				=> Value
 					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
@@ -263,7 +263,7 @@ namespace Functional.Tests.Results
 					.Be(VALUE);
 
 			[Fact]
-			public Task BindIfFailureFailure()
+			public Task BindOnFailureFailure()
 				=> Value
 					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertSuccess()
@@ -429,7 +429,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public void BindIfFailureSuccess()
+			public void BindOnFailureSuccess()
 				=> Value
 					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
@@ -437,7 +437,7 @@ namespace Functional.Tests.Results
 					.Be(3);
 
 			[Fact]
-			public void BindIfFailureFailure()
+			public void BindOnFailureFailure()
 				=> Value
 					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertFailure()
@@ -599,7 +599,7 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public Task BindIfFailureSuccess()
+			public Task BindOnFailureSuccess()
 				=> Value
 					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
@@ -607,7 +607,7 @@ namespace Functional.Tests.Results
 					.Be(3);
 
 			[Fact]
-			public Task BindIfFailureFailure()
+			public Task BindOnFailureFailure()
 				=> Value
 					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertFailure()

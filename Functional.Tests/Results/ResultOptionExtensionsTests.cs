@@ -70,7 +70,7 @@ namespace Functional.Tests.Results
 				private static Task<string> Third(string s) => Task.FromResult(s);
 			}
 
-			public class AndSelectIfSome
+			public class AndMapOnSome
 			{
 				public class OntoValueProducingFunction
 				{
@@ -164,7 +164,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndSelectIfSomeAsync
+			public class AndMapOnSomeAsync
 			{
 				public class OntoValueProducingFunction
 				{
@@ -258,7 +258,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSome
+			public class AndBindOnSome
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -325,7 +325,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeAsync
+			public class AndBindOnSomeAsync
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -392,7 +392,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeToResultOfOptionProducingFunction
+			public class AndBindOnSomeToResultOfOptionProducingFunction
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -490,7 +490,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeAsyncToResultOfOptionProducingFunction
+			public class AndBindOnSomeAsyncToResultOfOptionProducingFunction
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -588,7 +588,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndSelectIfNone
+			public class AndMapOnNone
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;
@@ -691,7 +691,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndSelectIfNoneAsync
+			public class AndMapOnNoneAsync
 			{
 				private const int INITIAL_VALUE = 1337;
 				private const int EXPECTED_VALUE = 420;
@@ -1152,7 +1152,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenApplyIfSome
+			public class WhenApplyOnSome
 			{
 				[Fact]
 				public void ShouldInvokeActionWhenSome()
@@ -1179,7 +1179,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenApplyIfSomeAsync
+			public class WhenApplyOnSomeAsync
 			{
 				[Fact]
 				public async Task ShouldInvokeActionWhenSome()
@@ -1283,7 +1283,7 @@ namespace Functional.Tests.Results
 				private static Task<string> Third(string s) => Task.FromResult(s);
 			}
 
-			public class AndSelectIfSome
+			public class AndMapOnSome
 			{
 				public class OntoValueProducingFunction
 				{
@@ -1377,7 +1377,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndSelectIfSomeAsync
+			public class AndMapOnSomeAsync
 			{
 				public class OntoValueProducingFunction
 				{
@@ -1469,7 +1469,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSome
+			public class AndBindOnSome
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -1536,7 +1536,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeAsync
+			public class AndBindOnSomeAsync
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -1603,7 +1603,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeToResultOfOptionProducingFunction
+			public class AndBindOnSomeToResultOfOptionProducingFunction
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -1701,7 +1701,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class AndBindIfSomeAsyncToResultOfOptionProducingFunction
+			public class AndBindOnSomeAsyncToResultOfOptionProducingFunction
 			{
 				public class AndFunctionProducesSuccessfulResult
 				{
@@ -1799,7 +1799,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenApplyIfSome
+			public class WhenApplyOnSome
 			{
 				[Fact]
 				public async Task ShouldInvokeActionWhenSome()
@@ -1826,7 +1826,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenApplyIfSomeAsync
+			public class WhenApplyOnSomeAsync
 			{
 				[Fact]
 				public async Task ShouldInvokeActionWhenSome()
@@ -1865,7 +1865,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenDoIfSome
+			public class WhenDoOnSome
 			{
 				[Fact]
 				public async Task ShouldInvokeActionWhenSome()
@@ -1892,7 +1892,7 @@ namespace Functional.Tests.Results
 				}
 			}
 
-			public class WhenDoIfSomeAsync
+			public class WhenDoOnSomeAsync
 			{
 				[Fact]
 				public async Task ShouldInvokeActionWhenSome()
