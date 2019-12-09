@@ -23,16 +23,6 @@ namespace Functional
 		public static async Task<Option<TResult>> MapAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
 			=> await (await option).MapAsync(map);
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapAsync() instead.")]
-		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
-			=> option.MapAsync(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapAsync() instead.")]
-		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
-			=> option.MapAsync(map);
-
 		public static async Task<Option<TResult>> BindAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TResult>>> bind)
 		{
 			if (bind == null)

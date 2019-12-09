@@ -30,16 +30,6 @@ namespace Functional
 		public static async Task<Option<TResult>> Map<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
 			=> (await option).Map(map);
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
-			=> option.Map(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
-			=> option.Map(map);
-
 		public static Option<TResult> Bind<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
 		{
 			if (bind == null)
@@ -73,12 +63,6 @@ namespace Functional
 
 		public static async Task<IEnumerable<TValue>> ValueOrEmpty<TValue>(this Task<Option<IEnumerable<TValue>>> option)
 			=> (await option).ValueOrEmpty();
-
-		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
-			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);
-
-		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
-			=> (await option).DefaultIfNone(defaultValue);
 
 		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
 			=> option.TryGetValue(out _) ? option : bind();
