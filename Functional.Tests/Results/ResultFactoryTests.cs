@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -338,5 +341,465 @@ namespace Functional.Tests.Results
 				.AssertFailure()
 				.Should()
 				.Be("abc");
+
+		public class WhenMerge2
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+
+				Result.Merge(result1, result2)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2));
+			}
+
+			[Theory]
+			[ResultMerge2ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge2ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 2) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+
+						yield return new object[] { new[] { result1, result2 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge3
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				
+				Result.Merge(result1, result2, result3)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3));
+			}
+
+			[Theory]
+			[ResultMerge3ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge3ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 3) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+
+						yield return new object[] { new[] { result1, result2, result3 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge4
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+
+				Result.Merge(result1, result2, result3, result4)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4));
+			}
+
+			[Theory]
+			[ResultMerge4ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge4ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 4) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+
+						yield return new object[] { new[] { result1, result2, result3, result4 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge5
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+				var result5 = Result.Success<int, string>(5);
+
+				Result.Merge(result1, result2, result3, result4, result5)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4, 5));
+			}
+
+			[Theory]
+			[ResultMerge5ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3],
+						resultCollection[4])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge5ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 5) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+						var result5 = Result.Create(((i >> 4) & 1) == 1, () => 99, () => "error 5");
+
+						yield return new object[] { new[] { result1, result2, result3, result4, result5 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge6
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+				var result5 = Result.Success<int, string>(5);
+				var result6 = Result.Success<int, string>(6);
+
+				Result.Merge(result1, result2, result3, result4, result5, result6)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4, 5, 6));
+			}
+
+			[Theory]
+			[ResultMerge6ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3],
+						resultCollection[4],
+						resultCollection[5])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge6ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 6) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+						var result5 = Result.Create(((i >> 4) & 1) == 1, () => 99, () => "error 5");
+						var result6 = Result.Create(((i >> 5) & 1) == 1, () => 36, () => "error 6");
+
+						yield return new object[] { new[] { result1, result2, result3, result4, result5, result6 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge7
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+				var result5 = Result.Success<int, string>(5);
+				var result6 = Result.Success<int, string>(6);
+				var result7 = Result.Success<int, string>(7);
+
+				Result.Merge(result1, result2, result3, result4, result5, result6, result7)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4, 5, 6, 7));
+			}
+
+			[Theory]
+			[ResultMerge7ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3],
+						resultCollection[4],
+						resultCollection[5],
+						resultCollection[6])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge7ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 7) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+						var result5 = Result.Create(((i >> 4) & 1) == 1, () => 99, () => "error 5");
+						var result6 = Result.Create(((i >> 5) & 1) == 1, () => 36, () => "error 6");
+						var result7 = Result.Create(((i >> 6) & 1) == 1, () => 20, () => "error 7");
+
+						yield return new object[] { new[] { result1, result2, result3, result4, result5, result6, result7 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge8
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+				var result5 = Result.Success<int, string>(5);
+				var result6 = Result.Success<int, string>(6);
+				var result7 = Result.Success<int, string>(7);
+				var result8 = Result.Success<int, string>(8);
+
+				Result.Merge(result1, result2, result3, result4, result5, result6, result7, result8)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4, 5, 6, 7, 8));
+			}
+
+			[Theory]
+			[ResultMerge8ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3],
+						resultCollection[4],
+						resultCollection[5],
+						resultCollection[6],
+						resultCollection[7])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge8ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 8) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+						var result5 = Result.Create(((i >> 4) & 1) == 1, () => 99, () => "error 5");
+						var result6 = Result.Create(((i >> 5) & 1) == 1, () => 36, () => "error 6");
+						var result7 = Result.Create(((i >> 6) & 1) == 1, () => 20, () => "error 7");
+						var result8 = Result.Create(((i >> 7) & 1) == 1, () => 11, () => "error 8");
+
+						yield return new object[] { new[] { result1, result2, result3, result4, result5, result6, result7, result8 } };
+					}
+				}
+			}
+
+			#endregion
+		}
+
+		public class WhenMerge9
+		{
+			[Fact]
+			public void ReturnsSuccessWhenAllSuccess()
+			{
+				var result1 = Result.Success<int, string>(1);
+				var result2 = Result.Success<int, string>(2);
+				var result3 = Result.Success<int, string>(3);
+				var result4 = Result.Success<int, string>(4);
+				var result5 = Result.Success<int, string>(5);
+				var result6 = Result.Success<int, string>(6);
+				var result7 = Result.Success<int, string>(7);
+				var result8 = Result.Success<int, string>(8);
+				var result9 = Result.Success<int, string>(9);
+
+				Result.Merge(result1, result2, result3, result4, result5, result6, result7, result8, result9)
+					.AssertSuccess()
+					.Should()
+					.Be((1, 2, 3, 4, 5, 6, 7, 8, 9));
+			}
+
+			[Theory]
+			[ResultMerge9ReturnsFailureArrangement]
+			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
+			{
+				Result.Merge(
+						resultCollection[0],
+						resultCollection[1],
+						resultCollection[2],
+						resultCollection[3],
+						resultCollection[4],
+						resultCollection[5],
+						resultCollection[6],
+						resultCollection[7],
+						resultCollection[8])
+					.AssertFailure()
+					.Should()
+					.Match(errorCollection
+						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
+						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+			}
+
+			#region Arrangements
+
+			private class ResultMerge9ReturnsFailureArrangement : AutoDataAttribute
+			{
+				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				{
+					for (int i = 0; i < (1 << 9) - 1; ++i)
+					{
+						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
+						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
+						var result3 = Result.Create(((i >> 2) & 1) == 1, () => 25, () => "error 3");
+						var result4 = Result.Create(((i >> 3) & 1) == 1, () => -5, () => "error 4");
+						var result5 = Result.Create(((i >> 4) & 1) == 1, () => 99, () => "error 5");
+						var result6 = Result.Create(((i >> 5) & 1) == 1, () => 36, () => "error 6");
+						var result7 = Result.Create(((i >> 6) & 1) == 1, () => 20, () => "error 7");
+						var result8 = Result.Create(((i >> 7) & 1) == 1, () => 11, () => "error 8");
+						var result9 = Result.Create(((i >> 8) & 1) == 1, () => 69, () => "error 9");
+
+						yield return new object[] { new[] { result1, result2, result3, result4, result5, result6, result7, result8, result9 } };
+					}
+				}
+			}
+
+			#endregion
+		}
 	}
 }
