@@ -52,7 +52,7 @@ namespace Functional
 				info.AddValue(nameof(_failure), _failure);
 		}
 
-		private bool IsSuccess()
+		internal bool IsSuccess()
 			=> _isSuccess ?? throw new ResultNotInitializedException();
 
 		public TResult Match<TResult>(Func<TSuccess, TResult> success, Func<TFailure, TResult> failure)
