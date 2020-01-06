@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,6 +8,7 @@
     <PackageTags>functional</PackageTags>
     <IncludeBuildOutput>false</IncludeBuildOutput>
 		<AssemblyName>Functional.All</AssemblyName>
+		<PackageId>Functional.All.NetStandard2</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
