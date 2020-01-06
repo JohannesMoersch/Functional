@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class OptionExtensions
+	public static partial class OptionExtensions
 	{
 		public static bool HasValue<TValue>(this Option<TValue> option)
 			=> option.Match(DelegateCache<TValue>.True, DelegateCache.False);

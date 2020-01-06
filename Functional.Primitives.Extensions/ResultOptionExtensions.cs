@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResultOptionExtensions
+	public static partial class ResultOptionExtensions
 	{
 		public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> onSuccessSome, Func<T> onSuccessNone, Func<TFailure, T> onFailure)
 		{

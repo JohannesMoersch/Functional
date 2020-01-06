@@ -6,6 +6,7 @@
     <Title>Functional.Unions.AsyncEnumerables.NetStandard2</Title>
     <Description>This package contains a extension methods for unions and async enumerables.</Description>
     <PackageTags>functional</PackageTags>
+		<AssemblyName>Functional.Unions.AsyncEnumerables</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

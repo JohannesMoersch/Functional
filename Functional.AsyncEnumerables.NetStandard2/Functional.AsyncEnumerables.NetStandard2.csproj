@@ -6,6 +6,7 @@
     <Title>Functional.AsyncEnumerables.NetStandard2</Title>
     <Description>This package contains a framework and extension methods for asynchronous enumerables.</Description>
     <PackageTags>functional</PackageTags>
+		<AssemblyName>Functional.AsyncEnumerables</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ObsoleteOptionExtensions
+	public static partial class OptionExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("This method always produces Some. If you need this behaviour, please use .Match() instead.")]
@@ -20,16 +19,6 @@ namespace Functional
 			=> (await option).DefaultIfNone(defaultValue);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapAsync() instead.")]
-		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
-			=> option.MapAsync(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .MapAsync() instead.")]
-		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
-			=> option.MapAsync(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .BindOnNone() instead.")]
 		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
 			=> option.BindOnNone(bind);
@@ -38,6 +27,19 @@ namespace Functional
 		[Obsolete("Please use .BindOnNone() instead.")]
 		public static Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
 			=> option.BindOnNone(bind);
+	}
+
+	public static partial class OptionAsyncExtensions
+	{
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .MapAsync() instead.")]
+		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
+			=> option.MapAsync(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .MapAsync() instead.")]
+		public static Task<Option<TResult>> SelectAsync<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<TResult>> map)
+			=> option.MapAsync(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .BindOnNoneAsync() instead.")]

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class OptionAsyncExtensions
+	public static partial class OptionAsyncExtensions
 	{
 		public static async Task<Option<TResult>> MapAsync<TValue, TResult>(this Option<TValue> option, Func<TValue, Task<TResult>> map)
 		{

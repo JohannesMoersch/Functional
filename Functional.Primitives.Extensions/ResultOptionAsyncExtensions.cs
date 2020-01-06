@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResultOptionAsyncExtensions
+	public static partial class ResultOptionAsyncExtensions
 	{
 		public static async Task<Result<Option<TResult>, TFailure>> MapOnSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> map)
 			=> result.TryGetValue(out var success, out var failure)
