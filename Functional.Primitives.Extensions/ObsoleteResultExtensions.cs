@@ -10,16 +10,6 @@ namespace Functional
 	public static class ObsoleteResultExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
-			=> result.Map(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
-			=> result.Map(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .Success() instead.")]
 		public static Option<TSuccess> ToOption<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 			=> result.Success();

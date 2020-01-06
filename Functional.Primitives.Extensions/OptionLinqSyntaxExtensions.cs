@@ -9,6 +9,15 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class OptionLinqSyntaxExtensions
     {
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
+			=> option.Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+			=> option.Map(map);
+
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, TResult> resultSelector)
 		{

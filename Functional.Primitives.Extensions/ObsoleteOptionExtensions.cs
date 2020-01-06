@@ -10,16 +10,6 @@ namespace Functional
 	public static class ObsoleteOptionExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
-			=> option.Map(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .Map() instead.")]
-		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
-			=> option.Map(map);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("This method always produces Some. If you need this behaviour, please use .Match() instead.")]
 		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);

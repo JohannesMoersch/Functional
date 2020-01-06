@@ -9,6 +9,15 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ResultLinqSyntaxExtensions
     {
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
+			=> result.Map(map);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
+			=> result.Map(map);
+
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		{
