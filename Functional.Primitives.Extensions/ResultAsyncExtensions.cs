@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResultAsyncExtensions
+	public static partial class ResultAsyncExtensions
 	{
 		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> onSuccessSome, Func<Task<T>> onSuccessNone, Func<TFailure, Task<T>> onFailure)
 		{
@@ -20,19 +20,19 @@ namespace Functional
 		public static async Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
 			=> await (await result).MatchAsync(successSome, successNone, failure);
 
-		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> select)
+		public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (result.TryGetValue(out var success, out var failure))
-				return Result.Success<TResult, TFailure>(await select.Invoke(success));
+				return Result.Success<TResult, TFailure>(await map.Invoke(success));
 			
 			return Result.Failure<TResult, TFailure>(failure);
 		}
 
-		public static async Task<Result<TResult, TFailure>> SelectAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> select)
-			=> await (await result).SelectAsync(select);
+		public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> map)
+			=> await (await result).MapAsync(map);
 
 		public static async Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
 		{
@@ -51,7 +51,7 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> WhereAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, Task<TFailure>> failureFactory)
 			=> await (await result).WhereAsync(predicate, failureFactory);
 
-		public static async Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<TResult>> mapFailure)
+		public static async Task<Result<TSuccess, TResult>> MapOnFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<TResult>> mapFailure)
 		{
 			if (mapFailure == null)
 				throw new ArgumentNullException(nameof(mapFailure));
@@ -62,8 +62,8 @@ namespace Functional
 			return Result.Failure<TSuccess, TResult>(await mapFailure.Invoke(failure));
 		}
 
-		public static async Task<Result<TSuccess, TResult>> MapFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<TResult>> mapFailure)
-			=> await (await result).MapFailureAsync(mapFailure);
+		public static async Task<Result<TSuccess, TResult>> MapOnFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<TResult>> mapFailure)
+			=> await (await result).MapOnFailureAsync(mapFailure);
 
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 		{
@@ -79,7 +79,7 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 			=> await (await result).BindAsync(bind);
 
-		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
 		{
 			if (bind == null) throw new ArgumentNullException(nameof(bind));
 
@@ -88,8 +88,8 @@ namespace Functional
 				: result;
 		}
 
-		public static async Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
-			=> await (await result).BindIfFailureAsync(bind);
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+			=> await (await result).BindOnFailureAsync(bind);
 
 		public static async Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> onSuccess, Func<TFailure, Task> onFailure)
 		{
@@ -116,21 +116,13 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success)
 			=> await (await result).DoAsync(success, DelegateCache<TFailure>.Task);
 
-		
-
 		public static Task ApplyAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success, Func<TFailure, Task> failure)
 			=> result.DoAsync(success, failure);
 
 		public static Task ApplyAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success, Func<TFailure, Task> failure)
 			=> result.DoAsync(success, failure);
 
-		public static Task ApplyAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success)
-			=> result.DoAsync(success);
-
-		public static Task ApplyAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success)
-			=> result.DoAsync(success);
-
-		public static async Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
+		public static async Task<Result<TResult, TFailure>> TryMapAsync<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -153,13 +145,13 @@ namespace Functional
 			return Result.Failure<TResult, TFailure>(failure);
 		}
 
-		public static Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)
-		 => TrySelectAsync(result, successFactory, DelegateCache<Exception>.Passthrough);
+		public static Task<Result<TResult, Exception>> TryMapAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)
+			=> TryMapAsync(result, successFactory, DelegateCache<Exception>.Passthrough);
 
-		public static async Task<Result<TResult, TFailure>> TrySelectAsync<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
-		 => await (await result).TrySelectAsync(successFactory, failureFactory);
+		public static async Task<Result<TResult, TFailure>> TryMapAsync<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
+			=> await (await result).TryMapAsync(successFactory, failureFactory);
 
-		public static async Task<Result<TResult, Exception>> TrySelectAsync<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, Task<TResult>> successFactory)
-		 => await (await result).TrySelectAsync(successFactory, DelegateCache<Exception>.Passthrough);
+		public static async Task<Result<TResult, Exception>> TryMapAsync<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, Task<TResult>> successFactory)
+			=> await (await result).TryMapAsync(successFactory, DelegateCache<Exception>.Passthrough);
 	}
 }

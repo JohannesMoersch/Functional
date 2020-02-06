@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -12,10 +13,10 @@ namespace Functional
 		public AsyncTaskAsyncEnumerable(Task<IAsyncEnumerable<T>> source)
 			=> _source = source;
 
-		public IAsyncEnumerator<T> GetEnumerator() 
+		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) 
 			=> new AsyncTaskAsyncEnumerator<T>(GetTaskEnumerator());
 
 		private async Task<IAsyncEnumerator<T>> GetTaskEnumerator()
-			=> (await _source).GetEnumerator();
+			=> (await _source).GetAsyncEnumerator();
 	}
 }

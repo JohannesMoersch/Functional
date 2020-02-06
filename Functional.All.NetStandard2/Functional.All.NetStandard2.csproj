@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Functional.All.NetStandard2</Title>
+    <Description>This package depends on all other packages in the Functional suite.</Description>
+    <PackageTags>functional</PackageTags>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+		<AssemblyName>Functional.All</AssemblyName>
+		<PackageId>Functional.All.NetStandard2</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.AsyncEnumerables.NetStandard2\Functional.AsyncEnumerables.NetStandard2.csproj" />
+    <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.AsyncEnumerables.NetStandard2\Functional.Primitives.AsyncEnumerables.NetStandard2.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+    <ProjectReference Include="..\Functional.Unions.AsyncEnumerables.NetStandard2\Functional.Unions.AsyncEnumerables.NetStandard2.csproj" />
+    <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+  </ItemGroup>
+
+</Project>

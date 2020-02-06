@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -19,10 +20,10 @@ namespace Functional
 		{
 			var successes = new TSuccess[4];
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
 
 			var index = 0;
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 			{
 				var value = enumerator.Current;
 
@@ -54,10 +55,10 @@ namespace Functional
 
 			List<TFailure> failures = null;
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
 
 			int index = 0;
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 			{
 				enumerator
 					.Current

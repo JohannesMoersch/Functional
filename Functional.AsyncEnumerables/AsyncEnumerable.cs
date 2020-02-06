@@ -14,7 +14,7 @@ namespace Functional
 		public AsyncEnumerable(Func<Task<IEnumerable<T>>> source)
 			=> _source = new Lazy<Task<IEnumerable<T>>>(source, LazyThreadSafetyMode.ExecutionAndPublication);
 
-		public IAsyncEnumerator<T> GetEnumerator()
+		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
 			=> new AsyncEnumerator<T>(new Lazy<Task<IEnumerator<T>>>(() => _source.Value.ContinueWith(t => t.Result.GetEnumerator(), TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously), LazyThreadSafetyMode.PublicationOnly));
 	}
 

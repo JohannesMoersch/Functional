@@ -16,15 +16,21 @@ namespace Functional
 
 		public ConcatIterator(IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 		{
-			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetEnumerator();
-			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetEnumerator();
+			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetAsyncEnumerator();
+			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetAsyncEnumerator();
 		}
 
-		public async Task<bool> MoveNext()
+		public async ValueTask DisposeAsync()
+		{
+			await _enumeratorOne.DisposeAsync();
+			await _enumeratorTwo.DisposeAsync();
+		}
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			if (_state == 0)
 			{
-				if (await _enumeratorOne.MoveNext())
+				if (await _enumeratorOne.MoveNextAsync())
 				{
 					Current = _enumeratorOne.Current;
 					return true;
@@ -35,7 +41,7 @@ namespace Functional
 
 			if (_state == 1)
 			{
-				if (await _enumeratorTwo.MoveNext())
+				if (await _enumeratorTwo.MoveNextAsync())
 				{
 					Current = _enumeratorTwo.Current;
 					return true;

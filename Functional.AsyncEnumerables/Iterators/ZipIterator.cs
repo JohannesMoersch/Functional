@@ -17,17 +17,23 @@ namespace Functional
 
 		public ZipIterator(IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
 		{
-			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetEnumerator();
-			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetEnumerator();
+			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetAsyncEnumerator();
+			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetAsyncEnumerator();
 			_resultSelector = resultSelector ?? throw new ArgumentNullException(nameof(resultSelector));
 		}
 
-		public async Task<bool> MoveNext()
+		public async ValueTask DisposeAsync()
+		{
+			await _enumeratorOne.DisposeAsync();
+			await _enumeratorTwo.DisposeAsync();
+		}
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			if (_complete)
 				return false;
 
-			if (await _enumeratorOne.MoveNext() && await _enumeratorTwo.MoveNext())
+			if (await _enumeratorOne.MoveNextAsync() && await _enumeratorTwo.MoveNextAsync())
 			{
 				Current = _resultSelector.Invoke(_enumeratorOne.Current, _enumeratorTwo.Current);
 				return true;

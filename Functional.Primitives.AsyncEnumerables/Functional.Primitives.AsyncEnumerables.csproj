@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Title>Functional.Enumerables.Extensions</Title>
+    <Title>Functional.Primitives.AsyncEnumerables</Title>
     <Description>This package contains a extension methods for primitives and async enumerables.</Description>
     <PackageTags>functional</PackageTags>
   </PropertyGroup>

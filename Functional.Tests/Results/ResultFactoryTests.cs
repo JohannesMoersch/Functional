@@ -9,6 +9,8 @@ namespace Functional.Tests.Results
 {
 	public class ResultFactoryTests
 	{
+		private static readonly bool _true = true;
+
 		[Fact]
 		public Task SuccessAsync()
 			=> Result
@@ -180,7 +182,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public void TryUnitExceptionWhenThrows()
 			=> Result
-				.Try(() => { throw new TestException(); return; })
+				.Try(() => { if (_true) throw new TestException(); return; })
 				.AssertFailure()
 				.Should()
 				.BeOfType<TestException>();
@@ -196,7 +198,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public void TryUnitFailureWhenThrows()
 			=> Result
-				.Try(() => { throw new TestException("abc"); return; }, ex => ex.Message)
+				.Try(() => { if (_true) throw new TestException("abc"); return; }, ex => ex.Message)
 				.AssertFailure()
 				.Should()
 				.Be("abc");
@@ -212,7 +214,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public Task TryAsyncUnitExceptionWhenThrows()
 			=> Result
-				.TryAsync(() => { throw new TestException("abc"); return Helpers.DelayedTask(); })
+				.TryAsync(() => { if (_true) throw new TestException("abc"); return Helpers.DelayedTask(); })
 				.AssertFailure()
 				.Should()
 				.BeOfType<TestException>();
@@ -228,7 +230,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public Task TryAsyncUnitFailureWhenThrows()
 			=> Result
-				.TryAsync(() => { throw new TestException("abc"); return Helpers.DelayedTask(); }, ex => ex.Message)
+				.TryAsync(() => { if (_true) throw new TestException("abc"); return Helpers.DelayedTask(); }, ex => ex.Message)
 				.AssertFailure()
 				.Should()
 				.Be("abc");
@@ -244,7 +246,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public void TryExceptionWhenThrows()
 			=> Result
-				.Try(() => { throw new TestException(); return 10; })
+				.Try(() => { if (_true) throw new TestException(); return 10; })
 				.AssertFailure()
 				.Should()
 				.BeOfType<TestException>();
@@ -260,7 +262,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public void TryFailureWhenThrows()
 			=> Result
-				.Try(() => { throw new TestException("abc"); return 10; }, ex => ex.Message)
+				.Try(() => { if (_true) throw new TestException("abc"); return 10; }, ex => ex.Message)
 				.AssertFailure()
 				.Should()
 				.Be("abc");
@@ -276,7 +278,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public Task TryAsyncExceptionWhenThrows()
 			=> Result
-				.TryAsync(() => { throw new TestException("abc"); return Helpers.DelayedTask(10); })
+				.TryAsync(() => { if (_true) throw new TestException("abc"); return Helpers.DelayedTask(10); })
 				.AssertFailure()
 				.Should()
 				.BeOfType<TestException>();
@@ -292,7 +294,7 @@ namespace Functional.Tests.Results
 		[Fact]
 		public Task TryAsyncFailureWhenThrows()
 			=> Result
-				.TryAsync(() => { throw new TestException("abc"); return Helpers.DelayedTask(10); }, ex => ex.Message)
+				.TryAsync(() => { if (_true) throw new TestException("abc"); return Helpers.DelayedTask(10); }, ex => ex.Message)
 				.AssertFailure()
 				.Should()
 				.Be("abc");

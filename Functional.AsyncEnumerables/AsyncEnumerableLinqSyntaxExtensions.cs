@@ -10,6 +10,14 @@ namespace Functional
 	public static class AsyncEnumerableLinqSyntaxExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
+			=> source.SelectAsync(selector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
+			=> source.SelectAsync(selector);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))

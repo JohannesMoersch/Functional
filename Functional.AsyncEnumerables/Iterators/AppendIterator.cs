@@ -16,15 +16,18 @@ namespace Functional
 
 		public AppendIterator(IAsyncEnumerable<TSource> source, TSource element)
 		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
+			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_element = element;
 		}
 
-		public async Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			if (_state == 0)
 			{
-				if (await _enumerator.MoveNext())
+				if (await _enumerator.MoveNextAsync())
 				{
 					Current = _enumerator.Current;
 					return true;

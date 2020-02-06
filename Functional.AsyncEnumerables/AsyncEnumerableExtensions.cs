@@ -29,11 +29,11 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var list = new List<TSource>();
 
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 				list.Add(enumerator.Current);
 
 			return list;
@@ -44,29 +44,29 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var value = true;
 
-			while (value && await enumerator.MoveNext())
+			while (value && await enumerator.MoveNextAsync())
 				value = predicate.Invoke(enumerator.Current);
 
 			return value;
 		}
 
-		public static Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source)
-			=> (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator().MoveNext();
+		public static async Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source)
+			=> await (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator().MoveNextAsync();
 
 		public static async Task<bool> Any<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var value = false;
 
-			while (!value && await enumerator.MoveNext())
+			while (!value && await enumerator.MoveNextAsync())
 				value = predicate.Invoke(enumerator.Current);
 
 			return value;
@@ -95,11 +95,11 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			for (int i = 0; i <= index; ++i)
 			{
-				if (!await enumerator.MoveNext())
+				if (!await enumerator.MoveNextAsync())
 					throw new ArgumentOutOfRangeException(nameof(index), "Index was out of range. Must be non-negative and less than the size of the collection.");
 			}
 
@@ -111,11 +111,11 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			for (int i = 0; i <= index; ++i)
 			{
-				if (!await enumerator.MoveNext())
+				if (!await enumerator.MoveNextAsync())
 					return default;
 			}
 
@@ -127,9 +127,9 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			return (await enumerator.MoveNext()) ? enumerator.Current : throw new InvalidOperationException("Sequence contains no elements");
+			return (await enumerator.MoveNextAsync()) ? enumerator.Current : throw new InvalidOperationException("Sequence contains no elements");
 		}
 
 		public static Task<TSource> First<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
@@ -140,9 +140,9 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			return (await enumerator.MoveNext()) ? enumerator.Current : default;
+			return (await enumerator.MoveNextAsync()) ? enumerator.Current : default;
 		}
 
 		public static Task<TSource> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
@@ -172,14 +172,14 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			if (!await enumerator.MoveNext())
+			if (!await enumerator.MoveNextAsync())
 				throw new InvalidOperationException("Sequence contains no elements");
 
 			var result = enumerator.Current;
 
-			if (await enumerator.MoveNext())
+			if (await enumerator.MoveNextAsync())
 				throw new InvalidOperationException("Sequence contains more than one element");
 
 			return result;
@@ -193,14 +193,14 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			if (!await enumerator.MoveNext())
+			if (!await enumerator.MoveNextAsync())
 				return default;
 
 			var result = enumerator.Current;
 
-			if (await enumerator.MoveNext())
+			if (await enumerator.MoveNextAsync())
 				throw new InvalidOperationException("Sequence contains more than one element");
 
 			return result;
@@ -270,14 +270,14 @@ namespace Functional
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 				action.Invoke(enumerator.Current);
 		}
 
 		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
-			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetEnumerator(), batchSize));
+			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetAsyncEnumerator(), batchSize));
 
 		public static IAsyncEnumerable<TSource> PickInto<TSource>(this IAsyncEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, bool> predicate)
 		{

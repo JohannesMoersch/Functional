@@ -39,7 +39,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -63,7 +63,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void MapFailure()
 				=> Value
-					.MapFailure(i => 1.0f)
+					.MapOnFailure(i => 1.0f)
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -85,17 +85,17 @@ namespace Functional.Tests.Results
 					.Be("123");
 
 			[Fact]
-			public void BindIfFailureSuccess()
+			public void BindOnFailureSuccess()
 				=> Value
-					.BindIfFailure(i => Result.Success<int, string>(3))
+					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
 
 			[Fact]
-			public void BindIfFailureFailure()
+			public void BindOnFailureFailure()
 				=> Value
-					.BindIfFailure(i => Result.Failure<int, string>("123"))
+					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -124,17 +124,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool success = false;
-				Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool success = false, failure = false;
 				Value.Apply(_ => success = true, _ => failure = true);
@@ -149,7 +139,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void TrySelect()
 				=> Value
-					.TrySelect(i => i * 2, e => e.Message)
+					.TryMap(i => i * 2, e => e.Message)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -157,7 +147,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void TrySelectThrowsException()
 				=> Value
-					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.TryMap<int, int, string>(i => throw new TestException("123"), e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -166,7 +156,7 @@ namespace Functional.Tests.Results
 			public void TrySelectException()
 				=> Result
 					.Success<int, Exception>(VALUE)
-					.TrySelect(i => i * 2)
+					.TryMap(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE * 2);
@@ -175,7 +165,7 @@ namespace Functional.Tests.Results
 			public void TrySelectExceptionThrowsException()
 				=> Result
 					.Success<int, Exception>(VALUE)
-					.TrySelect<int, int>(i => throw new TestException())
+					.TryMap<int, int>(i => throw new TestException())
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();
@@ -209,7 +199,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -233,7 +223,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailure(i => 1.0f)
+					.MapOnFailure(i => 1.0f)
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -255,17 +245,17 @@ namespace Functional.Tests.Results
 					.Be("123");
 
 			[Fact]
-			public Task BindIfFailureSuccess()
+			public Task BindOnFailureSuccess()
 				=> Value
-					.BindIfFailure(i => Result.Success<int, string>(3))
+					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
 
 			[Fact]
-			public Task BindIfFailureFailure()
+			public Task BindOnFailureFailure()
 				=> Value
-					.BindIfFailure(i => Result.Failure<int, string>("123"))
+					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertSuccess()
 					.Should()
 					.Be(VALUE);
@@ -294,17 +284,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.Apply(_ => success = true, _ => failure = true);
@@ -319,7 +299,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task TrySelect()
 				=> Value
-					.TrySelect(i => i * 2, e => e.Message)
+					.TryMap(i => i * 2, e => e.Message)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -327,7 +307,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task TrySelectThrowsException()
 				=> Value
-					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.TryMap<int, int, string>(i => throw new TestException("123"), e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -338,7 +318,7 @@ namespace Functional.Tests.Results
 					.FromResult(Result
 						.Success<int, Exception>(VALUE)
 					)
-					.TrySelect(i => i * 2)
+					.TryMap(i => i * 2)
 					.AssertSuccess()
 					.Should()
 					.Be(20);
@@ -349,7 +329,7 @@ namespace Functional.Tests.Results
 					.FromResult(Result
 						.Success<int, Exception>(VALUE)
 					)
-					.TrySelect<int, int>(i => throw new TestException())
+					.TryMap<int, int>(i => throw new TestException())
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();
@@ -383,7 +363,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -407,7 +387,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void MapFailure()
 				=> Value
-					.MapFailure(i => 1.0f)
+					.MapOnFailure(i => 1.0f)
 					.AssertFailure()
 					.Should()
 					.Be(1.0f);
@@ -429,17 +409,17 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public void BindIfFailureSuccess()
+			public void BindOnFailureSuccess()
 				=> Value
-					.BindIfFailure(i => Result.Success<int, string>(3))
+					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
 
 			[Fact]
-			public void BindIfFailureFailure()
+			public void BindOnFailureFailure()
 				=> Value
-					.BindIfFailure(i => Result.Failure<int, string>("123"))
+					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -468,17 +448,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool success = false;
-				Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool success = false, failure = false;
 				Value.Apply(_ => success = true, _ => failure = true);
@@ -493,7 +463,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void TrySelect()
 				=> Value
-					.TrySelect(i => i * 2, e => e.Message)
+					.TryMap(i => i * 2, e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -501,7 +471,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void TrySelectThrowsException()
 				=> Value
-					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.TryMap<int, int, string>(i => throw new TestException("123"), e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -510,7 +480,7 @@ namespace Functional.Tests.Results
 			public void TrySelectException()
 				=> Result
 					.Failure<int, Exception>(new TestException())
-					.TrySelect(i => i * 2)
+					.TryMap(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();
@@ -519,7 +489,7 @@ namespace Functional.Tests.Results
 			public void TrySelectExceptionThrowsException()
 				=> Result
 					.Failure<int, Exception>(new TestException())
-					.TrySelect<int, int>(i => throw new ArgumentException())
+					.TryMap<int, int>(i => throw new ArgumentException())
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();
@@ -553,7 +523,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task Select()
 				=> Value
-					.Select(i => i * 2)
+					.Map(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -577,7 +547,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task MapFailure()
 				=> Value
-					.MapFailure(i => 1.0f)
+					.MapOnFailure(i => 1.0f)
 					.AssertFailure()
 					.Should()
 					.Be(1.0f);
@@ -599,17 +569,17 @@ namespace Functional.Tests.Results
 					.Be("abc");
 
 			[Fact]
-			public Task BindIfFailureSuccess()
+			public Task BindOnFailureSuccess()
 				=> Value
-					.BindIfFailure(i => Result.Success<int, string>(3))
+					.BindOnFailure(i => Result.Success<int, string>(3))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
 
 			[Fact]
-			public Task BindIfFailureFailure()
+			public Task BindOnFailureFailure()
 				=> Value
-					.BindIfFailure(i => Result.Failure<int, string>("123"))
+					.BindOnFailure(i => Result.Failure<int, string>("123"))
 					.AssertFailure()
 					.Should()
 					.Be("123");
@@ -638,17 +608,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.Apply(_ => success = true, _ => failure = true);
@@ -663,7 +623,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task TrySelect()
 				=> Value
-					.TrySelect(i => i * 2, e => e.Message)
+					.TryMap(i => i * 2, e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -671,7 +631,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task TrySelectThrowsException()
 				=> Value
-					.TrySelect<int, int, string>(i => throw new TestException("123"), e => e.Message)
+					.TryMap<int, int, string>(i => throw new TestException("123"), e => e.Message)
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -682,7 +642,7 @@ namespace Functional.Tests.Results
 					.FromResult(Result
 						.Failure<int, Exception>(new TestException())
 					)
-					.TrySelect(i => i * 2)
+					.TryMap(i => i * 2)
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();
@@ -693,7 +653,7 @@ namespace Functional.Tests.Results
 					.FromResult(Result
 						.Failure<int, Exception>(new TestException())
 					)
-					.TrySelect<int, int>(i => throw new ArgumentException())
+					.TryMap<int, int>(i => throw new ArgumentException())
 					.AssertFailure()
 					.Should()
 					.BeOfType<TestException>();

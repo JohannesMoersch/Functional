@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class OptionExtensions
+	public static partial class OptionExtensions
 	{
 		public static bool HasValue<TValue>(this Option<TValue> option)
 			=> option.Match(DelegateCache<TValue>.True, DelegateCache.False);
@@ -16,19 +16,19 @@ namespace Functional
 		public static async Task<bool> HasValue<TValue>(this Task<Option<TValue>> option)
 			=> (await option).HasValue();
 
-		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> select)
+		public static Option<TResult> Map<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
 		{
-			if (select == null)
-				throw new ArgumentNullException(nameof(select));
+			if (map == null)
+				throw new ArgumentNullException(nameof(map));
 
 			if (option.TryGetValue(out var some))
-				return Option.Some(select.Invoke(some));
+				return Option.Some(map.Invoke(some));
 
 			return Option.None<TResult>();
 		}
 
-		public static async Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> select)
-			=> (await option).Select(select);
+		public static async Task<Option<TResult>> Map<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+			=> (await option).Map(map);
 
 		public static Option<TResult> Bind<TValue, TResult>(this Option<TValue> option, Func<TValue, Option<TResult>> bind)
 		{
@@ -64,17 +64,11 @@ namespace Functional
 		public static async Task<IEnumerable<TValue>> ValueOrEmpty<TValue>(this Task<Option<IEnumerable<TValue>>> option)
 			=> (await option).ValueOrEmpty();
 
-		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
-			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);
-
-		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
-			=> (await option).DefaultIfNone(defaultValue);
-
-		public static Option<TValue> BindIfNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
+		public static Option<TValue> BindOnNone<TValue>(this Option<TValue> option, Func<Option<TValue>> bind)
 			=> option.TryGetValue(out _) ? option : bind();
 
-		public static async Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
-			=> (await option).BindIfNone(bind);
+		public static async Task<Option<TValue>> BindOnNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
+			=> (await option).BindOnNone(bind);
 
 		public static Option<TValue> OfType<TValue>(this Option<object> option)
 			=> option.TryGetValue(out var some) ? (some is TValue value ? Option.Some(value) : Option.None<TValue>()) : Option.None<TValue>();
@@ -148,11 +142,5 @@ namespace Functional
 
 		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> applyWhenSome, Action applyWhenNone)
 			=> option.Do(applyWhenSome, applyWhenNone);
-
-		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> apply)
-			=> option.Do(apply);
-
-		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
-			=> option.Do(apply);
 	}
 }

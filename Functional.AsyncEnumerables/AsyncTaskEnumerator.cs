@@ -7,10 +7,6 @@ namespace Functional
 {
 	internal class AsyncTaskEnumerator<T> : IAsyncEnumerator<T>
 	{
-		private static readonly Task<bool> _trueResult = Task.FromResult(true);
-
-		private static readonly Task<bool> _falseResult = Task.FromResult(false);
-
 		private readonly Lazy<IEnumerator<Task<T>>> _enumerator;
 
 		public T Current { get; private set; }
@@ -18,14 +14,24 @@ namespace Functional
 		internal AsyncTaskEnumerator(Lazy<IEnumerator<Task<T>>> enumerator)
 			=> _enumerator = enumerator;
 
-		public Task<bool> MoveNext()
+		public ValueTask DisposeAsync()
+		{
+			if (_enumerator.IsValueCreated)
+				_enumerator.Value.Dispose();
+
+			return default;
+		}
+
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			var enumerator = _enumerator.Value;
 
 			if (!enumerator.MoveNext())
-				return _falseResult;
+				return false;
 
-			return enumerator.Current.ContinueWith(t => { Current = t.Result; return true; }, TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously);
+			Current = await enumerator.Current;
+
+			return true;
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -88,7 +89,11 @@ namespace Functional
 			}
 
 			public void Dispose()
-				=> _groupingEnumerator?.Dispose();
+			{
+				_groupingEnumerator?.Dispose();
+
+				_successEnumerator.Dispose();
+			}
 
 			public bool MoveNext()
 			{
@@ -98,7 +103,7 @@ namespace Functional
 					{
 						var isFailure = _successEnumerator
 							.Current
-							.Select(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
+							.Map(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
 							.Match
 							(
 								success =>
@@ -160,8 +165,8 @@ namespace Functional
 				_elementSelector = elementSelector;
 			}
 
-			public IAsyncEnumerator<Option<IGrouping<TKey, TElement>>> GetEnumerator()
-				=> new AsyncOptionGroupByEnumerator<TKey, TSuccess, TElement>(_successEnumerable.GetEnumerator(), _keySelector, _elementSelector);
+			public IAsyncEnumerator<Option<IGrouping<TKey, TElement>>> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+				=> new AsyncOptionGroupByEnumerator<TKey, TSuccess, TElement>(_successEnumerable.GetAsyncEnumerator(cancellationToken), _keySelector, _elementSelector);
 		}
 
 		private class AsyncOptionGroupByEnumerator<TKey, TSuccess, TElement> : IAsyncEnumerator<Option<IGrouping<TKey, TElement>>>
@@ -202,18 +207,22 @@ namespace Functional
 				_elementSelector = elementSelector;
 			}
 
-			public void Dispose()
-				=> _groupingEnumerator?.Dispose();
+			public ValueTask DisposeAsync()
+			{
+				_groupingEnumerator?.Dispose();
 
-			public async Task<bool> MoveNext()
+				return _successEnumerator.DisposeAsync();
+			}
+
+			public async ValueTask<bool> MoveNextAsync()
 			{
 				if (_groupingEnumerator == null)
 				{
-					while (await _successEnumerator.MoveNext())
+					while (await _successEnumerator.MoveNextAsync())
 					{
 						var isFailure = _successEnumerator
 							.Current
-							.Select(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
+							.Map(success => (key: _keySelector.Invoke(success), element: _elementSelector.Invoke(success)))
 							.Match
 							(
 								success =>

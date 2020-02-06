@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ReplayableAsyncEnumerableData<T>
+	internal class ReplayableAsyncEnumerableData<T> : IAsyncDisposable
 	{
 		private readonly IAsyncEnumerator<T> _enumerator;
 
@@ -16,6 +17,9 @@ namespace Functional
 		public ReplayableAsyncEnumerableData(IAsyncEnumerator<T> enumerator)
 			=> _enumerator = enumerator;
 
+		public ValueTask DisposeAsync()
+			=> _enumerator.DisposeAsync();
+
 		public async Task<(bool hasValue, T value)> TryGetValue(int index)
 		{
 			if (index < _values.Count)
@@ -23,7 +27,7 @@ namespace Functional
 
 			if (!_complete)
 			{
-				if (await _enumerator.MoveNext())
+				if (await _enumerator.MoveNextAsync())
 				{
 					_values.Add(_enumerator.Current);
 					return (true, _enumerator.Current);
@@ -47,9 +51,10 @@ namespace Functional
 		public ReplayableAsyncEnumerator(ReplayableAsyncEnumerableData<T> data)
 			=> _data = data;
 
-		public void Dispose() { }
+		public ValueTask DisposeAsync()
+			=> _data.DisposeAsync();
 
-		public async Task<bool> MoveNext()
+		public async ValueTask<bool> MoveNextAsync()
 		{
 			var value = await _data.TryGetValue(_index++);
 			if (_index >= 0 && value.hasValue)
@@ -71,9 +76,9 @@ namespace Functional
 		private readonly ReplayableAsyncEnumerableData<T> _data;
 
 		public ReplayableAsyncEnumerable(IAsyncEnumerable<T> data)
-			=> _data = new ReplayableAsyncEnumerableData<T>(data.GetEnumerator());
+			=> _data = new ReplayableAsyncEnumerableData<T>(data.GetAsyncEnumerator());
 
-		public IAsyncEnumerator<T> GetEnumerator()
+		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
 			=> new ReplayableAsyncEnumerator<T>(_data);
 	}
 }

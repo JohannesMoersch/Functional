@@ -15,11 +15,11 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var value = true;
 
-			while (value && await enumerator.MoveNext())
+			while (value && await enumerator.MoveNextAsync())
 				value = await predicate.Invoke(enumerator.Current);
 
 			return value;
@@ -30,11 +30,11 @@ namespace Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
 			var value = false;
 
-			while (!value && await enumerator.MoveNext())
+			while (!value && await enumerator.MoveNextAsync())
 				value = await predicate.Invoke(enumerator.Current);
 
 			return value;
@@ -154,9 +154,9 @@ namespace Functional
 			if (action == null)
 				throw new ArgumentNullException(nameof(action));
 
-			var enumerator = source.GetEnumerator();
+			var enumerator = source.GetAsyncEnumerator();
 
-			while (await enumerator.MoveNext())
+			while (await enumerator.MoveNextAsync())
 				await action.Invoke(enumerator.Current);
 		}
 
