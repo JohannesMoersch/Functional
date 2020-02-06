@@ -57,6 +57,16 @@ namespace Functional
 		[Obsolete("Please use .MapOnFailure() instead.")]
 		public static Task<Result<TSuccess, TResult>> MapFailure<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, TResult> mapFailure)
 			=> result.MapOnFailure(mapFailure);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle failure explicitly.")]
+		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess)
+			=> result.Do(onSuccess);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle failure explicitly.")]
+		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
+			=> result.Do(onSuccess);
 	}
 
 	public static partial class ResultAsyncExtensions
@@ -110,6 +120,16 @@ namespace Functional
 		[Obsolete("Please use .BindOnFailureAsync() instead.")]
 		public static Task<Result<TSuccess, TFailure>> BindIfFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
 			=> result.BindOnFailureAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle failure explicitly.")]
+		public static Task ApplyAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success)
+			=> result.DoAsync(success);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle failure explicitly.")]
+		public static Task ApplyAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success)
+			=> result.DoAsync(success);
 	}
 
 	public static partial class ResultOptionExtensions
@@ -215,14 +235,14 @@ namespace Functional
 			=> result.DoOnSome(onSuccessSome);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .ApplyOnSome() instead.")]
+		[Obsolete("Please use .Apply() instead and handle other cases explicitly.")]
 		public static void ApplyIfSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> onSuccessSome)
-			=> result.ApplyOnSome(onSuccessSome);
+			=> result.DoOnSome(onSuccessSome);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .ApplyOnSome() instead.")]
+		[Obsolete("Please use .Apply() instead and handle other cases explicitly.")]
 		public static Task ApplyIfSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
-			=> result.ApplyOnSome(onSuccessSome);
+			=> result.DoOnSome(onSuccessSome);
 	}
 	public static partial class ResultOptionAsyncExtensions
 	{
@@ -327,13 +347,13 @@ namespace Functional
 			=> result.DoOnSomeAsync(onSuccessSome);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .ApplyOnSomeAsync() instead.")]
+		[Obsolete("Please use .Apply() instead and handle other cases explicitly.")]
 		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> onSuccessSome)
-			=> result.ApplyOnSomeAsync(onSuccessSome);
+			=> result.DoOnSomeAsync(onSuccessSome);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Please use .ApplyOnSomeAsync() instead.")]
+		[Obsolete("Please use .Apply() instead and handle other cases explicitly.")]
 		public static Task ApplyIfSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> onSuccessSome)
-			=> result.ApplyOnSomeAsync(onSuccessSome);
+			=> result.DoOnSomeAsync(onSuccessSome);
 	}
 }

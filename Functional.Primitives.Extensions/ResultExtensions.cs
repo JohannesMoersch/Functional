@@ -132,12 +132,6 @@ namespace Functional
 		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
 			=> result.Do(onSuccess, onFailure);
 
-		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess)
-			=> result.Do(onSuccess);
-
-		public static Task Apply<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
-			=> result.Do(onSuccess);
-
 		public static Result<TResult, TFailure> TryMap<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 		{
 			if (successFactory == null)

@@ -157,17 +157,7 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool some = false;
-				Value.Apply(_ => some = true);
-				some
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool some = false, none = false;
 				Value.Apply(_ => some = true, () => none = true);
@@ -307,17 +297,7 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool some = false;
-				await Value.Apply(_ => some = true);
-				some
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool some = false, none = false;
 				await Value.Apply(_ => some = true, () => none = true);
@@ -438,17 +418,7 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool some = false;
-				Value.Apply(_ => some = true);
-				some
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool some = false, none = false;
 				Value.Apply(_ => some = true, () => none = true);
@@ -573,17 +543,7 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool some = false;
-				await Value.Apply(_ => some = true);
-				some
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool some = false, none = false;
 				await Value.Apply(_ => some = true, () => none = true);

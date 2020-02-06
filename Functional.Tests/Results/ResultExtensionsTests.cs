@@ -124,17 +124,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool success = false;
-				Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool success = false, failure = false;
 				Value.Apply(_ => success = true, _ => failure = true);
@@ -294,17 +284,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.Apply(_ => success = true, _ => failure = true);
@@ -468,17 +448,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public void ApplyWithOneParameter()
-			{
-				bool success = false;
-				Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public void ApplyWithTwoParameters()
+			public void Apply()
 			{
 				bool success = false, failure = false;
 				Value.Apply(_ => success = true, _ => failure = true);
@@ -638,17 +608,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.Apply(_ => success = true);
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.Apply(_ => success = true, _ => failure = true);

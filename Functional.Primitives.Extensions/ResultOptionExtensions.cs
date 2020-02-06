@@ -154,11 +154,5 @@ namespace Functional
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
 			=> (await result).DoOnSome(onSuccessSome);
-
-		public static void ApplyOnSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Action<TSuccess> onSuccessSome)
-			=> result.DoOnSome(onSuccessSome);
-
-		public static Task ApplyOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
-			=> result.DoOnSome(onSuccessSome);
 	}
 }

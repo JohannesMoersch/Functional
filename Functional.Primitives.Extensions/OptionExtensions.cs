@@ -142,11 +142,5 @@ namespace Functional
 
 		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> applyWhenSome, Action applyWhenNone)
 			=> option.Do(applyWhenSome, applyWhenNone);
-
-		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> apply)
-			=> option.Do(apply);
-
-		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
-			=> option.Do(apply);
 	}
 }

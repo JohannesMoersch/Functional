@@ -27,6 +27,16 @@ namespace Functional
 		[Obsolete("Please use .BindOnNone() instead.")]
 		public static Task<Option<TValue>> BindIfNone<TValue>(this Task<Option<TValue>> option, Func<Option<TValue>> bind)
 			=> option.BindOnNone(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle none explicitly.")]
+		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> apply)
+			=> option.Do(apply);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle none explicitly.")]
+		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
+			=> option.Do(apply);
 	}
 
 	public static partial class OptionAsyncExtensions
@@ -50,5 +60,15 @@ namespace Functional
 		[Obsolete("Please use .BindOnNoneAsync() instead.")]
 		public static Task<Option<TValue>> BindIfNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task<Option<TValue>>> bind)
 			=> option.BindOnNoneAsync(bind);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle none explicitly.")]
+		public static Task ApplyAsync<TValue>(this Option<TValue> option, Func<TValue, Task> apply)
+			=> option.DoAsync(apply);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please also handle none explicitly.")]
+		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
+			=> option.DoAsync(apply);
 	}
 }

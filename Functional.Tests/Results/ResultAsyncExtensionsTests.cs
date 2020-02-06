@@ -103,17 +103,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.ApplyAsync(_ => Task.FromResult(success = true));
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.ApplyAsync(_ => Task.FromResult(success = true), _ => Task.FromResult(failure = true));
@@ -252,17 +242,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.ApplyAsync(_ => Task.FromResult(success = true));
-				success
-					.Should()
-					.BeTrue();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.ApplyAsync(_ => Task.FromResult(success = true), _ => Task.FromResult(failure = true));
@@ -405,17 +385,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.ApplyAsync(_ => Task.FromResult(success = true));
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.ApplyAsync(_ => Task.FromResult(success = true), _ => Task.FromResult(failure = true));
@@ -554,17 +524,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
-			public async Task ApplyWithOneParameter()
-			{
-				bool success = false;
-				await Value.ApplyAsync(_ => Task.FromResult(success = true));
-				success
-					.Should()
-					.BeFalse();
-			}
-
-			[Fact]
-			public async Task ApplyWithTwoParameters()
+			public async Task Apply()
 			{
 				bool success = false, failure = false;
 				await Value.ApplyAsync(_ => Task.FromResult(success = true), _ => Task.FromResult(failure = true));

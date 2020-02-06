@@ -101,11 +101,5 @@ namespace Functional
 
 		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> applyWhenSome, Func<Task> applyWhenNone)
 			=> option.DoAsync(applyWhenSome, applyWhenNone);
-
-		public static Task ApplyAsync<TValue>(this Option<TValue> option, Func<TValue, Task> apply)
-			=> option.DoAsync(apply);
-
-		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
-			=> option.DoAsync(apply);
 	}
 }
