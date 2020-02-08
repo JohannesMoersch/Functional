@@ -139,6 +139,16 @@ Result<int, Exception> success = Result.Try(() => 100));
 Result<int, Exception> failure = Result.Try<int>(() => throw new Exception("Exception Message")));
 Result<int, string> failure = Result.Try<int, string>(() => throw new Exception("Exception Message"), ex => ex.Message));
 ```
+##### By combining 2-9 other Results
+``` csharp
+// produces Result.Success<KeyValuePair<int, string>, Exception> if all Results supplied to Merge have success values
+Result<KeyValuePair<int, string>, Exception> success = Result.Merge(Result.Success<int, Exception>(1337), Result.Success<string, Exception>("the name"), (id, name) => new KeyValuePair<int, string>(id, name));
+
+// produces Result.Failure<KeyValuePair<int, string>, Exception> if at least one Result supplied to Merge has a failure value
+Result<KeyValuePair<int, string>, Exception> failure = Result.Merge(Result.Success<int, Exception>(1337), Result.Failure<string, Exception>(new Exception())), (id, name) => new KeyValuePair<int, string>(id, name));
+Result<KeyValuePair<int, string>, Exception> failure = Result.Merge(Result.Failure<int, Exception>(new Exception()), Result.Success<string, Exception>("the name"), (id, name) => new KeyValuePair<int, string>(id, name));
+Result<KeyValuePair<int, string>, Exception> failure = Result.Merge(Result.Failure<int, Exception>(new Exception()), Result.Failure<string, Exception>(new Exception()), (id, name) => new KeyValuePair<int, string>(id, name));
+```
 ### Working with Result Types
 #### Match
 You cannot access the values of a Result type directly. Instead you work with Results functionally. Results only expose one function with the following signature:
