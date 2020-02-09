@@ -46,8 +46,11 @@ class Action {
         var nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
-        if (nugetErrorRegex.test(nugetPushResponse))
+        if (nugetErrorRegex.test(nugetPushResponse)) {
             this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
+        } else {
+            console.log(`${project} successfully published: ${nugetPushResponse}`)
+        }
     }
 
     PublishPackage(project, version) {
@@ -70,8 +73,11 @@ class Action {
                 res.setEncoding("utf8")
                 res.on("data", chunk => body += chunk)
                 res.on("end", () => {
-                    if (JSON.parse(body).versions.indexOf(version) < 0)
+                    if (JSON.parse(body).versions.indexOf(version) < 0) {
                         this.PushPackage(project, projectFilePath)
+                    } else {
+                        this.LogWarning(`${project} v${version} already on nuget.org`)
+                    }
                 })
             }
         }).on("error", e => {
