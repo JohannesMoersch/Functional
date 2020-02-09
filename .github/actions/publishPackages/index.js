@@ -19,8 +19,10 @@ class Action {
     }
 
     ExecuteCommand(cmd, options) {
-        const INPUT = cmd.split(" "), TOOL = INPUT[0], ARGS = INPUT.slice(1)
-        return spawnSync(TOOL, ARGS, options)
+        var input = cmd.split(" ")
+        var tool = input[0]
+        var args = input.slice(1)
+        return spawnSync(tool, args, options)
     }
 
     ExecuteCommandAndCapture(cmd) {
@@ -32,7 +34,7 @@ class Action {
     }
 
     ResolveIfExists(filePath, msg) {
-        fullPath = path.resolve(process.env.GITHUB_WORKSPACE, filePath)
+        var fullPath = path.resolve(process.env.GITHUB_WORKSPACE, filePath)
         if (!fs.existsSync(fullPath)) this.LogFailure(msg)
         return fullPath
     }
@@ -42,14 +44,14 @@ class Action {
         
         //nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         console.log(`Push - dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
-        nugetErrorRegex = /(error: Response status code does not indicate success.*)/
+        var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
         if (nugetErrorRegex.test(nugetPushResponse))
             this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
     }
 
     PushProjectAndTagRepository(project, projectFilePath, version) {
-        tag = `v${version}`
+        var tag = `v${version}`
 
         if (this.ExecuteCommandAndCapture(`git ls-remote --tags origin ${tag}`).indexOf(tag) >= 0) {
             this.LogWarning(`Tag ${tag} already exists.`)
@@ -63,11 +65,11 @@ class Action {
     }
 
     PublishPackage(project, version) {
-        projectFilePath = this.ResolveIfExists(project + "/" + project + ".csproj", project + " project file not found.")
+        var projectFilePath = this.ResolveIfExists(project + "/" + project + ".csproj", project + " project file not found.")
 
-        fileContent = fs.readFileSync(projectFilePath, { encoding: "utf-8" }),
+        var fileContent = fs.readFileSync(projectFilePath, { encoding: "utf-8" })
 
-        title = "<Title>(.*)<\/Title>".exec(fileContent)
+        var title = "<Title>(.*)<\/Title>".exec(fileContent)
 
         https.get(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`, res => {
             let body = ""
@@ -99,11 +101,11 @@ class Action {
             return
         }
 
-        versionFilePath = this.ResolveIfExists("Directory.Build.props", "Version file not found.")
+        var versionFilePath = this.ResolveIfExists("Directory.Build.props", "Version file not found.")
 
-        fileContent = fs.readFileSync(versionFilePath, { encoding: "utf-8" }),
+        var fileContent = fs.readFileSync(versionFilePath, { encoding: "utf-8" })
         
-        version = "<Version>(.*)<\/Version>".exec(fileContent)
+        var version = "<Version>(.*)<\/Version>".exec(fileContent)
 
         if (!version)
             this.LogFailure("Unable to extract version information.")
