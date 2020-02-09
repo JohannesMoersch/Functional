@@ -44,11 +44,11 @@ string value = Option.Some(100).Match(v => $"Has value of {v}", () => "Has no va
 string value = Option.None<int>().Match(v => $"Has value of {v}", () => "Has no value"); // Returns "Has no value"
 ```
 Working with `Match` can be tedious, but there are many extension methods that make it easy and very powerful.
-#### Select
+#### Map
 If `Some`, this extension will return an Option with the value produced by the delegate parameter, and if `None` it will return `None`.
 ```csharp
-Option<string> option = Option.Some(100).Select(v => $"{v}"); // Returns Option<string> with a value of "100"
-Option<string> option = Option.None<int>().Select(v => $"{v}"); // Returns Option<string> with no value
+Option<string> option = Option.Some(100).Map(v => $"{v}"); // Returns Option<string> with a value of "100"
+Option<string> option = Option.None<int>().Map(v => $"{v}"); // Returns Option<string> with no value
 ```
 #### Bind
 If `Some`, this extension will return the Option returned by the delegate parameter, and if `None` it will return `None`.
@@ -69,12 +69,12 @@ If `Some`, this extension will return the value, and if `None` it will return a 
 int value = Option.Some(100).ValueOrDefault(50); // Returns 100
 int value = Option.None<int>().ValueOrDefault(50); // Returns 50
 ```
-#### BindIfNone
+#### BindOnNone
 If `Some`, this extension will return the original Option.  If `None`, it will return the Option returned by the delegate parameter.
 ```csharp
-Option<int> value = Option.Some(100).BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 100
-Option<int> value = Option.None<int>().BindIfNone(() => Option.Some(50)); // Returns Option<int> with a value of 50
-Option<int> value = Option.None<int>().BindIfNone(() => Option.None<int>()); // Returns Option<int> with no value
+Option<int> value = Option.Some(100).BindOnNone(() => Option.Some(50)); // Returns Option<int> with a value of 100
+Option<int> value = Option.None<int>().BindOnNone(() => Option.Some(50)); // Returns Option<int> with a value of 50
+Option<int> value = Option.None<int>().BindOnNone(() => Option.None<int>()); // Returns Option<int> with no value
 ```
 #### ToNullable
 This extension only works on value types. If `Some`, this extension will return the value, and if `None` it will return null.
@@ -151,18 +151,18 @@ string value = Result.Success<int, string>(100).Match(s => $"Has success value o
 string value = Result.Success<int, string>("Failure").Match(s => $"Has success value of {s}", f => "Has failure value of {f}"); // Returns "Has failure value of Failure"
 ```
 Working with `Match` can be tedious, but there are many extension methods that make it easy and very powerful.
-#### Select
+#### Map
 If `Success`, this extension will return a `Success` Result with the value produced by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp
-Result<int, string> result = Result.Success<float, string>(1.5).Select(s => (int)s); // Returns Result<int, string> with a success value of 1
-Result<int, string> result = Result.Failure<float, string>("Failure").Select(s => (int)s); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Success<float, string>(1.5).Map(s => (int)s); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Failure<float, string>("Failure").Map(s => (int)s); // Returns Result<int, string> with a failure value of "Failure"
 ```
-#### TrySelect
+#### TryMap
 If `Success`, this extension will execute the first delegate parameter. If an exception is thrown, it will execute the second delegate parameter (if provided), and return a `Failure` Result with the value produced by the second delegate parameter. If no exception is thrown, it will return a `Success` Result with the value produced by the first delegate parameter. If the input Result is a `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp
-Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(s => (int)s); // Returns Result<int, string> with a success value of 1
-Result<int, string> result = Result.Success<float, string>(1.5).TrySelect(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, Exception> with a failure value of "Exception Message"
-Result<int, string> result = Result.Failure<float, string>("Failure").Select(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Success<float, string>(1.5).TryMap(s => (int)s); // Returns Result<int, string> with a success value of 1
+Result<int, string> result = Result.Success<float, string>(1.5).TryMap(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, Exception> with a failure value of "Exception Message"
+Result<int, string> result = Result.Failure<float, string>("Failure").Map(s => throw new Exception("Exception Message"), ex => ex.Message); // Returns Result<int, string> with a failure value of "Failure"
 ```
 #### Bind
 If `Success`, this extension will return the Result returned by the delegate parameter, and if `Failure` it will return a `Failure` Result with the existing failure value.
@@ -171,12 +171,12 @@ Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result
 Result<int, string> result = Result.Success<float, string>(1.5).Bind(s => Result.Failure<int, string>("Failure")); // Returns Result<int, string> with a failure value of "Failure"
 Result<int, string> result = Result.Failure<float, string>("Failure").Bind(s => Result.Success<int, string>((int)s)); // Returns Result<int, string> with a failure value of "Failure"
 ```
-#### BindIfFailure
+#### BindOnFailure
 If `Success`, this extension will return the original Result.  If `Failure`, it will return the Result returned by the delegate parameter.
 ```csharp
-Result<float, string> result = Result.Success<float, string>(1.5).BindIfFailure(f => Result.Success<float, string>(s * 2)); // Returns Result<float, string> with a success value of 1.5
-Result<float, string> result = Result.Failure<float, string>("Failure").BindIfFailure(f => Result.Success<float, string>(1337)); // Returns Result<float, string> with a success value of 1337
-Result<float, string> result = Result.Failure<float, string>("Failure").BindIfFailure(f => Result.Failure<float, string>("More failure")); // Returns Result<float, string> with a failure value of "More failure"
+Result<float, string> result = Result.Success<float, string>(1.5).BindOnFailure(f => Result.Success<float, string>(s * 2)); // Returns Result<float, string> with a success value of 1.5
+Result<float, string> result = Result.Failure<float, string>("Failure").BindOnFailure(f => Result.Success<float, string>(1337)); // Returns Result<float, string> with a success value of 1337
+Result<float, string> result = Result.Failure<float, string>("Failure").BindOnFailure(f => Result.Failure<float, string>("More failure")); // Returns Result<float, string> with a failure value of "More failure"
 ```
 #### IsSuccess
 If `Success`, this extension will return `true`, and if `Failure` it will return `false`.
@@ -224,84 +224,84 @@ Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s)); // Does no
 Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f)); // Outputs "Failure" to the console
 ```
 
-#### SelectIfSome
+#### MapOnSome
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  If `Success` and holds an Option with a value, this extension will invoke the delegate parameter.  If `Success` and holds an Option with no value, the delegate parameter will *not* be invoked, but this extension method will return a `Success` Result holding an Option with no value for the type that would have been produced by the delegate parameter.  If `Failure` it will return a `Failure` Result with the existing failure value.
 
 ```csharp
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).SelectIfSome(i => i / 2f); // Returns Result<Option<float>, string> with a success value of Option.Some(50f)
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).SelectIfSome(i => i / 2f); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").SelectIfSome(i => i / 2f); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).MapOnSome(i => i / 2f); // Returns Result<Option<float>, string> with a success value of Option.Some(50f)
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).MapOnSome(i => i / 2f); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").MapOnSome(i => i / 2f); // Returns Result<Option<float>, string> with a failure value of "Failure"
 ```
 
-#### BindIfSome
+#### BindOnSome
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  If `Success` and holds an Option with a value, this extension will return the Result returned by the delegate parameter.  If `Success` and holds an Option with no value, this extension will return a Result holding an Option with no value matching the type that would be produced by the delegate parameter.  If `Failure` it will return a `Failure` Result with the existing failure value.
 
 ```csharp
 // bind to functions producing Result<TSuccess, TFailure>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfSome(i => Result.Failure<float, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfSome(i => Result.Failure<float, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").BindIfSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Failure<float, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnSome(i => Result.Failure<float, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").BindOnSome(i => Result.Success<float, string>(i * 2f)); // Returns Result<Option<float>, string> with a failure value of "Failure"
 
 // bind to functions producing Result<Option<T>>, TFailure>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfSome(i => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfSome(i => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").BindIfSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnSome(i => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").BindOnSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a failure value of "Failure"
 ```
 
-#### SelectIfNone
+#### MapOnNone
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  If `Success` and holds an Option with a value, this extension will return a `Success` Result with the existing success value.  If `Success` and holds an Option with no value, it will invoke the delegate parameter, producing a `Success` Result holding an Option containing the value produced by the delegate.  If `Failure` it will return a `Failure` Result with the existing failure value.
 
 ```csharp
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).SelectIfNone(() => 1337); // Returns Result<Option<int>, string> with a success value of Option.None<int>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).SelectIfNone(() => 1337); // Returns Result<Option<int>, string> with a success value of Option.Some(1337)
-Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").SelectIfNone(() => 1337); // Returns Result<Option<int>, string> with a failure value of "Failure"
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).MapOnNone(() => 1337); // Returns Result<Option<int>, string> with a success value of Option.None<int>
+Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).MapOnNone(() => 1337); // Returns Result<Option<int>, string> with a success value of Option.Some(1337)
+Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").MapOnNone(() => 1337); // Returns Result<Option<int>, string> with a failure value of "Failure"
 ```
 
-#### BindIfNone
+#### BindOnNone
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  If `Success` and holds an Option with a value, it will return a `Success` Result with the existing success value.  If `Success` and holds an Option with no value, it will invoke the delegate parameter.  If `Failure` it will return a `Failure` Result with the existing failure value.
 
 ```csharp
 // bind to functions producing Result<TSuccess, TFailure>
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfNone(()) => Result.Success<int, string>(i * 2)); // Returns Result<Option<int>, string> with a success value of Option.Some(100)
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfNone(() => Result.Failure<int, string>("Failure")); // Returns Result<Option<int>, string> with a success value of Option.Some(100)
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfNone(() => Result.Success<int, string>(i * 2)); // Returns Result<Option<int>, string> with a success value of Option.None<float>
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfNone(() => Result.Failure<int, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").BindIfNone(() => Result.Success<int, string>(i * 2)); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(()) => Result.Success<int, string>(i * 2)); // Returns Result<Option<int>, string> with a success value of Option.Some(100)
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Failure<int, string>("Failure")); // Returns Result<Option<int>, string> with a success value of Option.Some(100)
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnNone(() => Result.Success<int, string>(i * 2)); // Returns Result<Option<int>, string> with a success value of Option.None<float>
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnNone(() => Result.Failure<int, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").BindOnNone(() => Result.Success<int, string>(i * 2)); // Returns Result<Option<float>, string> with a failure value of "Failure"
 
 // bind to functions producing Result<Option<T>>, TFailure>
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindIfNone(() => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindIfNone(() => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
-Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").BindIfNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a failure value of "Failure"
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).BindOnNone(() => Result.Failure<Option<float>, string>("Failure")); // Returns Result<Option<float>, string> with a success value of Option.None<float>
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").BindOnNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f))); // Returns Result<Option<float>, string> with a failure value of "Failure"
 ```
 
-#### DoIfSome
+#### DoOnSome
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  It retuns the input Result and is meant only to create side effects.  If `Success` and holds an Option with a value, this extension will invoke the delegate parameter.
 
 ```csharp
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).DoIfSome(i => Console.WriteLine(i)); // Outputs "100" to the console and returns Result<Option<int>, string> with a success value of Option.Some(100)
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).DoIfSome(i => Console.WriteLine(i)); // Does nothing and returns Result<Option<int>, string> with a success value of Option.None<int>
-Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").DoIfSome(i => Console.WriteLine(i)); // Does nothing and returns Result<Option<int>, string> with a failure value of "Failure"
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).DoOnSome(i => Console.WriteLine(i)); // Outputs "100" to the console and returns Result<Option<int>, string> with a success value of Option.Some(100)
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).DoOnSome(i => Console.WriteLine(i)); // Does nothing and returns Result<Option<int>, string> with a success value of Option.None<int>
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").DoOnSome(i => Console.WriteLine(i)); // Does nothing and returns Result<Option<int>, string> with a failure value of "Failure"
 ```
 
-#### ApplyIfSome
+#### ApplyOnSome
 
 This extension is only available for `Result<Option<T>, TFailure>` types.  It returns void and is meant only to create side effects.  If `Success` and holds an Option with a value, this extension will invoke the delegate parameter; in all other cases, it does nothing.
 
 ```csharp
-Result.Success<Option<int>, string>(Option.Some(100)).ApplyIfSome(i => Console.WriteLine(i)); // Outputs "100" to the console
-Result.Success<Option<int>, string>(Option.None<int>()).ApplyIfSome(i => Console.WriteLine(i)); // Does nothing
-Result.Failure<Option<int>, string>("Failure").ApplyIfSome(i => Console.WriteLine(i)); // Does nothing
+Result.Success<Option<int>, string>(Option.Some(100)).ApplyOnSome(i => Console.WriteLine(i)); // Outputs "100" to the console
+Result.Success<Option<int>, string>(Option.None<int>()).ApplyOnSome(i => Console.WriteLine(i)); // Does nothing
+Result.Failure<Option<int>, string>("Failure").ApplyOnSome(i => Console.WriteLine(i)); // Does nothing
 ```
 
 ## Query Expressions
@@ -315,12 +315,12 @@ public Result<MappedValue, Error> MapValue(Value value);
 public Result<AdditionalData, Error> LoadAdditionalData(Value value);
 public Result<CombinedData, Error> Combine(MappedValue mappedValue, AdditionalData additionalData);
 ```
-Here is a basic example of a `Bind` and then a `Select` written in the standard functional syntax.
+Here is a basic example of a `Bind` and then a `Map` written in the standard functional syntax.
 ```csharp
 public Result<(int Id, MappedValue Value), Error> LoadAndMapValue(int id)
 	=> LoadValue(id)
 		.Bind(value => MapValue(value))
-		.Select(mappedValue => (id, mappedValue));
+		.Map(mappedValue => (id, mappedValue));
 ```
 Here is the equivalent code written as a query expression.
 ```csharp
@@ -341,7 +341,7 @@ public Result<(int Id, CombinedData Data), Error> LoadAndMapValue(int id)
 				.Bind(mappedValue => Combine(mappedValue, additionalData))
 			)
 		)
-		.Select(combinedData => (id, combinedData));
+		.Map(combinedData => (id, combinedData));
 ```
 This time the value from `LoadValue` is used by multiple subsequent function calls, and this introduces nesting which damages the readability of the expression.
 
