@@ -35,7 +35,8 @@ class Action {
 
     ResolveIfExists(filePath, msg) {
         var fullPath = path.resolve(process.env.GITHUB_WORKSPACE, filePath)
-        if (!fs.existsSync(fullPath)) this.LogFailure(msg)
+        if (!fs.existsSync(fullPath)) 
+            this.LogFailure(msg)
         return fullPath
     }
 
@@ -70,7 +71,7 @@ class Action {
         var fileContent = fs.readFileSync(projectFilePath, { encoding: "utf-8" })
 
         var title = new RegExp("<Title>(.*)<\/Title>").exec(fileContent)
-
+        console.log(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`)
         https.get(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`, res => {
             let body = ""
 
@@ -110,8 +111,8 @@ class Action {
         if (!version)
             this.LogFailure("Unable to extract version information.")
 
-        this.PROJECTS.split("\n").forEach(function (project) {
-            PublishPackage(project, version);
+        this.PROJECTS.split(" ").forEach(project => {
+            this.PublishPackage(project, version);
         });
     }
 }

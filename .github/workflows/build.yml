@@ -25,8 +25,8 @@ jobs:
       uses: ./.github/actions/publishPackages
       with:
         PROJECTS: 
-          Function.All
-          Function.All.NetStandard2
+          Functional.All
+          Functional.All.NetStandard2
           Functional.AsyncEnumerables
           Functional.AsyncEnumerables.NetStandard2
           Functional.Common.Extensions
