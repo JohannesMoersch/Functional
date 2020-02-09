@@ -93,8 +93,8 @@ class Action {
             return
         }
 
-        this.ExecuteCommandInProcess(`git tag ${tag}`)
-        this.ExecuteCommandInProcess(`git push origin ${tag}`)
+        console.log("CreateTag - " + this.ExecuteCommand(`git tag ${tag}`, { encoding: "utf-8" }).stderr)
+        console.log("Push Tag - " + this.ExecuteCommand(`git push origin ${tag}`, { encoding: "utf-8" }).stderr)
 
         console.log(`Tag ${tag} created.`)
     }
