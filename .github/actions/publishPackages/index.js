@@ -44,7 +44,7 @@ class Action {
     PushPackage(project, projectFilePath, version) {
         this.ExecuteCommandInProcess(`dotnet pack -c Release ${projectFilePath} -o .`)
         
-        var nugetPushResponse = ""// this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.${version}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
+        var nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.${version}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
         if (nugetErrorRegex.test(nugetPushResponse)) {
