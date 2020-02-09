@@ -4,6 +4,9 @@ inputs:
     PROJECTS:
         description: Projects to upload to NuGet
         required: true
+    GITHUB_TOKEN:
+        description: Github token
+        required: true
     NUGET_KEY:
         description: API key for the NuGet feed
         required: true

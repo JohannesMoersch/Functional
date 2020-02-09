@@ -39,4 +39,5 @@ jobs:
           Functional.Unions.AsyncEnumerables
           Functional.Unions.AsyncEnumerables.NetStandard2
           Functional.Unions.Extensions
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NUGET_KEY: key

@@ -6,6 +6,7 @@ const path = require("path"),
 class Action {
     constructor() {
         this.PROJECTS = process.env.INPUT_PROJECTS
+        this.GITHUB_TOKEN = process.env.INPUT_GITHUB_TOKEN
         this.NUGET_KEY = process.env.INPUT_NUGET_KEY
     }
 
@@ -93,8 +94,11 @@ class Action {
             return
         }
 
-        console.log("CreateTag - " + this.ExecuteCommand(`git tag ${tag}`, { encoding: "utf-8" }).stderr)
-        console.log("Push Tag - " + this.ExecuteCommand(`git push origin ${tag}`, { encoding: "utf-8" }).stderr)
+        this.ExecuteCommand("git config user.name \"$(git --no-pager log --format=format:'%an' -n 1)\"")
+        this.ExecuteCommand("git config user.email \"$(git --no-pager log --format=format:'%ae' -n 1)\"")
+
+        this.ExecuteCommandInProcess(`git tag ${tag}`, { encoding: "utf-8" })
+        this.ExecuteCommandInProcess(`git push https://${process.env.GITHUB_ACTOR}:${this.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git ${tag}`, { encoding: "utf-8" })
 
         console.log(`Tag ${tag} created.`)
     }
