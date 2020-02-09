@@ -43,26 +43,11 @@ class Action {
     PushPackage(project, projectFilePath) {
         this.ExecuteCommandInProcess(`dotnet pack -c Release ${projectFilePath} -o .`)
         
-        //nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
-        console.log(`Push - dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
-        //var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
+        var nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
+        var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
-        //if (nugetErrorRegex.test(nugetPushResponse))
-        //    this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
-    }
-
-    PushProjectAndTagRepository(project, projectFilePath, version) {
-        var tag = `v${version}`
-
-        if (this.ExecuteCommandAndCapture(`git ls-remote --tags origin ${tag}`).indexOf(tag) >= 0) {
-            this.LogWarning(`Tag ${tag} already exists.`)
-            return
-        }
-
-        this.ExecuteCommandInProcess(`git tag ${tag}`)
-        this.ExecuteCommandInProcess(`git push origin ${tag}`)
-
-        this.PushPackage(project, projectFilePath)
+        if (nugetErrorRegex.test(nugetPushResponse))
+            this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
     }
 
     PublishPackage(project, version) {
@@ -73,7 +58,7 @@ class Action {
         var titleInfo = new RegExp("<Title>(.*)<\/Title>").exec(fileContent)
 
         if (!titleInfo)
-            this.LogFailure("Unable to extract version information.")
+            this.LogFailure("Unable to extract package title.")
 
         https.get(`https://api.nuget.org/v3-flatcontainer/${titleInfo[1]}/index.json`, res => {
             let body = ""
@@ -86,12 +71,24 @@ class Action {
                 res.on("data", chunk => body += chunk)
                 res.on("end", () => {
                     if (JSON.parse(body).versions.indexOf(version) < 0)
-                        this.PushProjectAndTagRepository(project, projectFilePath, version)
+                        this.PushPackage(project, projectFilePath)
                 })
             }
         }).on("error", e => {
             this.LogWarning(`Could not reach nuget.org: ${e.message}`)
         })
+    }
+
+    TagRepository(version) {
+        var tag = `v${version}`
+
+        if (this.ExecuteCommandAndCapture(`git ls-remote --tags origin ${tag}`).indexOf(tag) >= 0) {
+            this.LogWarning(`Tag ${tag} already exists.`)
+            return
+        }
+
+        this.ExecuteCommandInProcess(`git tag ${tag}`)
+        this.ExecuteCommandInProcess(`git push origin ${tag}`)
     }
 
     run() {
@@ -113,6 +110,8 @@ class Action {
 
         if (!versionInfo)
             this.LogFailure("Unable to extract version information.")
+
+        this.TagRepository(versionInfo[1])
 
         this.PROJECTS.split(" ").forEach(project => {
             this.PublishPackage(project, versionInfo[1]);
