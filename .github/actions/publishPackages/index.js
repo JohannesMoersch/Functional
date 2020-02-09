@@ -69,7 +69,7 @@ class Action {
 
         var fileContent = fs.readFileSync(projectFilePath, { encoding: "utf-8" })
 
-        var title = "<Title>(.*)<\/Title>".exec(fileContent)
+        var title = new RegExp("<Title>(.*)<\/Title>").exec(fileContent)
 
         https.get(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`, res => {
             let body = ""
@@ -105,7 +105,7 @@ class Action {
 
         var fileContent = fs.readFileSync(versionFilePath, { encoding: "utf-8" })
         
-        var version = "<Version>(.*)<\/Version>".exec(fileContent)
+        var version = new RegExp("<Version>(.*)<\/Version>").exec(fileContent)
 
         if (!version)
             this.LogFailure("Unable to extract version information.")
