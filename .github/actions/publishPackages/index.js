@@ -110,7 +110,7 @@ class Action {
         if (!version)
             this.LogFailure("Unable to extract version information.")
 
-        this.PROJECTS.split("\n").foreach(function (project) {
+        this.PROJECTS.split("\n").forEach(function (project) {
             PublishPackage(project, version);
         });
     }
