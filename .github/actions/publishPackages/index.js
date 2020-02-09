@@ -43,6 +43,9 @@ class Action {
     PushPackage(project, projectFilePath) {
         this.ExecuteCommandInProcess(`dotnet pack -c Release ${projectFilePath} -o .`)
         
+        var str = fs.readdirSync(".").join(",")
+        console.log("files - " + str)
+
         var nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
