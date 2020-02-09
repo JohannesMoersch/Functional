@@ -45,10 +45,10 @@ class Action {
         
         //nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         console.log(`Push - dotnet nuget push ${project}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
-        var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
+        //var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
-        if (nugetErrorRegex.test(nugetPushResponse))
-            this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
+        //if (nugetErrorRegex.test(nugetPushResponse))
+        //    this.LogFailure(`${nugetErrorRegex.exec(nugetPushResponse)[1]}`)
     }
 
     PushProjectAndTagRepository(project, projectFilePath, version) {
@@ -70,9 +70,12 @@ class Action {
 
         var fileContent = fs.readFileSync(projectFilePath, { encoding: "utf-8" })
 
-        var title = new RegExp("<Title>(.*)<\/Title>").exec(fileContent)
-        console.log(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`)
-        https.get(`https://api.nuget.org/v3-flatcontainer/${title}/index.json`, res => {
+        var titleInfo = new RegExp("<Title>(.*)<\/Title>").exec(fileContent)
+
+        if (!titleInfo)
+            this.LogFailure("Unable to extract version information.")
+
+        https.get(`https://api.nuget.org/v3-flatcontainer/${titleInfo[1]}/index.json`, res => {
             let body = ""
 
             if (res.statusCode == 404)
@@ -106,13 +109,13 @@ class Action {
 
         var fileContent = fs.readFileSync(versionFilePath, { encoding: "utf-8" })
         
-        var version = new RegExp("<Version>(.*)<\/Version>").exec(fileContent)
+        var versionInfo = new RegExp("<Version>(.*)<\/Version>").exec(fileContent)
 
-        if (!version)
+        if (!versionInfo)
             this.LogFailure("Unable to extract version information.")
 
         this.PROJECTS.split(" ").forEach(project => {
-            this.PublishPackage(project, version);
+            this.PublishPackage(project, versionInfo[1]);
         });
     }
 }
