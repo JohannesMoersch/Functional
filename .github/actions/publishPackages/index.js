@@ -44,7 +44,7 @@ class Action {
     PushPackage(project, projectFilePath, version) {
         this.ExecuteCommandInProcess(`dotnet pack -c Release ${projectFilePath} -o .`)
         
-        var nugetPushResponse = this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.${version}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
+        var nugetPushResponse = ""// this.ExecuteCommandAndCapture(`dotnet nuget push ${project}.${version}.nupkg -s https://api.nuget.org/v3/index.json -k ${this.NUGET_KEY}`)
         var nugetErrorRegex = /(error: Response status code does not indicate success.*)/
 
         if (nugetErrorRegex.test(nugetPushResponse)) {
@@ -90,8 +90,8 @@ class Action {
         var tag = `v${version}`
 
         if (this.ExecuteCommandAndCapture(`git ls-remote --tags origin ${tag}`).indexOf(tag) >= 0) {
-            this.LogWarning(`Tag ${tag} already exists.`)
-            return
+            console.log(`Tag ${tag} already exists.`)
+            return false
         }
 
         this.ExecuteCommand("git config user.name \"$(git --no-pager log --format=format:'%an' -n 1)\"")
@@ -101,6 +101,8 @@ class Action {
         this.ExecuteCommandInProcess(`git push https://${process.env.GITHUB_ACTOR}:${this.GITHUB_TOKEN}@github.com/${process.env.GITHUB_REPOSITORY}.git ${tag}`, { encoding: "utf-8" })
 
         console.log(`Tag ${tag} created.`)
+
+        return true;
     }
 
     run() {
@@ -123,11 +125,11 @@ class Action {
         if (!versionInfo)
             this.LogFailure("Unable to extract version information.")
 
-        this.TagRepository(versionInfo[1])
-
-        this.PROJECTS.split(" ").forEach(project => {
-            this.PublishPackage(project, versionInfo[1]);
-        });
+        if (this.TagRepository(versionInfo[1])) {
+            this.PROJECTS.split(" ").forEach(project => {
+                this.PublishPackage(project, versionInfo[1])
+            })
+        }
     }
 }
 
