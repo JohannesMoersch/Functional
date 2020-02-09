@@ -20,3 +20,23 @@ jobs:
       run: dotnet build --configuration Release
     - name: Run unit tests
       run: dotnet test 
+    - name: Publish on version change
+      uses: ./.github/actions/publishPackages
+      with:
+        PROJECTS: 
+          Functional.All
+          Functional.All.NetStandard2
+          Functional.AsyncEnumerables
+          Functional.AsyncEnumerables.NetStandard2
+          Functional.Common.Extensions
+          Functional.Enumerables.Extensions
+          Functional.Primitives
+          Functional.Primitives.AsyncEnumerables
+          Functional.Primitives.AsyncEnumerables.NetStandard2
+          Functional.Primitives.Extensions
+          Functional.Unions
+          Functional.Unions.AsyncEnumerables
+          Functional.Unions.AsyncEnumerables.NetStandard2
+          Functional.Unions.Extensions
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_KEY: ${{ secrets.NUGET_KEY }}
