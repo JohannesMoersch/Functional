@@ -22,7 +22,7 @@ jobs:
     - name: Run unit tests
       run: dotnet test 
     - name: Publish on version change
-      uses: ./.github/actions/action
+      uses: ./.github/actions/publishPackages
       with:
         PROJECTS: 
           Function.All
