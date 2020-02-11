@@ -21,6 +21,6 @@ namespace Functional
 			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
 
 		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
+			=> Option.Create(source.TryRemove(key, out var value) && value != null, value);
 	}
 }
