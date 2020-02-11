@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -43,6 +44,34 @@ namespace Functional.Tests.Common
 			=> new Dictionary<int, int?>() { { 1, null } }
 				.TryGetValue(1)
 				.AssertNone();
+
+		[Fact]
+		public void TryRemoveValueWhenKeyPresentAndIntegerValueNotNull()
+		{
+			var dictionary = new ConcurrentDictionary<int, int?>();
+			dictionary.TryAdd(1, 1);
+			
+			dictionary
+				.TryRemove(1)
+				.AssertSome()
+				.Should()
+				.Be(1);
+
+			dictionary.ContainsKey(1).Should().BeFalse();
+		}
+
+		[Fact]
+		public void TryRemoveValueWhenKeyPresentAndIntegerValueNull()
+		{
+			var dictionary = new ConcurrentDictionary<int, int?>();
+			dictionary.TryAdd(1, null);
+
+			dictionary
+				.TryRemove(1)
+				.AssertNone();
+
+			dictionary.ContainsKey(1).Should().BeFalse();
+		}
 	}
 
 	public class One
