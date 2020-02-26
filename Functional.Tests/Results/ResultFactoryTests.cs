@@ -342,7 +342,7 @@ namespace Functional.Tests.Results
 				.Should()
 				.Be("abc");
 
-		public class WhenMerge2
+		public class WhenZip2
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -357,7 +357,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge2ReturnsFailureArrangement]
+			[ResultZip2ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -372,7 +372,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge2ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip2ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -389,7 +389,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge3
+		public class WhenZip3
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -405,7 +405,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge3ReturnsFailureArrangement]
+			[ResultZip3ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -421,7 +421,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge3ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip3ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -439,7 +439,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge4
+		public class WhenZip4
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -456,7 +456,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge4ReturnsFailureArrangement]
+			[ResultZip4ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -473,7 +473,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge4ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip4ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -492,7 +492,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge5
+		public class WhenZip5
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -510,7 +510,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge5ReturnsFailureArrangement]
+			[ResultZip5ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -528,7 +528,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge5ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip5ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -548,7 +548,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge6
+		public class WhenZip6
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -567,7 +567,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge6ReturnsFailureArrangement]
+			[ResultZip6ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -586,7 +586,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge6ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip6ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -607,7 +607,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge7
+		public class WhenZip7
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -627,7 +627,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge7ReturnsFailureArrangement]
+			[ResultZip7ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -647,7 +647,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge7ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip7ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -669,7 +669,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge8
+		public class WhenZip8
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -690,7 +690,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge8ReturnsFailureArrangement]
+			[ResultZip8ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -711,7 +711,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge8ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip8ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
@@ -734,7 +734,7 @@ namespace Functional.Tests.Results
 			#endregion
 		}
 
-		public class WhenMerge9
+		public class WhenZip9
 		{
 			[Fact]
 			public void ReturnsSuccessWhenAllSuccess()
@@ -756,7 +756,7 @@ namespace Functional.Tests.Results
 			}
 
 			[Theory]
-			[ResultMerge9ReturnsFailureArrangement]
+			[ResultZip9ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
 				Result.Zip(
@@ -778,7 +778,7 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultMerge9ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip9ReturnsFailureArrangement : AutoDataAttribute
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
