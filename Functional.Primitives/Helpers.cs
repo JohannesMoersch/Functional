@@ -12,9 +12,11 @@ namespace Functional
 
 	internal static class ResultFactoryHelpers
 	{
+		[AllowAllocations]
 		public static TSuccess SuccessUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
 			=> source.Match(DelegateCache<TSuccess>.Passthrough, _ => throw new InvalidOperationException("Not a successful result!"));
 
+		[AllowAllocations]
 		public static TFailure FailureUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
 			=> source.Match(_ => throw new InvalidOperationException("Not a faulted result!"), DelegateCache<TFailure>.Passthrough);
 	}
