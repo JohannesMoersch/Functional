@@ -141,13 +141,13 @@ Result<int, string> failure = Result.Try<int, string>(() => throw new Exception(
 ```
 ##### By combining 2-9 other Results
 ``` csharp
-// produces Result.Success<KeyValuePair<int, string>, Exception> if all Results supplied to Zip have success values
-Result<KeyValuePair<int, string>, Exception> success = Result.Zip(Result.Success<int, Exception>(1337), Result.Success<string, Exception>("the name"), (id, name) => new KeyValuePair<int, string>(id, name));
+// produces Result.Success<(int, string), Exception[]> if all Results supplied to Zip have success values
+Result<(int, string), Exception[]> success = Result.Zip(Result.Success<int, Exception>(1337), Result.Success<string, Exception>("the name"));
 
-// produces Result.Failure<KeyValuePair<int, string>, Exception> if at least one Result supplied to Zip has a failure value
-Result<KeyValuePair<int, string>, Exception> failure = Result.Zip(Result.Success<int, Exception>(1337), Result.Failure<string, Exception>(new Exception())), (id, name) => new KeyValuePair<int, string>(id, name));
-Result<KeyValuePair<int, string>, Exception> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Success<string, Exception>("the name"), (id, name) => new KeyValuePair<int, string>(id, name));
-Result<KeyValuePair<int, string>, Exception> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Failure<string, Exception>(new Exception()), (id, name) => new KeyValuePair<int, string>(id, name));
+// produces Result.Failure<(int, string), Exception[]> if at least one Result supplied to Zip has a failure value
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Success<int, Exception>(1337), Result.Failure<string, Exception>(new Exception()));
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Success<string, Exception>("the name"));
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Failure<string, Exception>(new Exception()));
 ```
 ### Working with Result Types
 #### Match
