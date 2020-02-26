@@ -359,8 +359,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip2ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1])
 					.AssertFailure()
@@ -368,7 +367,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -407,8 +405,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip3ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2])
@@ -417,7 +414,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -458,8 +454,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip4ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -469,7 +464,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -512,8 +506,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip5ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -524,7 +517,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -569,8 +561,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip6ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -582,7 +573,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -629,8 +619,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip7ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -643,7 +632,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -692,8 +680,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip8ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -707,7 +694,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
@@ -758,8 +744,7 @@ namespace Functional.Tests.Results
 			[Theory]
 			[ResultZip9ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
-			{
-				Result.Zip(
+				=> Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -774,7 +759,6 @@ namespace Functional.Tests.Results
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
 						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
-			}
 
 			#region Arrangements
 
