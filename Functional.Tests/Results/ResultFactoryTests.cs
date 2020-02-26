@@ -350,7 +350,7 @@ namespace Functional.Tests.Results
 				var result1 = Result.Success<int, string>(1);
 				var result2 = Result.Success<int, string>(2);
 
-				Result.Merge(result1, result2)
+				Result.Zip(result1, result2)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2));
@@ -360,7 +360,7 @@ namespace Functional.Tests.Results
 			[ResultMerge2ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1])
 					.AssertFailure()
@@ -398,7 +398,7 @@ namespace Functional.Tests.Results
 				var result2 = Result.Success<int, string>(2);
 				var result3 = Result.Success<int, string>(3);
 				
-				Result.Merge(result1, result2, result3)
+				Result.Zip(result1, result2, result3)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3));
@@ -408,7 +408,7 @@ namespace Functional.Tests.Results
 			[ResultMerge3ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2])
@@ -449,7 +449,7 @@ namespace Functional.Tests.Results
 				var result3 = Result.Success<int, string>(3);
 				var result4 = Result.Success<int, string>(4);
 
-				Result.Merge(result1, result2, result3, result4)
+				Result.Zip(result1, result2, result3, result4)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4));
@@ -459,7 +459,7 @@ namespace Functional.Tests.Results
 			[ResultMerge4ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -503,7 +503,7 @@ namespace Functional.Tests.Results
 				var result4 = Result.Success<int, string>(4);
 				var result5 = Result.Success<int, string>(5);
 
-				Result.Merge(result1, result2, result3, result4, result5)
+				Result.Zip(result1, result2, result3, result4, result5)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4, 5));
@@ -513,7 +513,7 @@ namespace Functional.Tests.Results
 			[ResultMerge5ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -560,7 +560,7 @@ namespace Functional.Tests.Results
 				var result5 = Result.Success<int, string>(5);
 				var result6 = Result.Success<int, string>(6);
 
-				Result.Merge(result1, result2, result3, result4, result5, result6)
+				Result.Zip(result1, result2, result3, result4, result5, result6)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4, 5, 6));
@@ -570,7 +570,7 @@ namespace Functional.Tests.Results
 			[ResultMerge6ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -620,7 +620,7 @@ namespace Functional.Tests.Results
 				var result6 = Result.Success<int, string>(6);
 				var result7 = Result.Success<int, string>(7);
 
-				Result.Merge(result1, result2, result3, result4, result5, result6, result7)
+				Result.Zip(result1, result2, result3, result4, result5, result6, result7)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4, 5, 6, 7));
@@ -630,7 +630,7 @@ namespace Functional.Tests.Results
 			[ResultMerge7ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -683,7 +683,7 @@ namespace Functional.Tests.Results
 				var result7 = Result.Success<int, string>(7);
 				var result8 = Result.Success<int, string>(8);
 
-				Result.Merge(result1, result2, result3, result4, result5, result6, result7, result8)
+				Result.Zip(result1, result2, result3, result4, result5, result6, result7, result8)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4, 5, 6, 7, 8));
@@ -693,7 +693,7 @@ namespace Functional.Tests.Results
 			[ResultMerge8ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],
@@ -749,7 +749,7 @@ namespace Functional.Tests.Results
 				var result8 = Result.Success<int, string>(8);
 				var result9 = Result.Success<int, string>(9);
 
-				Result.Merge(result1, result2, result3, result4, result5, result6, result7, result8, result9)
+				Result.Zip(result1, result2, result3, result4, result5, result6, result7, result8, result9)
 					.AssertSuccess()
 					.Should()
 					.Be((1, 2, 3, 4, 5, 6, 7, 8, 9));
@@ -759,7 +759,7 @@ namespace Functional.Tests.Results
 			[ResultMerge9ReturnsFailureArrangement]
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 			{
-				Result.Merge(
+				Result.Zip(
 						resultCollection[0],
 						resultCollection[1],
 						resultCollection[2],

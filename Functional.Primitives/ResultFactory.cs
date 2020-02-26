@@ -313,7 +313,7 @@ namespace Functional
 			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failureFactory.Invoke());
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2), TFailure[]> Merge<TSuccess1, TSuccess2, TFailure>(
+		public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2)
 		{
@@ -331,7 +331,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3)
@@ -355,7 +355,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -383,7 +383,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -415,7 +415,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -451,7 +451,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -491,7 +491,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -535,7 +535,7 @@ namespace Functional
 
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]>
-			Merge<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>(
+			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -580,16 +580,5 @@ namespace Functional
 
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]>(errorCollection.ToArray());
 		}
-	}
-
-	internal static class ResultFactoryHelpers
-	{
-		[AllowAllocations]
-		public static TSuccess SuccessUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
-			=> source.Match(x => x, _ => throw new InvalidOperationException("Not a successful result!"));
-
-		[AllowAllocations]
-		public static TFailure FailureUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
-			=> source.Match(_ => throw new InvalidOperationException("Not a faulted result!"), x => x);
 	}
 }
