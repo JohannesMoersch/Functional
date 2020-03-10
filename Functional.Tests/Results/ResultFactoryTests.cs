@@ -374,7 +374,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 2) - 1; ++i)
+					for (var i = 0; i < (1 << 2) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -421,7 +421,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 3) - 1; ++i)
+					for (var i = 0; i < (1 << 3) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -471,7 +471,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 4) - 1; ++i)
+					for (var i = 0; i < (1 << 4) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -524,7 +524,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 5) - 1; ++i)
+					for (var i = 0; i < (1 << 5) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -580,7 +580,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 6) - 1; ++i)
+					for (var i = 0; i < (1 << 6) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -639,7 +639,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 7) - 1; ++i)
+					for (var i = 0; i < (1 << 7) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -701,7 +701,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 8) - 1; ++i)
+					for (var i = 0; i < (1 << 8) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");
@@ -766,7 +766,7 @@ namespace Functional.Tests.Results
 			{
 				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 				{
-					for (int i = 0; i < (1 << 9) - 1; ++i)
+					for (var i = 0; i < (1 << 9) - 1; ++i)
 					{
 						var result1 = Result.Create((i & 1) == 1, () => 13, () => "error 1");
 						var result2 = Result.Create(((i >> 1) & 1) == 1, () => 17, () => "error 2");

@@ -320,7 +320,7 @@ namespace Functional
 			if (r1.IsSuccess() && r2.IsSuccess())
 				return Success<(TSuccess1, TSuccess2), TFailure[]>((r1.SuccessUnsafe(), r2.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(2);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -342,7 +342,7 @@ namespace Functional
 					r2.SuccessUnsafe(),
 					r3.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(3);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -368,7 +368,7 @@ namespace Functional
 					r3.SuccessUnsafe(),
 					r4.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(4);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -398,7 +398,7 @@ namespace Functional
 					r4.SuccessUnsafe(),
 					r5.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(5);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -432,7 +432,7 @@ namespace Functional
 					r5.SuccessUnsafe(),
 					r6.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(6);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -470,7 +470,7 @@ namespace Functional
 					r6.SuccessUnsafe(),
 					r7.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(7);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -512,7 +512,7 @@ namespace Functional
 					r7.SuccessUnsafe(),
 					r8.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(8);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
@@ -558,7 +558,7 @@ namespace Functional
 					r8.SuccessUnsafe(),
 					r9.SuccessUnsafe()));
 
-			var errorCollection = new List<TFailure>();
+			var errorCollection = new List<TFailure>(9);
 			if (!r1.IsSuccess())
 				errorCollection.Add(r1.FailureUnsafe());
 			if (!r2.IsSuccess())
