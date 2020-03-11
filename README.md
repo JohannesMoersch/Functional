@@ -139,6 +139,16 @@ Result<int, Exception> success = Result.Try(() => 100));
 Result<int, Exception> failure = Result.Try<int>(() => throw new Exception("Exception Message")));
 Result<int, string> failure = Result.Try<int, string>(() => throw new Exception("Exception Message"), ex => ex.Message));
 ```
+##### By combining 2-9 other Results
+``` csharp
+// produces Result.Success<(int, string), Exception[]> if all Results supplied to Zip have success values
+Result<(int, string), Exception[]> success = Result.Zip(Result.Success<int, Exception>(1337), Result.Success<string, Exception>("the name"));
+
+// produces Result.Failure<(int, string), Exception[]> if at least one Result supplied to Zip has a failure value
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Success<int, Exception>(1337), Result.Failure<string, Exception>(new Exception()));
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Success<string, Exception>("the name"));
+Result<(int, string), Exception[]> failure = Result.Zip(Result.Failure<int, Exception>(new Exception()), Result.Failure<string, Exception>(new Exception()));
+```
 ### Working with Result Types
 #### Match
 You cannot access the values of a Result type directly. Instead you work with Results functionally. Results only expose one function with the following signature:
