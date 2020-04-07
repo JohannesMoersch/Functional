@@ -175,6 +175,38 @@ namespace Functional
 			}
 		}
 
+		public static Result<TSuccess, TException> Try<TSuccess, TException>(Func<TSuccess> successFactory) where TException : Exception
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			try
+			{
+				return Success<TSuccess, TException>(successFactory.Invoke());
+			}
+			catch (TException ex)
+			{
+				return Failure<TSuccess, TException>(ex);
+			}
+		}
+
+		public static Result<Unit, TException> Try<TException>(Action successFactory) where TException : Exception
+		{
+			if (successFactory == null)
+				throw new ArgumentNullException(nameof(successFactory));
+
+			try
+			{
+				successFactory.Invoke();
+
+				return Success<Unit, TException>(Functional.Unit.Value);
+			}
+			catch (TException ex)
+			{
+				return Failure<Unit, TException>(ex);
+			}
+		}
+
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, Exception>> Try<TSuccess>(Func<Task<TSuccess>> successFactory)
