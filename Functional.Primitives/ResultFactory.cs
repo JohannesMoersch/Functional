@@ -144,36 +144,10 @@ namespace Functional
 			=> CreateAsync(isSuccess, successFactory, failureFactory);
 
 		public static Result<TSuccess, Exception> Try<TSuccess>(Func<TSuccess> successFactory)
-		{
-			if (successFactory == null)
-				throw new ArgumentNullException(nameof(successFactory));
-
-			try
-			{
-				return Success<TSuccess, Exception>(successFactory.Invoke());
-			}
-			catch (Exception ex)
-			{
-				return Failure<TSuccess, Exception>(ex);
-			}
-		}
+			=> Try<TSuccess, Exception>(successFactory);
 
 		public static Result<Unit, Exception> Try(Action successFactory)
-		{
-			if (successFactory == null)
-				throw new ArgumentNullException(nameof(successFactory));
-
-			try
-			{
-				successFactory.Invoke();
-
-				return Success<Unit, Exception>(Functional.Unit.Value);
-			}
-			catch (Exception ex)
-			{
-				return Failure<Unit, Exception>(ex);
-			}
-		}
+			=> Try<Exception>(successFactory);
 
 		public static Result<TSuccess, TException> Try<TSuccess, TException>(Func<TSuccess> successFactory) where TException : Exception
 		{
