@@ -144,21 +144,27 @@ namespace Functional
 			=> CreateAsync(isSuccess, successFactory, failureFactory);
 
 		public static Result<TSuccess, Exception> Try<TSuccess>(Func<TSuccess> successFactory)
+			=> Try<TSuccess, Exception>(successFactory);
+
+		public static Result<Unit, Exception> Try(Action successFactory)
+			=> Try<Exception>(successFactory);
+
+		public static Result<TSuccess, TException> Try<TSuccess, TException>(Func<TSuccess> successFactory) where TException : Exception
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
 
 			try
 			{
-				return Success<TSuccess, Exception>(successFactory.Invoke());
+				return Success<TSuccess, TException>(successFactory.Invoke());
 			}
-			catch (Exception ex)
+			catch (TException ex)
 			{
-				return Failure<TSuccess, Exception>(ex);
+				return Failure<TSuccess, TException>(ex);
 			}
 		}
 
-		public static Result<Unit, Exception> Try(Action successFactory)
+		public static Result<Unit, TException> Try<TException>(Action successFactory) where TException : Exception
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -167,11 +173,11 @@ namespace Functional
 			{
 				successFactory.Invoke();
 
-				return Success<Unit, Exception>(Functional.Unit.Value);
+				return Success<Unit, TException>(Functional.Unit.Value);
 			}
-			catch (Exception ex)
+			catch (TException ex)
 			{
-				return Failure<Unit, Exception>(ex);
+				return Failure<Unit, TException>(ex);
 			}
 		}
 

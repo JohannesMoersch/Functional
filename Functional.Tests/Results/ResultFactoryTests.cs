@@ -14,6 +14,18 @@ namespace Functional.Tests.Results
 	{
 		private static readonly bool _true = true;
 
+		private static void ThrowTestException()
+			=> throw new TestException();
+
+		private static void ThrowException()
+			=> throw new Exception();
+
+		private static int IntThrowTestException()
+			=> throw new TestException();
+
+		private static int IntThrowException()
+			=> throw new Exception();
+
 		[Fact]
 		public Task SuccessAsync()
 			=> Result
@@ -205,6 +217,50 @@ namespace Functional.Tests.Results
 				.AssertFailure()
 				.Should()
 				.Be("abc");
+
+		[Fact]
+		public void TryUnitGenericExceptionWhenSucceeds()
+			=> Result
+				.Try<TestException>(() => { })
+				.AssertSuccess()
+				.Should()
+				.Be(Functional.Unit.Value);
+
+		[Fact]
+		public void TryUnitGenericExceptionWhenThrowsGeneric()
+			=> Result
+				.Try<TestException>(ThrowTestException)
+				.AssertFailure()
+				.Should()
+				.BeOfType<TestException>();
+
+		[Fact]
+		public void TryUnitGenericExceptionWhenThrowsException()
+			=> Assert.Throws<Exception>(
+				() => Result.Try<TestException>(ThrowException)
+			);
+
+		[Fact]
+		public void TryGenericExceptionWhenSucceeds()
+			=> Result
+				.Try<int, TestException>(() => 42)
+				.AssertSuccess()
+				.Should()
+				.Be(42);
+
+		[Fact]
+		public void TryGenericExceptionWhenThrowsGeneric()
+			=> Result
+				.Try<int, TestException>(IntThrowTestException)
+				.AssertFailure()
+				.Should()
+				.BeOfType<TestException>();
+
+		[Fact]
+		public void TryGenericExceptionWhenThrowsException()
+			=> Assert.Throws<Exception>(
+				() => Result.Try<int, TestException>(IntThrowException)
+			);
 
 		[Fact]
 		public Task TryAsyncUnitExceptionWhenSucceeds()
