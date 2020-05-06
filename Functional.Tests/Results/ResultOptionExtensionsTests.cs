@@ -1151,6 +1151,36 @@ namespace Functional.Tests.Results
 					private static Task<Result<Option<int>, string>> ErrorResult() => Task.FromResult(Result.Failure<Option<int>, string>(ERROR));
 				}
 			}
+
+			public class AndEvert
+			{
+				private const int SUCCESS = 1337;
+				private const string FAILURE = "error";
+
+				[Fact]
+				public void EvertSome()
+					=> Option.Some(Result.Success<int, string>(SUCCESS))
+						.Evert()
+						.AssertSuccess()
+						.AssertSome()
+						.Should()
+						.Be(SUCCESS);
+
+				[Fact]
+				public void EvertNone()
+					=> Option.None<Result<int, string>>()
+						.Evert()
+						.AssertSuccess()
+						.AssertNone();
+
+				[Fact]
+				public void EvertError()
+					=> Option.Some(Result.Failure<int, string>(FAILURE))
+						.Evert()
+						.AssertFailure()
+						.Should()
+						.Be(FAILURE);
+			}
 		}
 
 		public class WhenTaskOfResultOfOption
@@ -1797,6 +1827,36 @@ namespace Functional.Tests.Results
 					});
 					methodCalled.Should().BeFalse();
 				}
+			}
+
+			public class AndEvert
+			{
+				private const int SUCCESS = 1337;
+				private const string FAILURE = "error";
+
+				[Fact]
+				public async Task EvertSome()
+					=> await Task.FromResult(Option.Some(Result.Success<int, string>(SUCCESS)))
+						.Evert()
+						.AssertSuccess()
+						.AssertSome()
+						.Should()
+						.Be(SUCCESS);
+
+				[Fact]
+				public async Task EvertNone()
+					=> await Task.FromResult(Option.None<Result<int, string>>())
+						.Evert()
+						.AssertSuccess()
+						.AssertNone();
+
+				[Fact]
+				public async Task EvertError()
+					=> await Task.FromResult(Option.Some(Result.Failure<int, string>(FAILURE)))
+						.Evert()
+						.AssertFailure()
+						.Should()
+						.Be(FAILURE);
 			}
 		}
 	}

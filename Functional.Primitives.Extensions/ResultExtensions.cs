@@ -6,25 +6,6 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	public static partial class ResultOptionExtensions
-	{
-		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
-		{
-			if (onSuccess == null)
-				throw new ArgumentNullException(nameof(onSuccess));
-
-			if (onFailure == null)
-				throw new ArgumentNullException(nameof(onFailure));
-
-			if (result.TryGetValue(out var success, out var failure))
-				onSuccess.Invoke(success);
-			else
-				onFailure.Invoke(failure);
-
-			return result;
-		}
-	}
-
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static partial class ResultExtensions
 	{
@@ -117,6 +98,22 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> BindOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
 			=> (await result).BindOnFailure(bind);
 
+		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
+		{
+			if (onSuccess == null)
+				throw new ArgumentNullException(nameof(onSuccess));
+
+			if (onFailure == null)
+				throw new ArgumentNullException(nameof(onFailure));
+
+			if (result.TryGetValue(out var success, out var failure))
+				onSuccess.Invoke(success);
+			else
+				onFailure.Invoke(failure);
+
+			return result;
+		}
+
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> success, Action<TFailure> failure)
 			=> (await result).Do(success, failure);
 
@@ -163,6 +160,12 @@ namespace Functional
 
 		public static async Task<Result<TResult, Exception>> TryMap<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, TResult> successFactory)
 			=> (await result).TryMap(successFactory, DelegateCache<Exception>.Passthrough);
+
+		public static Result<T2, T1> Transpose<T1, T2>(this Result<T1, T2> source)
+			=> source.Match(Result.Failure<T2, T1>, Result.Success<T2, T1>);
+
+		public static async Task<Result<T2, T1>> Transpose<T1, T2>(this Task<Result<T1, T2>> source)
+			=> (await source).Transpose();
 	}
 }
 	
