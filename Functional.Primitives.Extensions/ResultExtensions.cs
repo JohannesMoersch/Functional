@@ -162,7 +162,7 @@ namespace Functional
 			=> (await result).TryMap(successFactory, DelegateCache<Exception>.Passthrough);
 
 		public static Result<T2, T1> Transpose<T1, T2>(this Result<T1, T2> source)
-			=> source.Match(Result.Failure<T2, T1>, Result.Success<T2, T1>);
+			=> source.TryGetValue(out var success, out var failure) ? Result.Failure<T2, T1>(success) : Result.Success<T2, T1>(failure);
 
 		public static async Task<Result<T2, T1>> Transpose<T1, T2>(this Task<Result<T1, T2>> source)
 			=> (await source).Transpose();

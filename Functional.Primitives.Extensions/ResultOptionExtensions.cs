@@ -156,11 +156,16 @@ namespace Functional
 			=> (await result).DoOnSome(onSuccessSome);
 
 		public static Result<Option<TSuccess>, TFailure> Evert<TSuccess, TFailure>(this Option<Result<TSuccess, TFailure>> source)
-			=> source.Match(
-				some => some.Match(
-					success => Result.Success<Option<TSuccess>, TFailure>(Option.Some(success)),
-					Result.Failure<Option<TSuccess>, TFailure>),
-				() => Result.Success<Option<TSuccess>, TFailure>(Option.None<TSuccess>()));
+		{
+			if (source.TryGetValue(out var some))
+			{
+				return some.TryGetValue(out var success, out var failure)
+					? Result.Success<Option<TSuccess>, TFailure>(Option.Some(success))
+					: Result.Failure<Option<TSuccess>, TFailure>(failure);
+			}
+
+			return Result.Success<Option<TSuccess>, TFailure>(Option.None<TSuccess>());
+		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> Evert<TSuccess, TFailure>(this Task<Option<Result<TSuccess, TFailure>>> source)
 			=> (await source).Evert();
