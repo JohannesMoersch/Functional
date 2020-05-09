@@ -398,6 +398,40 @@ namespace Functional.Tests.Results
 				.Should()
 				.Be("abc");
 
+		[Fact]
+		public void TransposeSuccess()
+			=> Result
+				.Unit<string>()
+				.Transpose()
+				.AssertFailure()
+				.Should()
+				.Be(Functional.Unit.Value);
+
+		[Fact]
+		public Task TransposeSuccessAsync()
+			=> Task.FromResult(Result.Unit<string>())
+				.Transpose()
+				.AssertFailure()
+				.Should()
+				.Be(Functional.Unit.Value);
+
+		[Fact]
+		public void TransposeFailure()
+			=> Result
+				.Failure<Unit, string>("message")
+				.Transpose()
+				.AssertSuccess()
+				.Should()
+				.Be("message");
+
+		[Fact]
+		public Task TransposeFailureAsync()
+			=> Task.FromResult(Result.Failure<Unit, string>("message"))
+				.Transpose()
+				.AssertSuccess()
+				.Should()
+				.Be("message");
+
 		public class WhenZip2
 		{
 			[Fact]

@@ -154,5 +154,20 @@ namespace Functional
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
 			=> (await result).DoOnSome(onSuccessSome);
+
+		public static Result<Option<TSuccess>, TFailure> Evert<TSuccess, TFailure>(this Option<Result<TSuccess, TFailure>> source)
+		{
+			if (source.TryGetValue(out var some))
+			{
+				return some.TryGetValue(out var success, out var failure)
+					? Result.Success<Option<TSuccess>, TFailure>(Option.Some(success))
+					: Result.Failure<Option<TSuccess>, TFailure>(failure);
+			}
+
+			return Result.Success<Option<TSuccess>, TFailure>(Option.None<TSuccess>());
+		}
+
+		public static async Task<Result<Option<TSuccess>, TFailure>> Evert<TSuccess, TFailure>(this Task<Option<Result<TSuccess, TFailure>>> source)
+			=> (await source).Evert();
 	}
 }
