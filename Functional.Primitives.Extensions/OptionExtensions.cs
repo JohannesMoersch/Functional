@@ -147,7 +147,6 @@ namespace Functional
 		public static IEnumerable<T> ToEnumerable<T>(this Option<T> option)
 			=> option.TryGetValue(out var value) ? new[] { value } : Enumerable.Empty<T>();
 
-		[AllowAllocations]
 		public static async Task<IEnumerable<T>> ToEnumerable<T>(this Task<Option<T>> option)
 			=> (await option).ToEnumerable();
 
@@ -155,7 +154,6 @@ namespace Functional
 		public static T[] ToArray<T>(this Option<T> option)
 			=> option.TryGetValue(out var value) ? new [] { value } : Array.Empty<T>();
 
-		[AllowAllocations]
 		public static async Task<T[]> ToArray<T>(this Task<Option<T>> option)
 			=> (await option).ToArray();
 	}
