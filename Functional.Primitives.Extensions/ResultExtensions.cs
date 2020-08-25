@@ -86,16 +86,16 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> Bind<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<TResult, TFailure>> bind)
 			=> (await result).Bind(bind);
 
-		public static Result<TSuccess, TFailure> BindOnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
+		public static Result<TSuccess, TResult> BindOnFailure<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Result<TSuccess, TResult>> bind)
 		{
 			if (bind == null) throw new ArgumentNullException(nameof(bind));
 
-			return !result.TryGetValue(out _, out var failure)
+			return !result.TryGetValue(out var success, out var failure)
 				? bind.Invoke(failure)
-				: result;
+				: Result.Success<TSuccess, TResult>(success);
 		}
 
-		public static async Task<Result<TSuccess, TFailure>> BindOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
+		public static async Task<Result<TSuccess, TResult>> BindOnFailure<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TResult>> bind)
 			=> (await result).BindOnFailure(bind);
 
 		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
