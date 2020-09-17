@@ -12,8 +12,8 @@ namespace Functional.Tests.Options
 	{
 		public class WhenOptionIsSome
 		{
-			private static Option<int> Value => Option.Some(10);
-			private static Option<int> NoValue => Option.None<int>();
+			private const int IntValue = 10;
+			private static Option<int> Value => Option.Some(IntValue);
 
 			[Fact]
 			public void HasValue()
@@ -36,7 +36,7 @@ namespace Functional.Tests.Options
 					.Bind(i => Option.Some(i))
 					.AssertSome()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public void BindNone()
@@ -56,23 +56,15 @@ namespace Functional.Tests.Options
 				=> Value
 					.ValueOrNull()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
-			public void BindOnNoneWhenSome()
+			public void BindOnNone()
 				=> Value
 					.BindOnNone(() => Option.Some(20))
 					.AssertSome()
 					.Should()
-					.Be(10);
-
-			[Fact]
-			public void BindOnNoneWhenNone()
-				=> NoValue
-					.BindOnNone(() => Option.Some(20))
-					.AssertSome()
-					.Should()
-					.Be(20);
+					.Be(IntValue);
 
 			[Fact]
 			public void ValueOrEmptyForCollection()
@@ -168,11 +160,20 @@ namespace Functional.Tests.Options
 					.Should()
 					.BeFalse();
 			}
+
+			[Fact]
+			public void ToEnumerableProducesCollectionWithSingleExpectedElement()
+				=> Value.ToEnumerable().Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public void ToArrayProducesCollectionWithSingleExpectedElement()
+				=> Value.ToArray().Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
 		}
 
 		public class WhenTaskOptionIsSome
 		{
-			private Task<Option<int>> Value => Task.FromResult(Option.Some(10));
+			private const int IntValue = 10;
+			private Task<Option<int>> Value => Task.FromResult(Option.Some(IntValue));
 
 			[Fact]
 			public Task HasValue()
@@ -195,7 +196,7 @@ namespace Functional.Tests.Options
 					.Bind(i => Option.Some(i))
 					.AssertSome()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public Task BindNone()
@@ -215,7 +216,7 @@ namespace Functional.Tests.Options
 				=> Value
 					.ValueOrNull()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public void ValueOrEmpty()
@@ -250,7 +251,7 @@ namespace Functional.Tests.Options
 					.Where(i => true)
 					.AssertSome()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public Task WhereFalse()
@@ -263,7 +264,7 @@ namespace Functional.Tests.Options
 				=> Value
 					.ToNullable()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public Task ToResult()
@@ -271,7 +272,7 @@ namespace Functional.Tests.Options
 					.ToResult(() => "abc")
 					.AssertSuccess()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public async Task DoWithOneParameter()
@@ -308,6 +309,14 @@ namespace Functional.Tests.Options
 					.Should()
 					.BeFalse();
 			}
+
+			[Fact]
+			public async Task ToEnumerableProducesCollectionWithSingleExpectedElement()
+				=> (await Value.ToEnumerable()).Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public async Task ToArrayProducesCollectionWithSingleExpectedElement()
+				=> (await Value.ToArray()).Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
 		}
 
 		public class WhenOptionIsNone
@@ -352,6 +361,14 @@ namespace Functional.Tests.Options
 					.ValueOrNull()
 					.Should()
 					.BeNull();
+
+			[Fact]
+			public void BindOnNone()
+				=> Value
+					.BindOnNone(() => Option.Some(20))
+					.AssertSome()
+					.Should()
+					.Be(20);
 
 			[Fact]
 			public void OfTypeMatching()
@@ -429,6 +446,14 @@ namespace Functional.Tests.Options
 					.Should()
 					.BeTrue();
 			}
+
+			[Fact]
+			public void ToEnumerableProducesEmptyCollection()
+				=> Value.ToEnumerable().Should().BeEmpty();
+
+			[Fact]
+			public void ToArrayProducesEmptyCollection()
+				=> Value.ToArray().Should().BeEmpty();
 		}
 
 		public class WhenTaskOptionIsNone
@@ -554,6 +579,14 @@ namespace Functional.Tests.Options
 					.Should()
 					.BeTrue();
 			}
+
+			[Fact]
+			public async Task ToEnumerableProducesEmptyCollection()
+				=> (await Value.ToEnumerable()).Should().BeEmpty();
+
+			[Fact]
+			public async Task ToArrayProducesEmptyCollection()
+				=> (await Value.ToArray()).Should().BeEmpty();
 		}
 	}
 }

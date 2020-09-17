@@ -116,6 +116,18 @@ If `Some`, this extension will return a `Success` result with the value, and if 
 Result<int, string> result = Option.Some<int>(100).ToResult(() => "Failure Message"); // Returns Result<int, string> with a success value of 100
 Result<int, string> result = Option.None<int>().ToResult(() => "Failure Message"); // Returns Result<int, string> with a failure value of "Failure Message"
 ```
+#### ToEnumerable
+If `Some`, this extension method will return an `IEnumerable<T>` containing a single item: the value. If `None`, it will return an empty `IEnumerable<T>`.
+``` csharp
+Enumerable<int> result = Option.Some<int>(100).ToEnumerable() // Returns the enumerable collection with one element: { 100 }
+Enumerable<int> result = Option.None<int>().ToEnumerable() // Returns the empty enumerable collection: { }
+```
+#### ToArray
+If `Some`, this extension method will return an array of `T` containing a single element: the value. If `None`, it will return an empty array.
+``` csharp
+int[] result = Option.Some<int>(100).ToArray() // Returns the array with one element: { 100 }
+int[] result = Option.None<int>().ToArray() // Returns the empty array: { }
+```
 
 ## Result Types
 Results are immutable types that can either have a `Success` value, or a `Failure` value. Result types should be used in any scenario where code can produce an error, Results are particularly suitable for expected error cases, but can also be used for all error handling. Results force the handling of failures. Instead of throwing exceptions or returning a null value, return a `Failure` result.
