@@ -110,6 +110,12 @@ Option.Some(100).Apply(v => Console.WriteLine(v)); // Outputs "100" to the conso
 Option.None<int>().Apply(v => Console.WriteLine(v)); // Does nothing
 Option.None<int>().Apply(v => Console.WriteLine(v), () => Console.WriteLine("None")); // Outputs "None" to the console
 ```
+#### ThrowIfNone
+If `Some`, this extension will return the Option's value.  If `None`, an exception will be thrown.
+```csharp
+int value = Option.Some<int>(1337).ThrowIfNone(() => new InvalidOperationException("Expected value!")); // Returns 1337
+Option.None<int>().ThrowIfNone(() => new InvalidOperationException("Expected value!")); // Throws InvalidOperationException
+```
 #### ToResult
 If `Some`, this extension will return a `Success` result with the value, and if `None` it will a `Failure` result contains the failure produced by the delegate parameter.
 ```csharp

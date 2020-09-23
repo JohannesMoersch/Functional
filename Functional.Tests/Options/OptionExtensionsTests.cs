@@ -168,6 +168,10 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void ToArrayProducesCollectionWithSingleExpectedElement()
 				=> Value.ToArray().Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public void DoesNotThrowIfOptionSome()
+				=> Value.ThrowIfNone(() => new InvalidOperationException());
 		}
 
 		public class WhenTaskOptionIsSome
@@ -317,6 +321,10 @@ namespace Functional.Tests.Options
 			[Fact]
 			public async Task ToArrayProducesCollectionWithSingleExpectedElement()
 				=> (await Value.ToArray()).Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public async Task DoesNotThrowIfOptionSome()
+				=> await Value.ThrowIfNone(() => new InvalidOperationException());
 		}
 
 		public class WhenOptionIsNone
@@ -454,6 +462,20 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void ToArrayProducesEmptyCollection()
 				=> Value.ToArray().Should().BeEmpty();
+
+			[Fact]
+			public void ThrowsIfOptionNone()
+			{
+				try
+				{
+					Value.ThrowIfNone(() => new InvalidOperationException());
+					throw new Exception("Expected to throw 'InvalidOperationException'");
+				}
+				catch (InvalidOperationException)
+				{
+
+				}
+			}
 		}
 
 		public class WhenTaskOptionIsNone
@@ -587,6 +609,20 @@ namespace Functional.Tests.Options
 			[Fact]
 			public async Task ToArrayProducesEmptyCollection()
 				=> (await Value.ToArray()).Should().BeEmpty();
+
+			[Fact]
+			public async Task ThrowsIfOptionNone()
+			{
+				try
+				{
+					await Value.ThrowIfNone(() => new InvalidOperationException());
+					throw new Exception("Expected to throw 'InvalidOperationException'");
+				}
+				catch (InvalidOperationException)
+				{
+
+				}
+			}
 		}
 	}
 }
