@@ -224,6 +224,12 @@ If `Success`, this extension will return `None`, and if `Failure` it will return
 Option<string> option = Result.Success<int, string>(100).Failure(); // Returns Option<string> with no value
 Option<string> option = Result.Failure<int, string>("Failure").Failure(); // Returns Option<string> with a value of "Failure"
 ```
+#### ThrowIfFailure
+If `Success`, this extension will return the success value, and if `Failure` an exception will be thrown.
+```csharp
+int value = Result.Success<int, string>(1337).ThrowIfFailure(errorMessage => new InvalidOperationException(errorMessage)); // Returns 1337
+Result.Failure<int, string>("Failure").ThrowIfFailure(errorMessage => new InvalidOperationException(errorMessage)); // Throws an exception
+```
 #### Where
 If `Success`, this extension will invoke the first delegate parameter and if `true` is returned it will return `Success` of the input success value. If `false` is returns from the first delegate parameter it will return a `Failure` Result with the failure value produced by the second delegate parameter. If the input Result is a `Failure` it will return a `Failure` Result with the existing failure value.
 ```csharp

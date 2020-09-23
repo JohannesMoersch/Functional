@@ -466,14 +466,15 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void ThrowsIfOptionNone()
 			{
+				const string errorMessage = "error";
 				try
 				{
-					Value.ThrowIfNone(() => new InvalidOperationException());
+					Value.ThrowIfNone(() => new InvalidOperationException(errorMessage));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
-				catch (InvalidOperationException)
+				catch (InvalidOperationException e)
 				{
-
+					e.Message.Should().Be(errorMessage);
 				}
 			}
 		}
@@ -613,14 +614,15 @@ namespace Functional.Tests.Options
 			[Fact]
 			public async Task ThrowsIfOptionNone()
 			{
+				const string errorMessage = "error";
 				try
 				{
-					await Value.ThrowIfNone(() => new InvalidOperationException());
+					await Value.ThrowIfNone(() => new InvalidOperationException(errorMessage));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
-				catch (InvalidOperationException)
+				catch (InvalidOperationException e)
 				{
-
+					e.Message.Should().Be(errorMessage);
 				}
 			}
 		}
