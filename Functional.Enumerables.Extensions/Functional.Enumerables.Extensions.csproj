@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Title>Functional.Enumerables.Extensions</Title>
-    <Description>This package contains extension methods that add support for Task&lt;IEnumerable&lt;T&gt;&gt; to LINQ.</Description>
+    <Description>This package contains extension methods for IEnumerable&lt;T&gt; and extension methods that add support for Task&lt;IEnumerable&lt;T&gt;&gt; to LINQ.</Description>
     <PackageTags>functional</PackageTags>
   </PropertyGroup>
 
