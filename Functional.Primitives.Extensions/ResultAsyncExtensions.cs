@@ -79,6 +79,17 @@ namespace Functional
 		public static async Task<Result<TResult, TFailure>> BindAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
 			=> await (await result).BindAsync(bind);
 
+		[Obsolete]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+		{
+			if (bind == null) throw new ArgumentNullException(nameof(bind));
+
+			return !result.TryGetValue(out _, out var failure)
+				? await bind.Invoke(failure)
+				: result;
+		}
+
 		public static async Task<Result<TSuccess, TResult>> BindOnFailureAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Task<Result<TSuccess, TResult>>> bind)
 		{
 			if (bind == null) throw new ArgumentNullException(nameof(bind));
@@ -87,6 +98,11 @@ namespace Functional
 				? await bind.Invoke(failure)
 				: Result.Success<TSuccess, TResult>(success);
 		}
+
+		[Obsolete]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static async Task<Result<TSuccess, TFailure>> BindOnFailureAsync<TSuccess, TFailure>(Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TFailure>>> bind)
+			=> await BindOnFailureAsync<TSuccess, TFailure>(await result, bind);
 
 		public static async Task<Result<TSuccess, TResult>> BindOnFailureAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task<Result<TSuccess, TResult>>> bind)
 			=> await (await result).BindOnFailureAsync(bind);
