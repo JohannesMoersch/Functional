@@ -173,7 +173,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void DoesNotThrowException()
 				=> Result.Success<int, string>(1337)
-					.ThrowIfFailure(_ => new InvalidOperationException("Expected success!"));
+					.ThrowOnFailure(_ => new InvalidOperationException("Expected success!"));
 		}
 
 		public class WhenTaskResultIsSuccess
@@ -342,7 +342,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public async Task DoesNotThrowException()
 				=> await Task.FromResult(Result.Success<int, string>(1337))
-					.ThrowIfFailure(_ => new InvalidOperationException("Expected success!"));
+					.ThrowOnFailure(_ => new InvalidOperationException("Expected success!"));
 		}
 
 		public class WhenResultIsFailure
@@ -507,15 +507,15 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void ThrowsException()
 			{
-				const string expected = "error";
+				const string EXPECTED = "error";
 				try
 				{
-					Result.Failure<int, string>(expected).ThrowIfFailure(e => new InvalidOperationException(e));
+					Result.Failure<int, string>(EXPECTED).ThrowOnFailure(e => new InvalidOperationException(e));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
 				catch (InvalidOperationException e)
 				{
-					e.Message.Should().Be(expected);
+					e.Message.Should().Be(EXPECTED);
 				}
 			}
 		}
@@ -686,15 +686,15 @@ namespace Functional.Tests.Results
 			[Fact]
 			public async Task ThrowsException()
 			{
-				const string expected = "error";
+				const string EXPECTED = "error";
 				try
 				{
-					await Task.FromResult(Result.Failure<int, string>(expected)).ThrowIfFailure(e => new InvalidOperationException(e));
+					await Task.FromResult(Result.Failure<int, string>(EXPECTED)).ThrowOnFailure(e => new InvalidOperationException(e));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
 				catch (InvalidOperationException e)
 				{
-					e.Message.Should().Be(expected);
+					e.Message.Should().Be(EXPECTED);
 				}
 			}
 		}

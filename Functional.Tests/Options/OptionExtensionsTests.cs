@@ -170,8 +170,8 @@ namespace Functional.Tests.Options
 				=> Value.ToArray().Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
 
 			[Fact]
-			public void DoesNotThrowIfOptionSome()
-				=> Value.ThrowIfNone(() => new InvalidOperationException());
+			public void DoesNotThrow()
+				=> Value.ThrowOnNone(() => new InvalidOperationException());
 		}
 
 		public class WhenTaskOptionIsSome
@@ -323,8 +323,8 @@ namespace Functional.Tests.Options
 				=> (await Value.ToArray()).Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
 
 			[Fact]
-			public async Task DoesNotThrowIfOptionSome()
-				=> await Value.ThrowIfNone(() => new InvalidOperationException());
+			public async Task DoesNotThrow()
+				=> await Value.ThrowOnNone(() => new InvalidOperationException());
 		}
 
 		public class WhenOptionIsNone
@@ -464,17 +464,17 @@ namespace Functional.Tests.Options
 				=> Value.ToArray().Should().BeEmpty();
 
 			[Fact]
-			public void ThrowsIfOptionNone()
+			public void Throws()
 			{
-				const string errorMessage = "error";
+				const string ERROR_MESSAGE = "error";
 				try
 				{
-					Value.ThrowIfNone(() => new InvalidOperationException(errorMessage));
+					Value.ThrowOnNone(() => new InvalidOperationException(ERROR_MESSAGE));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
 				catch (InvalidOperationException e)
 				{
-					e.Message.Should().Be(errorMessage);
+					e.Message.Should().Be(ERROR_MESSAGE);
 				}
 			}
 		}
@@ -612,17 +612,17 @@ namespace Functional.Tests.Options
 				=> (await Value.ToArray()).Should().BeEmpty();
 
 			[Fact]
-			public async Task ThrowsIfOptionNone()
+			public async Task Throws()
 			{
-				const string errorMessage = "error";
+				const string ERROR_MESSAGE = "error";
 				try
 				{
-					await Value.ThrowIfNone(() => new InvalidOperationException(errorMessage));
+					await Value.ThrowOnNone(() => new InvalidOperationException(ERROR_MESSAGE));
 					throw new Exception("Expected to throw 'InvalidOperationException'");
 				}
 				catch (InvalidOperationException e)
 				{
-					e.Message.Should().Be(errorMessage);
+					e.Message.Should().Be(ERROR_MESSAGE);
 				}
 			}
 		}
