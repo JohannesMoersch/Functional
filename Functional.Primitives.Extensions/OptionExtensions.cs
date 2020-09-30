@@ -156,5 +156,11 @@ namespace Functional
 
 		public static async Task<T[]> ToArray<T>(this Task<Option<T>> option)
 			=> (await option).ToArray();
+
+		public static TValue ThrowOnNone<TValue>(this Option<TValue> option, Func<Exception> exceptionFactory)
+			=> option.TryGetValue(out var some) ? some : throw exceptionFactory.Invoke();
+
+		public static async Task<TValue> ThrowOnNone<TValue>(this Task<Option<TValue>> option, Func<Exception> exceptionFactory)
+			=> (await option).ThrowOnNone(exceptionFactory);
 	}
 }

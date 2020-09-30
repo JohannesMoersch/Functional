@@ -3,10 +3,10 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Functional</PackageProjectUrl>
-    <Authors>Johannes Moersch + contributers</Authors>
+    <Authors>Johannes Moersch + contributors</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2020 Johannes Moersch</Copyright>
-    <Version>2.3.0</Version>
+    <Version>2.4.0</Version>
   </PropertyGroup>
 
 </Project>

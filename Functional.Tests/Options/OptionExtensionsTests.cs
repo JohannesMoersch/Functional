@@ -168,6 +168,10 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void ToArrayProducesCollectionWithSingleExpectedElement()
 				=> Value.ToArray().Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public void DoesNotThrow()
+				=> Value.ThrowOnNone(() => new InvalidOperationException());
 		}
 
 		public class WhenTaskOptionIsSome
@@ -317,6 +321,10 @@ namespace Functional.Tests.Options
 			[Fact]
 			public async Task ToArrayProducesCollectionWithSingleExpectedElement()
 				=> (await Value.ToArray()).Should().NotBeEmpty().And.HaveElementAt(0, IntValue);
+
+			[Fact]
+			public async Task DoesNotThrow()
+				=> await Value.ThrowOnNone(() => new InvalidOperationException());
 		}
 
 		public class WhenOptionIsNone
@@ -454,6 +462,21 @@ namespace Functional.Tests.Options
 			[Fact]
 			public void ToArrayProducesEmptyCollection()
 				=> Value.ToArray().Should().BeEmpty();
+
+			[Fact]
+			public void Throws()
+			{
+				const string ERROR_MESSAGE = "error";
+				try
+				{
+					Value.ThrowOnNone(() => new InvalidOperationException(ERROR_MESSAGE));
+					throw new Exception("Expected to throw 'InvalidOperationException'");
+				}
+				catch (InvalidOperationException e)
+				{
+					e.Message.Should().Be(ERROR_MESSAGE);
+				}
+			}
 		}
 
 		public class WhenTaskOptionIsNone
@@ -587,6 +610,21 @@ namespace Functional.Tests.Options
 			[Fact]
 			public async Task ToArrayProducesEmptyCollection()
 				=> (await Value.ToArray()).Should().BeEmpty();
+
+			[Fact]
+			public async Task Throws()
+			{
+				const string ERROR_MESSAGE = "error";
+				try
+				{
+					await Value.ThrowOnNone(() => new InvalidOperationException(ERROR_MESSAGE));
+					throw new Exception("Expected to throw 'InvalidOperationException'");
+				}
+				catch (InvalidOperationException e)
+				{
+					e.Message.Should().Be(ERROR_MESSAGE);
+				}
+			}
 		}
 	}
 }
