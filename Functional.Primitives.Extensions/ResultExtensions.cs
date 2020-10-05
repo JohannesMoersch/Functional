@@ -182,6 +182,12 @@ namespace Functional
 
 		public static async Task<Result<T2, T1>> Transpose<T1, T2>(this Task<Result<T1, T2>> source)
 			=> (await source).Transpose();
+
+		public static TSuccess ThrowOnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Exception> exceptionFactory)
+			=> result.TryGetValue(out var success, out var failure) ? success : throw exceptionFactory.Invoke(failure);
+
+		public static async Task<TSuccess> ThrowOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Exception> exceptionFactory)
+			=> (await result).ThrowOnFailure(exceptionFactory);
 	}
 }
 	
