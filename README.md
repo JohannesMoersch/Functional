@@ -122,6 +122,12 @@ If `Some`, this extension will return a `Success` result with the value, and if 
 Result<int, string> result = Option.Some<int>(100).ToResult(() => "Failure Message"); // Returns Result<int, string> with a success value of 100
 Result<int, string> result = Option.None<int>().ToResult(() => "Failure Message"); // Returns Result<int, string> with a failure value of "Failure Message"
 ```
+#### BindToResult
+If `Some`, this extension will return a `Success` result with the value, and if `None` it will a `Success` result with no value.
+```csharp
+Result<Option<int>, string> result = Option.Some<int>(100).BindToResult<int, string>(); // Returns Result<Option<int>, string> with a success value of Option<int> with some a value of 100
+Result<Option<int>, string> result = Option.None<int>().BindToResult<int, string>(); // Returns Result<Option<int>, string> with a success value of Option<int> with no value
+```
 #### ToEnumerable
 If `Some`, this extension method will return an `IEnumerable<T>` containing a single item: the value. If `None`, it will return an empty `IEnumerable<T>`.
 ``` csharp

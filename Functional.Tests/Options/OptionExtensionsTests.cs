@@ -126,6 +126,15 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
+			public void BindToResult()
+				=> Value
+					.BindToResult<int, string>()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public void DoWithOneParameter()
 			{
 				bool some = false;
@@ -279,6 +288,15 @@ namespace Functional.Tests.Options
 					.Be(IntValue);
 
 			[Fact]
+			public Task BindToResult()
+				=> Value
+					.BindToResult<int, string>()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(IntValue);
+
+			[Fact]
 			public async Task DoWithOneParameter()
 			{
 				bool some = false;
@@ -418,6 +436,13 @@ namespace Functional.Tests.Options
 					.AssertFailure()
 					.Should()
 					.Be("abc");
+
+			[Fact]
+			public void BindToResult()
+				=> Value
+					.BindToResult<int, string>()
+					.AssertSuccess()
+					.AssertNone();
 
 			[Fact]
 			public void DoWithOneParameter()
@@ -566,6 +591,13 @@ namespace Functional.Tests.Options
 					.AssertFailure()
 					.Should()
 					.Be("abc");
+
+			[Fact]
+			public Task BindToResult()
+				=> Value
+					.BindToResult<int, string>()
+					.AssertSuccess()
+					.AssertNone();
 
 			[Fact]
 			public async Task DoWithOneParameter()

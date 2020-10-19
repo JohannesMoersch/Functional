@@ -112,6 +112,14 @@ namespace Functional
 		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
 			=> (await option).ToResult(failureFactory);
 
+		public static Result<Option<TValue>, TFailure> BindToResult<TValue, TFailure>(this Option<TValue> option)
+			=> Result.Success<Option<TValue>, TFailure>(option.TryGetValue(out var some)
+				? Option.Some(some)
+				: Option.None<TValue>());
+
+		public static async Task<Result<Option<TValue>, TFailure>> BindToResult<TValue, TFailure>(this Task<Option<TValue>> option)
+			=> (await option).BindToResult<TValue, TFailure>();
+
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> doWhenSome, Action doWhenNone)
 		{
 			if (doWhenSome == null)
