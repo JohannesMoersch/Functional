@@ -52,13 +52,6 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
-			public void ValueOrNull()
-				=> Value
-					.ValueOrNull()
-					.Should()
-					.Be(IntValue);
-
-			[Fact]
 			public void BindOnNone()
 				=> Value
 					.BindOnNone(() => Option.Some(20))
@@ -216,13 +209,6 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
-			public Task ValueOrNull()
-				=> Value
-					.ValueOrNull()
-					.Should()
-					.Be(IntValue);
-
-			[Fact]
 			public void ValueOrEmpty()
 				=> Option.None<IEnumerable<int>>()
 					.ValueOrEmpty()
@@ -362,13 +348,6 @@ namespace Functional.Tests.Options
 					.ValueOrDefault(5)
 					.Should()
 					.Be(5);
-
-			[Fact]
-			public void ValueOrNull()
-				=> Value
-					.ValueOrNull()
-					.Should()
-					.BeNull();
 
 			[Fact]
 			public void BindOnNone()
@@ -514,13 +493,6 @@ namespace Functional.Tests.Options
 					.ValueOrDefault(5)
 					.Should()
 					.Be(5);
-
-			[Fact]
-			public Task ValueOrNull()
-				=> Value
-					.ValueOrNull()
-					.Should()
-					.BeNull();
 
 			[Fact]
 			public Task OfTypeMatching()

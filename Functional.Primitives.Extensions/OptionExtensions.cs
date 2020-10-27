@@ -50,14 +50,6 @@ namespace Functional
 		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
 
-		public static TValue? ValueOrNull<TValue>(this Option<TValue> option)
-			where TValue : struct
-			=> option.TryGetValue(out var some) ? (TValue?)some : null;
-
-		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
-			where TValue : struct
-			=> (await option).ValueOrNull();
-
 		public static IEnumerable<TValue> ValueOrEmpty<TValue>(this Option<IEnumerable<TValue>> option)
 			=> option.ValueOrDefault(Enumerable.Empty<TValue>());
 
