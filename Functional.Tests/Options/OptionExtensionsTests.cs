@@ -52,6 +52,13 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
+			public void ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public void ValueOrNull()
 				=> Value
 					.ValueOrNull()
@@ -216,6 +223,13 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
+			public Task ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public Task ValueOrNull()
 				=> Value
 					.ValueOrNull()
@@ -363,6 +377,12 @@ namespace Functional.Tests.Options
 					.Should()
 					.Be(5);
 
+			[Fact]
+			public void ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
+					.Should()
+					.Be(5);
 			[Fact]
 			public void ValueOrNull()
 				=> Value
@@ -512,6 +532,13 @@ namespace Functional.Tests.Options
 			public Task ValueOrDefault()
 				=> Value
 					.ValueOrDefault(5)
+					.Should()
+					.Be(5);
+
+			[Fact]
+			public Task ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
 					.Should()
 					.Be(5);
 

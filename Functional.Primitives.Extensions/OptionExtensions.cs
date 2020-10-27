@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,6 +50,12 @@ namespace Functional
 
 		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
+
+		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, Func<TValue> valueFactory)
+			=> option.TryGetValue(out var some) ? some : valueFactory.Invoke();
+
+		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, Func<TValue> valueFactory)
+			=> (await option).ValueOrDefault(valueFactory);
 
 		public static TValue? ValueOrNull<TValue>(this Option<TValue> option)
 			where TValue : struct
