@@ -37,6 +37,18 @@ namespace Functional
 		[Obsolete("Please also handle none explicitly.")]
 		public static Task Apply<TValue>(this Task<Option<TValue>> option, Action<TValue> apply)
 			=> option.Do(apply);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToNullable() instead.")]
+		public static TValue? ValueOrNull<TValue>(this Option<TValue> option)
+			where TValue : struct
+			=> option.TryGetValue(out var some) ? (TValue?)some : null;
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToNullable() instead.")]
+		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
+			where TValue : struct
+			=> (await option).ValueOrNull();
 	}
 
 	public static partial class OptionAsyncExtensions

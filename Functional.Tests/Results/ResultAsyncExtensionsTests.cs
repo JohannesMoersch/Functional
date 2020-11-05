@@ -348,7 +348,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindOnFailureSuccess()
 				=> Value
-					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, string>(3)))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Success<int, bool>(3)))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
@@ -356,10 +356,10 @@ namespace Functional.Tests.Results
 			[Fact]
 			public Task BindOnFailureFailure()
 				=> Value
-					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, string>("123")))
+					.BindOnFailureAsync(i => Task.FromResult(Result.Failure<int, bool>(false)))
 					.AssertFailure()
 					.Should()
-					.Be("123");
+					.BeFalse();
 
 			[Fact]
 			public async Task DoWithOneParameter()

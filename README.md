@@ -82,8 +82,8 @@ Option<int> value = Option.None<int>().BindOnNone(() => Option.None<int>()); // 
 #### ToNullable
 This extension only works on value types. If `Some`, this extension will return the value, and if `None` it will return null.
 ```csharp
-int? value = Option.Some<int>(100).ValueOrNull(); // Returns 100
-int? value = Option.None<int>().ValueOrNull(); // Returns null
+int? value = Option.Some<int>(100).ToNullable(); // Returns 100
+int? value = Option.None<int>().ToNullable(); // Returns null
 ```
 #### OfType
 This extension only works on `Option<object>`. If `Some` and the value is of the specified type, then a typed Option is returned. Otherwise `None` is returned.
