@@ -12,7 +12,6 @@ namespace Functional.Tests.Options
 		public class WhenOptionIsSome
 		{
 			private static Option<int> Value => Option.Some(10);
-			private static Option<int> NoValue => Option.None<int>();
 
 			[Fact]
 			public Task Select()
@@ -37,7 +36,7 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task BindOnNoneWhenSome()
+			public Task BindOnNone()
 				=> Value
 					.BindOnNoneAsync(() => Task.FromResult(Option.Some(20)))
 					.AssertSome()
@@ -45,12 +44,11 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
-			public Task BindOnNoneWhenNone()
-				=> NoValue
-					.BindOnNoneAsync(() => Task.FromResult(Option.Some(20)))
-					.AssertSome()
+			public Task ValueOrDefaultAsync()
+				=> Value
+					.ValueOrDefaultAsync(() => Task.FromResult(100))
 					.Should()
-					.Be(20);
+					.Be(10);
 
 			[Fact]
 			public Task WhereTrue()
@@ -138,6 +136,13 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
+			public Task ValueOrDefaultAsync()
+				=> Value
+					.ValueOrDefaultAsync(() => Task.FromResult(100))
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public Task WhereTrue()
 				=> Value
 					.WhereAsync(i => Task.FromResult(true))
@@ -219,6 +224,21 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
+			public Task BindOnNone()
+				=> Value
+					.BindOnNoneAsync(() => Task.FromResult(Option.Some(20)))
+					.AssertSome()
+					.Should()
+					.Be(20);
+
+			[Fact]
+			public Task ValueOrDefaultAsync()
+				=> Value
+					.ValueOrDefaultAsync(() => Task.FromResult(100))
+					.Should()
+					.Be(100);
+
+			[Fact]
 			public Task WhereTrue()
 				=> Value
 					.WhereAsync(i => Task.FromResult(true))
@@ -296,6 +316,13 @@ namespace Functional.Tests.Options
 				=> Value
 					.BindAsync(i => Task.FromResult(Option.None<int>()))
 					.AssertNone();
+
+			[Fact]
+			public Task ValueOrDefaultAsync()
+				=> Value
+					.ValueOrDefaultAsync(() => Task.FromResult(100))
+					.Should()
+					.Be(100);
 
 			[Fact]
 			public Task WhereTrue()

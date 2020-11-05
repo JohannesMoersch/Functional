@@ -52,6 +52,13 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
+			public void ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public void BindOnNone()
 				=> Value
 					.BindOnNone(() => Option.Some(20))
@@ -209,6 +216,13 @@ namespace Functional.Tests.Options
 					.Be(10);
 
 			[Fact]
+			public Task ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
+					.Should()
+					.Be(10);
+
+			[Fact]
 			public void ValueOrEmpty()
 				=> Option.None<IEnumerable<int>>()
 					.ValueOrEmpty()
@@ -346,6 +360,13 @@ namespace Functional.Tests.Options
 			public void ValueOrDefault()
 				=> Value
 					.ValueOrDefault(5)
+					.Should()
+					.Be(5);
+
+			[Fact]
+			public void ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
 					.Should()
 					.Be(5);
 
@@ -491,6 +512,13 @@ namespace Functional.Tests.Options
 			public Task ValueOrDefault()
 				=> Value
 					.ValueOrDefault(5)
+					.Should()
+					.Be(5);
+
+			[Fact]
+			public Task ValueOrDefaultFactory()
+				=> Value
+					.ValueOrDefault(() => 5)
 					.Should()
 					.Be(5);
 

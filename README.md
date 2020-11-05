@@ -64,10 +64,13 @@ bool value = Option.Some(100).HasValue(); // Returns true
 bool value = Option.None<int>().HasValue(); // Returns false
 ```
 #### ValueOrDefault
-If `Some`, this extension will return the value, and if `None` it will return a specified default.
+If `Some`, this extension will return the value, and if `None` it will return a specified default.  The default value can be provided outright or produced by a delegate.
 ```csharp
 int value = Option.Some(100).ValueOrDefault(50); // Returns 100
 int value = Option.None<int>().ValueOrDefault(50); // Returns 50
+
+int value = Option.Some(100).ValueOrDefault(() => 50); // Returns 100
+int value = Option.None<int>().ValueOrDefault(() => 50); // Returns 50
 ```
 #### BindOnNone
 If `Some`, this extension will return the original Option.  If `None`, it will return the Option returned by the delegate parameter.

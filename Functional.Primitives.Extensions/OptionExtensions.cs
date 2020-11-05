@@ -50,6 +50,12 @@ namespace Functional
 		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).ValueOrDefault(defaultValue);
 
+		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, Func<TValue> valueFactory)
+			=> option.TryGetValue(out var some) ? some : valueFactory.Invoke();
+
+		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, Func<TValue> valueFactory)
+			=> (await option).ValueOrDefault(valueFactory);
+    
 		public static IEnumerable<TValue> ValueOrEmpty<TValue>(this Option<IEnumerable<TValue>> option)
 			=> option.ValueOrDefault(Enumerable.Empty<TValue>());
 
