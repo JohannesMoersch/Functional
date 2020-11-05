@@ -421,7 +421,7 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void BindOnFailureSuccess()
 				=> Value
-					.BindOnFailure(i => Result.Success<int, string>(3))
+					.BindOnFailure(i => Result.Success<int, bool>(3))
 					.AssertSuccess()
 					.Should()
 					.Be(3);
@@ -429,10 +429,10 @@ namespace Functional.Tests.Results
 			[Fact]
 			public void BindOnFailureFailure()
 				=> Value
-					.BindOnFailure(i => Result.Failure<int, string>("123"))
+					.BindOnFailure(i => Result.Failure<int, bool>(false))
 					.AssertFailure()
 					.Should()
-					.Be("123");
+					.Be(false);
 
 			[Fact]
 			public void DoWithOneParameter()
