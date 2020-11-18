@@ -265,5 +265,83 @@ namespace Functional
 
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryLast(predicate);
+
+		public static async Task<Option<TValue[]>> Traverse<TValue>(this IEnumerable<Task<Option<TValue>>> source)
+		{
+			TValue[] values;
+
+			if (source is ICollection<Option<TValue>> collection)
+				values = new TValue[collection.Count];
+			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollecton)
+				values = new TValue[readOnlyCollecton.Count];
+			else
+				values = new TValue[4];
+
+			var index = 0;
+			foreach (var valueTask in source)
+			{
+				var value = await valueTask;
+
+				if (value.Match(_ => false, () => true))
+					return Option.None<TValue[]>();
+
+				if (index == values.Length)
+				{
+					var old = values;
+					values = new TValue[old.Length * 2];
+					Array.Copy(old, values, old.Length);
+				}
+				values[index++] = value.Match(success => success, () => default);
+			}
+
+			if (index != values.Length)
+			{
+				var old = values;
+				values = new TValue[index];
+				Array.Copy(old, values, index);
+			}
+
+			return Option.Some(values);
+		}
+
+		public static Option<TValue[]> Traverse<TValue>(this IEnumerable<Option<TValue>> source)
+		{
+			TValue[] values;
+
+			if (source is ICollection<Option<TValue>> collection)
+				values = new TValue[collection.Count];
+			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollecton)
+				values = new TValue[readOnlyCollecton.Count];
+			else
+				values = new TValue[4];
+
+			var index = 0;
+			foreach (var value in source)
+			{
+				if (value.Match(_ => false, () => true))
+					return Option.None<TValue[]>();
+
+				if (index == values.Length)
+				{
+					var old = values;
+					values = new TValue[old.Length * 2];
+					Array.Copy(old, values, old.Length);
+				}
+				values[index++] = value.Match(success => success, () => default);
+			}
+
+			if (index != values.Length)
+			{
+				var old = values;
+				values = new TValue[index];
+				Array.Copy(old, values, index);
+			}
+
+			return Option.Some(values);
+		}
+
+		public static async Task<Option<TValue[]>> Traverse<TValue>(this Task<IEnumerable<Option<TValue>>> source)
+			=> (await source).Traverse();
 	}
+}
 }
