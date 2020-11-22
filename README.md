@@ -9,7 +9,7 @@
 
 ## Sections
 
-- [`Option<TValue>`](doc/option.md)
-- [`Result<TSuccess, TFailure>`](doc/result.md)
+- [`Option<TValue>` Types](doc/option.md)
+- [`Result<TSuccess, TFailure>` Types](doc/result.md)
 - [Query Expressions](doc/query-expressions.md)
 - [Advanced Scenarios](doc/advanced-scenarios.md)
