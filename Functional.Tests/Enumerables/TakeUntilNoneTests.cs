@@ -5,34 +5,34 @@ using Xunit;
 
 namespace Functional.Tests.Enumerables
 {
-	public class TraverseTests
+	public class TakeUntilNoneTests
 	{
 		[Fact]
-		public void EnumerableTraverseSomes()
+		public void EnumerableTakeUntilNoneSomes()
 			=> new[]
 			{
 				Option.Some(1),
 				Option.Some(2),
 				Option.Some(3)
 			}
-			.Traverse()
+			.TakeUntilNone()
 			.AssertSome()
 			.Should()
 			.BeEquivalentTo(new[] { 1, 2, 3 });
 
 		[Fact]
-		public void EnumerableTraverseNones()
+		public void EnumerableTakeUntilNoneNones()
 			=> new[]
 			{
 				Option.None<int>(),
 				Option.Some(2),
 				Option.None<int>()
 			}
-			.Traverse()
+			.TakeUntilNone()
 			.AssertNone();
 
 		[Fact]
-		public Task TaskOfEnumerableTraverseSomes()
+		public Task TaskOfEnumerableTakeUntilNoneSomes()
 			=> Task
 			.FromResult
 			(
@@ -44,13 +44,13 @@ namespace Functional.Tests.Enumerables
 				}
 				.AsEnumerable()
 			)
-			.Traverse()
+			.TakeUntilNone()
 			.AssertSome()
 			.Should()
 			.BeEquivalentTo(new[] { 1, 2, 3 });
 
 		[Fact]
-		public Task TaskOfEnumerableTraverseNones()
+		public Task TaskOfEnumerableTakeUntilNoneNones()
 			=> Task
 			.FromResult
 			(
@@ -62,35 +62,35 @@ namespace Functional.Tests.Enumerables
 				}
 				.AsEnumerable()
 			)
-			.Traverse()
+			.TakeUntilNone()
 			.AssertNone();
 
 		[Fact]
-		public Task EnumerableOfTasksTraverseSomes()
+		public Task EnumerableOfTasksTakeUntilNoneSomes()
 			=> new[]
 			{
 				Task.FromResult(Option.Some(1)),
 				Task.FromResult(Option.Some(2)),
 				Task.FromResult(Option.Some(3))
 			}
-			.Traverse()
+			.TakeUntilNone()
 			.AssertSome()
 			.Should()
 			.BeEquivalentTo(new[] { 1, 2, 3 });
 
 		[Fact]
-		public Task EnumerableOfTasksTraverseNones()
+		public Task EnumerableOfTasksTakeUntilNoneNones()
 			=> new[]
 			{
 				Task.FromResult(Option.None<int>()),
 				Task.FromResult(Option.Some(2)),
 				Task.FromResult(Option.None<int>())
 			}
-			.Traverse()
+			.TakeUntilNone()
 			.AssertNone();
 
 		[Fact]
-		public Task AsyncEnumerableTraverseSomes()
+		public Task AsyncEnumerableTakeUntilNoneSomes()
 			=> new[]
 			{
 				Task.FromResult(Option.Some(1)),
@@ -98,13 +98,13 @@ namespace Functional.Tests.Enumerables
 				Task.FromResult(Option.Some(3))
 			}
 			.AsAsyncEnumerable()
-			.Traverse()
+			.TakeUntilNone()
 			.AssertSome()
 			.Should()
 			.BeEquivalentTo(new[] { 1, 2, 3 });
 
 		[Fact]
-		public Task AsyncEnumerableTraverseNones()
+		public Task AsyncEnumerableTakeUntilNoneNones()
 			=> new[]
 			{
 				Task.FromResult(Option.None<int>()),
@@ -112,7 +112,7 @@ namespace Functional.Tests.Enumerables
 				Task.FromResult(Option.None<int>())
 			}
 			.AsAsyncEnumerable()
-			.Traverse()
+			.TakeUntilNone()
 			.AssertNone();
 	}
 }

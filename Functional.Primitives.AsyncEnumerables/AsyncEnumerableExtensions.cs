@@ -107,7 +107,7 @@ namespace Functional
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
 
-		public static async Task<Option<TValue[]>> Traverse<TValue>(this IAsyncEnumerable<Option<TValue>> source)
+		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
 		{
 			var values = new TValue[4];
 

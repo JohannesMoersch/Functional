@@ -266,7 +266,7 @@ namespace Functional
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryLast(predicate);
 
-		public static async Task<Option<TValue[]>> Traverse<TValue>(this IEnumerable<Task<Option<TValue>>> source)
+		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IEnumerable<Task<Option<TValue>>> source)
 		{
 			TValue[] values;
 
@@ -304,7 +304,7 @@ namespace Functional
 			return Option.Some(values);
 		}
 
-		public static Option<TValue[]> Traverse<TValue>(this IEnumerable<Option<TValue>> source)
+		public static Option<TValue[]> TakeUntilNone<TValue>(this IEnumerable<Option<TValue>> source)
 		{
 			TValue[] values;
 
@@ -340,7 +340,7 @@ namespace Functional
 			return Option.Some(values);
 		}
 
-		public static async Task<Option<TValue[]>> Traverse<TValue>(this Task<IEnumerable<Option<TValue>>> source)
-			=> (await source).Traverse();
+		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this Task<IEnumerable<Option<TValue>>> source)
+			=> (await source).TakeUntilNone();
 	}
 }
