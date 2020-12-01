@@ -50,13 +50,13 @@ namespace Functional
 
 		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 		{
-			TSuccess[] successes = new TSuccess[4];
+			var successes = new TSuccess[4];
 
 			List<TFailure> failures = null;
 
 			var enumerator = source.GetEnumerator();
 
-			int index = 0;
+			var index = 0;
 			while (await enumerator.MoveNext())
 			{
 				enumerator
@@ -105,5 +105,38 @@ namespace Functional
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
+
+		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
+		{
+			var values = new TValue[4];
+
+			var enumerator = source.GetEnumerator();
+
+			var index = 0;
+			while (await enumerator.MoveNext())
+			{
+				var value = enumerator.Current;
+
+				if (value.Match(_ => false, () => true))
+					return Option.None<TValue[]>();
+
+				if (index == values.Length)
+				{
+					var old = values;
+					values = new TValue[old.Length * 2];
+					Array.Copy(old, values, old.Length);
+				}
+				values[index++] = value.Match(success => success, () => default);
+			}
+
+			if (index != values.Length)
+			{
+				var old = values;
+				values = new TValue[index];
+				Array.Copy(old, values, index);
+			}
+
+			return Option.Some(values);
+		}
 	}
 }
