@@ -9,6 +9,10 @@ namespace Functional.Tests.Enumerables
 {
 	public class DoAndApplyTests
 	{
+		private const string FIRST = "first";
+		private const string SECOND = "second";
+		private const string THIRD = "third";
+
 		[Fact]
 		public void EnumerableApply()
 		{
@@ -17,6 +21,21 @@ namespace Functional.Tests.Enumerables
 			new[] { 1, 2, 3 }.Apply(list.Add);
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+		}
+
+		[Fact]
+		public void EnumerableApplyWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+			
+			new[] { FIRST, SECOND, THIRD }.Apply((item, index) => dictionary.Add(index, item));
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
 		}
 
 		[Fact]
@@ -32,6 +51,23 @@ namespace Functional.Tests.Enumerables
 		}
 
 		[Fact]
+		public async Task TaskEnumerableApplyWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+
+			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
+				.AsEnumerable()
+				.Apply((item, index) => dictionary.Add(index, item));
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
+		}
+
+		[Fact]
 		public async Task AsyncEnumerableApply()
 		{
 			var list = new List<int>();
@@ -44,6 +80,23 @@ namespace Functional.Tests.Enumerables
 		}
 
 		[Fact]
+		public async Task AsyncEnumerableApplyWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+
+			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
+				.AsAsyncEnumerable()
+				.Apply((item, index) => dictionary.Add(index, item));
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
+		}
+
+		[Fact]
 		public async Task EnumerableApplyAsync()
 		{
 			var list = new List<int>();
@@ -51,6 +104,21 @@ namespace Functional.Tests.Enumerables
 			await new[] { 1, 2, 3 }.ApplyAsync(async i => { await Task.Delay(10); list.Add(i); });
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+		}
+
+		[Fact]
+		public async Task EnumerableApplyAsyncWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+
+			await new[] { FIRST, SECOND, THIRD }.ApplyAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); });
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
 		}
 
 		[Fact]
@@ -66,6 +134,23 @@ namespace Functional.Tests.Enumerables
 		}
 
 		[Fact]
+		public async Task TaskEnumerableApplyAsyncWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+
+			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
+				.AsEnumerable()
+				.ApplyAsync(async (item, index) => { await Task.Delay(2); dictionary.Add(index, item); });
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
+		}
+
+		[Fact]
 		public async Task AsyncEnumerableApplyAsync()
 		{
 			var list = new List<int>();
@@ -75,6 +160,23 @@ namespace Functional.Tests.Enumerables
 				.ApplyAsync(async i => { await Task.Delay(10); list.Add(i); });
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
+		}
+
+		[Fact]
+		public async Task AsyncEnumerableApplyAsyncWithIndex()
+		{
+			var dictionary = new Dictionary<int, string>();
+
+			await Task.FromResult(new[] { 1, 2, 3 })
+				.AsAsyncEnumerable()
+				.ApplyAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); });
+
+			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
+			{
+				{ 0, FIRST },
+				{ 1, SECOND },
+				{ 2, THIRD }
+			});
 		}
 
 		[Fact]

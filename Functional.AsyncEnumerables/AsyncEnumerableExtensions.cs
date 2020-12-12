@@ -276,6 +276,21 @@ namespace Functional
 				action.Invoke(enumerator.Current);
 		}
 
+		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var enumerator = source.GetAsyncEnumerator();
+
+			var index = 0;
+			while (await enumerator.MoveNextAsync())
+			{
+				action.Invoke(enumerator.Current, index);
+				++index;
+			}
+		}
+
 		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
 			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetAsyncEnumerator(), batchSize));
 
