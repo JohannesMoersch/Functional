@@ -20,7 +20,7 @@ new { "ITEM1", "ITEM2", "ITEM3" }.Apply((item, index) => Console.WriteLine($"[{i
 // [2] = ITEM3
 ```
 
-The `Do` extension method returns the original collection.
+The `Do` extension method returns the original collection.  This method is useful when you want to perform additional processing on the collection after applying side effects.
 
 ``` csharp
 // returns { 1, 2, 3 }
