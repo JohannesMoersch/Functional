@@ -30,7 +30,7 @@ new { 1, 2, 3 }.Do(i => Console.WriteLine(i));
 // 2
 // 3
 
-// returns { 1, 2, 3 }
+// returns { "ITEM1", "ITEM2", "ITEM3" }
 new { "ITEM1", "ITEM2", "ITEM3" }.Do((item, index) => Console.WriteLine($"[{index}] = {item}"));
 
 // [0] = ITEM1
