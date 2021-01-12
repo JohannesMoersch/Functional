@@ -160,6 +160,21 @@ namespace Functional
 				await action.Invoke(enumerator.Current);
 		}
 
+		public static async Task ApplyAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var enumerator = source.GetEnumerator();
+
+			var index = 0;
+			while (await enumerator.MoveNext())
+			{
+				await action.Invoke(enumerator.Current, index);
+				++index;
+			}
+		}
+
 		public static IAsyncEnumerable<TSource> PickIntoAsync<TSource>(this IEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, Task<bool>> predicate)
 		{
 			var partition = source.PartitionAsync(predicate);
