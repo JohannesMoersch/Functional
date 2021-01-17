@@ -18,6 +18,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Common.Extensions", "Functional.Common.Extensions\Functional.Common.Extensions.csproj", "{D928B74D-5CED-4C86-96D3-88928BB9928C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Tests", "Functional.Tests\Functional.Tests.csproj", "{01DF0B82-75DC-420D-A2A5-31025C930237}"
+	ProjectSection(ProjectDependencies) = postProject
+		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1} = {628D8B2B-C7A6-4A9D-962C-948DD2E117B1}
+		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6} = {ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}
+		{62470C59-88FA-4E07-A36A-EEB475CD5A93} = {62470C59-88FA-4E07-A36A-EEB475CD5A93}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables", "Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj", "{F3FFBCD4-11BB-412C-BAEB-256118C2560F}"
 EndProject
