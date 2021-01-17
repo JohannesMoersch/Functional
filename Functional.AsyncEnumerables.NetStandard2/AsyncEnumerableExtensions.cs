@@ -265,6 +265,19 @@ namespace Functional
 				});
 		}
 
+		public static IAsyncEnumerable<TSource> Do<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select((item, index) =>
+				{
+					action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
