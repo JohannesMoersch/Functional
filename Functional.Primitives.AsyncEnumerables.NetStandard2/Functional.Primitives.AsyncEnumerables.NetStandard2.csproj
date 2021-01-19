@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)Functional.Tests\bin\$(Configuration)\netstandard2_dlls\&quot; /s /y&#xD;&#xA;xcopy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(SolutionDir)Functional.Tests\bin\$(Configuration)\netstandard2_dlls\&quot; /s /y" />
-  </Target>
-
 </Project>

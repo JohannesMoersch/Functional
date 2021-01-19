@@ -54,7 +54,9 @@ namespace Functional.Tests
 					Path
 						.Combine
 						(
-							Path.Combine(Path.GetDirectoryName(typeof(NetStandard2EquivalenceTests).Assembly.Location), "..\\netstandard2_dlls\\"), 
+							Path.GetDirectoryName(typeof(NetStandard2EquivalenceTests).Assembly.Location)
+							, "..\\..\\..\\..\\", 
+							$"{assemblyName}.NetStandard2\\bin\\{(typeof(NetStandard2EquivalenceTests).Assembly.Location.Contains("bin\\Debug\\") ? "Debug" : "Release")}\\netstandard2.0\\",
 							$"{assemblyName}.dll"
 						)
 				);
