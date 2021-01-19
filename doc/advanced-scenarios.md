@@ -34,9 +34,9 @@ public static Result<Option<OutputModel>, Error> ToOutputModel(this InputModel s
 {
     return _funcCollection.Aggregate(
         Result.Failure<Option<OutputModel>, Error>(Error.DueToUnknownInputModel(source)),
-        (current, func) => current.BindOnFailure(error => error.Match(
-            unknown => func.Invoke(unknown.InputModel),
-            exception => exception.ToPassthrough())));
+        (currentResult, functionToExecute) => currentResult.BindOnFailure(error => error.Match(
+            unknown => functionToExecute.Invoke(unknown.InputModel),
+            exception => Result.Failure<Option<OutputModel>, Error>(Error.DueToException(exception)))));
     )
 }
 ```
