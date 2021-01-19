@@ -246,6 +246,50 @@ Result.Success<int, string>(100).Transpose();
 Result.Failure<int, string>("message").Transpose();
 ```
 
+## Working with `Result<Option<T>, TFailure>`
+
+### Match (Overload)
+
+This extension method reduces noise caused by using two `Match` functions: one for the Result and one for the contained Option.  It exists purely for convenience.  The following two code blocks are equivalent.
+
+``` csharp
+// returnValue is '1337'
+string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+
+// returnValue is 'no value'
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+
+// returnValue is 'ERROR'
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+```
+
+``` csharp
+// returnValue is '1337'
+string value = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+
+// returnValue is 'no value'
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+
+// returnValue is 'ERROR'
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+)
+```
+
 ### MapOnSome
 
 This extension is only available for `Result<Option<T>, TFailure>` types.
@@ -409,6 +453,8 @@ Result.Success<Option<int>, string>(Option.None<int>()).ApplyOnSome(i => Console
 // Does nothing
 Result.Failure<Option<int>, string>("Failure").ApplyOnSome(i => Console.WriteLine(i));
 ```
+
+## Working with `Option<Result<TSuccess, TFailure>>`
 
 ### Evert
 
