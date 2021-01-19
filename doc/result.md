@@ -478,3 +478,5 @@ Option.None<Result<int, string>>().Evert();
 // Returns Result<Option<int>, string> with a failure value of "error"
 Option.Some(Result.Failure<int, string>("error")).Evert();
 ```
+
+Since the `Result<Option<TSuccess>, TFailure>` type defines its own set of extension methods, it is recommended to use `Evert` and work with a `Result<Option<TSuccess>, TFailure>` type instead of working with a `Option<Result<TSuccess, TFailure>>` type directly.
