@@ -255,36 +255,36 @@ Result.Failure<int, string>("message").Transpose();
 This extension method reduces noise caused by using two `Match` functions: one for the Result and one for the contained Option.  It exists purely for convenience.  The following two code blocks are equivalent.
 
 ``` csharp
-// returnValue is '1337'
+// 'returnValue' is "1337"
 string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
     option => option.Match(i => i.ToString(), () => "no value"),
     exception => exception.Message);
 
-// returnValue is 'no value'
+// 'returnValue' is "no value"
 string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
     option => option.Match(i => i.ToString(), () => "no value"),
     exception => exception.Message);
 
-// returnValue is 'ERROR'
+// 'returnValue' is "ERROR"
 string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
     option => option.Match(i => i.ToString(), () => "no value"),
     exception => exception.Message);
 ```
 
 ``` csharp
-// returnValue is '1337'
+// 'returnValue' is "1337"
 string value = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
     i => i.ToString(),
     () => "no value",
     exception => exception.Message);
 
-// returnValue is 'no value'
+// 'returnValue' is "no value"
 string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
     i => i.ToString(),
     () => "no value",
     exception => exception.Message);
 
-// returnValue is 'ERROR'
+// 'returnValue' is "ERROR"
 string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
     i => i.ToString(),
     () => "no value",
@@ -322,7 +322,7 @@ This extension executes a Result-producing delegate when the Result meets specif
 You can either bind to functions producing `Result<TSuccess, TFailure>` or `Result<Option<T>, TFailure>`.
 
 ```csharp
-// bind to functions producing Result<TSuccess, TFailure>
+// Bind to functions producing Result<TSuccess, TFailure>
 
 // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
 Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<float, string>(i * 2f));
@@ -341,7 +341,7 @@ Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Fail
 ```
 
 ```csharp
-// bind to functions producing Result<Option<T>>, TFailure>
+// Bind to functions producing Result<Option<T>>, TFailure>
 
 // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
 Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f)));
@@ -389,7 +389,7 @@ This extension executes a Result-producing delegate when the Result meets specif
 You can either bind to functions producing `Result<TSuccess, TFailure>` or `Result<Option<T>, TFailure>`.
 
 ```csharp
-// bind to functions producing Result<TSuccess, TFailure>
+// Bind to functions producing Result<TSuccess, TFailure>
 
 // Returns Result<Option<int>, string> with a success value of Option.Some(100)
 Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(()) => Result.Success<int, string>(i * 2));
