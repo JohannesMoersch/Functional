@@ -12,4 +12,5 @@
 - [`Option<TValue>` Types](doc/option.md)
 - [`Result<TSuccess, TFailure>` Types](doc/result.md)
 - [Query Expressions](doc/query-expressions.md)
+- [Collections](doc/collections.md)
 - [Advanced Scenarios](doc/advanced-scenarios.md)

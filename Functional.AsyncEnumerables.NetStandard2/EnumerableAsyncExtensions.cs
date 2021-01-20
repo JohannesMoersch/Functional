@@ -60,6 +60,9 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().SelectAsync(selector);
 
+		public static IAsyncEnumerable<TResult> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector)
+			=> source.AsAsyncEnumerable().SelectAsync(selector);
+
 		public static IAsyncEnumerable<TResult> SelectAsync<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<TResult>> selector)
 			=> source.AsAsyncEnumerable().SelectAsync(selector);
 

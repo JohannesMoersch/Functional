@@ -123,6 +123,19 @@ namespace Functional
 				});
 		}
 
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async (item, index) =>
+				{
+					await action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task> action)
 		{
 			if (action == null)
@@ -132,6 +145,19 @@ namespace Functional
 				.SelectAsync(async item =>
 				{
 					await action.Invoke(item);
+					return item;
+				});
+		}
+
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async (item, index) =>
+				{
+					await action.Invoke(item, index);
 					return item;
 				});
 		}
@@ -149,6 +175,19 @@ namespace Functional
 				});
 		}
 
+		public static IAsyncEnumerable<TSource> DoAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.SelectAsync(async (item, index) =>
+				{
+					await action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static async Task ApplyAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task> action)
 		{
 			if (action == null)
@@ -158,6 +197,21 @@ namespace Functional
 
 			while (await enumerator.MoveNext())
 				await action.Invoke(enumerator.Current);
+		}
+
+		public static async Task ApplyAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var enumerator = source.GetEnumerator();
+
+			var index = 0;
+			while (await enumerator.MoveNext())
+			{
+				await action.Invoke(enumerator.Current, index);
+				++index;
+			}
 		}
 
 		public static IAsyncEnumerable<TSource> PickIntoAsync<TSource>(this IEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, Task<bool>> predicate)

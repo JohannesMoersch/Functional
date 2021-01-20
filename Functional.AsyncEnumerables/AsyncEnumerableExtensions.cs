@@ -265,6 +265,19 @@ namespace Functional
 				});
 		}
 
+		public static IAsyncEnumerable<TSource> Do<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select((item, index) =>
+				{
+					action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
@@ -274,6 +287,21 @@ namespace Functional
 
 			while (await enumerator.MoveNextAsync())
 				action.Invoke(enumerator.Current);
+		}
+
+		public static async Task Apply<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var enumerator = source.GetAsyncEnumerator();
+
+			var index = 0;
+			while (await enumerator.MoveNextAsync())
+			{
+				action.Invoke(enumerator.Current, index);
+				++index;
+			}
 		}
 
 		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)

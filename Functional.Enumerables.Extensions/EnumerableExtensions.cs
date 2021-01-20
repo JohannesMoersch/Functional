@@ -623,6 +623,19 @@ namespace Functional
 				});
 		}
 
+		public static IEnumerable<TSource> Do<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select((item, index) =>
+				{
+					action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static Task<IEnumerable<TSource>> Do<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource> action)
 		{
 			if (action == null)
@@ -636,6 +649,19 @@ namespace Functional
 				});
 		}
 
+		public static Task<IEnumerable<TSource>> Do<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			return source
+				.Select((item, index) =>
+				{
+					action.Invoke(item, index);
+					return item;
+				});
+		}
+
 		public static void Apply<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
 		{
 			if (action == null)
@@ -645,6 +671,16 @@ namespace Functional
 				action.Invoke(item);
 		}
 
+		public static void Apply<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var index = 0;
+			foreach (var item in source)
+				action.Invoke(item, index++);
+		}
+
 		public static async Task Apply<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource> action)
 		{
 			if (action == null)
@@ -652,6 +688,16 @@ namespace Functional
 
 			foreach (var item in await source)
 				action.Invoke(item);
+		}
+
+		public static async Task Apply<TSource>(this Task<IEnumerable<TSource>> source, Action<TSource, int> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var index = 0;
+			foreach (var item in await source)
+				action.Invoke(item, index++);
 		}
 
 		public static IEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IEnumerable<TSource> source, int batchSize)
