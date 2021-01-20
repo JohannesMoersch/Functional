@@ -246,9 +246,55 @@ Result.Success<int, string>(100).Transpose();
 Result.Failure<int, string>("message").Transpose();
 ```
 
+## Working with `Result<Option<T>, TFailure>`
+
+`Result<Option<T>, TFailure>` types can use all extension methods listed [above](result.md#working-with-resulttsuccess-tfailure), but some operations are easier to perform using the extension methods listed below.
+
+### Match (Overload)
+
+This extension method reduces noise caused by using two `Match` functions: one for the Result and one for the contained Option.  It exists purely for convenience.  The following two code blocks are equivalent.
+
+``` csharp
+// 'returnValue' is "1337"
+string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+
+// 'returnValue' is "no value"
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+
+// 'returnValue' is "ERROR"
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
+    option => option.Match(i => i.ToString(), () => "no value"),
+    exception => exception.Message);
+```
+
+``` csharp
+// 'returnValue' is "1337"
+string value = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+
+// 'returnValue' is "no value"
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+
+// 'returnValue' is "ERROR"
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Match(
+    i => i.ToString(),
+    () => "no value",
+    exception => exception.Message);
+)
+```
+
 ### MapOnSome
 
-This extension is only available for `Result<Option<T>, TFailure>` types.
+This extension executes a value-producing delegate when the Result meets specific criteria.
 
 - If `Success` and holds an Option with a value, this extension will invoke the delegate parameter.
 - If `Success` and holds an Option with no value, the delegate parameter will *not* be invoked, but this extension method will return a `Success` Result holding an Option with no value for the type that would have been produced by the delegate parameter.
@@ -267,7 +313,7 @@ Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Fail
 
 ### BindOnSome
 
-This extension is only available for `Result<Option<T>, TFailure>` types.
+This extension executes a Result-producing delegate when the Result meets specific criteria.
 
 - If `Success` and holds an Option with a value, this extension will return the Result returned by the delegate parameter.
 - If `Success` and holds an Option with no value, this extension will return a Result holding an Option with no value matching the type that would be produced by the delegate parameter.
@@ -276,7 +322,7 @@ This extension is only available for `Result<Option<T>, TFailure>` types.
 You can either bind to functions producing `Result<TSuccess, TFailure>` or `Result<Option<T>, TFailure>`.
 
 ```csharp
-// bind to functions producing Result<TSuccess, TFailure>
+// Bind to functions producing Result<TSuccess, TFailure>
 
 // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
 Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<float, string>(i * 2f));
@@ -295,7 +341,7 @@ Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Fail
 ```
 
 ```csharp
-// bind to functions producing Result<Option<T>>, TFailure>
+// Bind to functions producing Result<Option<T>>, TFailure>
 
 // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
 Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnSome(i => Result.Success<Option<float>, string>(Option.Some(i * 2f)));
@@ -315,7 +361,7 @@ Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Fail
 
 ### MapOnNone
 
-This extension is only available for `Result<Option<T>, TFailure>` types.
+This extension executes a value-producing delegate when the Result meets specific criteria.
 
 - If `Success` and holds an Option with a value, this extension will return a `Success` `Result` with the existing success value.
 - If `Success` and holds an `Option` with no value, it will invoke the delegate parameter, producing a `Success` `Result` holding an `Option` containing the value produced by the delegate.
@@ -323,18 +369,18 @@ This extension is only available for `Result<Option<T>, TFailure>` types.
 
 ```csharp
 // Returns Result<Option<int>, string> with a success value of Option.None<int>
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).MapOnNone(() => 1337);
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).MapOnNone(() => 1337);
 
 // Returns Result<Option<int>, string> with a success value of Option.Some(1337)
-Result<Option<float>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).MapOnNone(() => 1337);
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).MapOnNone(() => 1337);
 
 // Returns Result<Option<int>, string> with a failure value of "Failure"
-Result<Option<float>, string> result = Result.Failure<Option<int>, string>("Failure").MapOnNone(() => 1337);
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").MapOnNone(() => 1337);
 ```
 
 ### BindOnNone
 
-This extension is only available for `Result<Option<T>, TFailure>` types.
+This extension executes a Result-producing delegate when the Result meets specific criteria.
 
 - If `Success` and holds an `Option` with a value, it will return a `Success` `Result` with the existing success value.
 - If `Success` and holds an `Option` with no value, it will invoke the delegate parameter.  
@@ -343,7 +389,7 @@ This extension is only available for `Result<Option<T>, TFailure>` types.
 You can either bind to functions producing `Result<TSuccess, TFailure>` or `Result<Option<T>, TFailure>`.
 
 ```csharp
-// bind to functions producing Result<TSuccess, TFailure>
+// Bind to functions producing Result<TSuccess, TFailure>
 
 // Returns Result<Option<int>, string> with a success value of Option.Some(100)
 Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(()) => Result.Success<int, string>(i * 2));
@@ -382,7 +428,7 @@ Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failur
 
 ### DoOnSome
 
-This extension is only available for `Result<Option<T>, TFailure>` types.  It returns the input `Result` and is meant only to create side effects.  If `Success` and holds an `Option` with a value, this extension will invoke the delegate parameter.
+This extension returns the input `Result` and is meant only to create side effects.  If `Success` and holds an `Option` with a value, this extension will invoke the delegate parameter.
 
 ```csharp
 // Outputs "100" to the console and returns Result<Option<int>, string> with a success value of Option.Some(100)
@@ -397,7 +443,7 @@ Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failur
 
 ### ApplyOnSome
 
-This extension is only available for `Result<Option<T>, TFailure>` types.  It returns void and is meant only to create side effects.  If `Success` and holds an `Option` with a value, this extension will invoke the delegate parameter; in all other cases, it does nothing.
+This extension returns void and is meant only to create side effects.  If `Success` and holds an `Option` with a value, this extension will invoke the delegate parameter; in all other cases, it does nothing.
 
 ```csharp
 // Outputs "100" to the console
@@ -410,9 +456,13 @@ Result.Success<Option<int>, string>(Option.None<int>()).ApplyOnSome(i => Console
 Result.Failure<Option<int>, string>("Failure").ApplyOnSome(i => Console.WriteLine(i));
 ```
 
+## Working with `Option<Result<TSuccess, TFailure>>`
+
+`Option<Result<TSuccess, TFailure>>` types can use all extension methods listed [for Options](option.md#working-with-optiontvalue), but some operations are easier to perform using the extension methods listed below.
+
 ### Evert
 
-This extension is only available for `Option<Result<TSuccess, TFailure>>` types.
+This extension creates a `Result<Option<TSuccess>, TFailure>` type from an `Option<Result<TSuccess, TFailure>` type.
 
 - If `Some` and holds a `Success` `Result`, it returns a `Success` `Result` holding an `Option` with a value.
 - If `Some` and holds a `Failure` `Result`, it returns a `Failure` `Result` with the original failure.
@@ -428,3 +478,5 @@ Option.None<Result<int, string>>().Evert();
 // Returns Result<Option<int>, string> with a failure value of "error"
 Option.Some(Result.Failure<int, string>("error")).Evert();
 ```
+
+Since the `Result<Option<TSuccess>, TFailure>` type defines its own set of extension methods, it is recommended to use `Evert` and work with a `Result<Option<TSuccess>, TFailure>` type instead of working with a `Option<Result<TSuccess, TFailure>>` type directly.
