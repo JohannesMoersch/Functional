@@ -2,12 +2,23 @@
 
 `Result<TSuccess, TFailure>` is an immutable type that can either have a `Success` value (of type `TSuccess`), or a `Failure` value (of type `TFailure`). `Result` types should be used in any scenario where code can produce an error. Results are particularly suitable for expected error cases, but can also be used for all error handling. Results force the handling of failures. Instead of throwing exceptions or returning `null`, return a `Failure` result.
 
+In cases where your result's success case is "no value", use the [`Functional.Unit` type](https://en.wikipedia.org/wiki/Unit_type).
+
 ## Creating a `Result<TSuccess, TFailure>` Type
 
 ### With a success value
 
 ```csharp
 Result<int, string> success = Result.Success<int, string>(100);
+```
+
+### With `Unit` as the success value
+
+``` csharp
+Result<Unit, string> success = Result.Unit<string>();
+
+// the above is equivalent to the following
+Result<Unit, string> success = Result.Success<Unit, string>(Unit.Value);
 ```
 
 ### With a failure value
