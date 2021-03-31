@@ -1,8 +1,46 @@
 # Advanced Scenarios
 
+## Aggregation of `Option<TValue>`
+
+You can cache a collection of `Option`-producing functions and use [LINQ's `Aggregate` method](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.aggregate?view=net-5.0#System_Linq_Enumerable_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__) to produce a single result.
+
+```csharp
+public interface ICustomValidationAttributeAdapterProvider
+{
+    Option<IAttributeAdapter> GetAttributeAdapter(
+        ValidationAttribute attribute,
+        IStringLocalizer stringLocalizer);
+}
+
+internal class CustomValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
+{
+    private readonly IValidationAttributeAdapterProvider _fallbackAdapterProvider = new ValidationAttributeAdapterProvider();
+    private readonly ICustomValidationAttributeAdapterProvider[] _adapterProviderCollection;
+
+    public CustomValidationAttributeAdapterProvider(IEnumerable<ICustomValidationAttributeAdapterProvider> adapterProviderCollection)
+    {
+        _adapterProviderCollection = adapterProviderCollection?.ToArray() ?? throw new ArgumentNullException(nameof(adapterProviderCollection));
+    }
+
+    public IAttributeAdapter GetAttributeAdapter(
+        ValidationAttribute attribute,
+        IStringLocalizer stringLocalizer)
+    {
+        // use LINQ's Aggregate method to execute each function in the collection
+        // begin with Option<IAttributeAdapter> holding no value
+        // functions from the collection are executed until one produces an Option<IAttributeAdapter> holding some value
+        // if all functions produce no value, then ValueOrDefault creates a fallback value
+        return _adapterProviderCollection.Aggregate(
+                Option.None<IAttributeAdapter>(),
+                (current, provider) => current.BindOnNone(() => provider.GetAttributeAdapter(attribute, stringLocalizer)))
+            .ValueOrDefault(() => _fallbackAdapterProvider.GetAttributeAdapter(attribute, stringLocalizer));
+    }
+}
+```
+
 ## Aggregation of `Result<TSuccess, TFailure>`
 
-It is possible to cache a collection of `Result`-producing functions and use [LINQ's `Aggregate` method](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.aggregate?view=net-5.0#System_Linq_Enumerable_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__) to produce a single result.
+You can cache a collection of `Result`-producing functions and use [LINQ's `Aggregate` method](https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.aggregate?view=net-5.0#System_Linq_Enumerable_Aggregate__2_System_Collections_Generic_IEnumerable___0____1_System_Func___1___0___1__) to produce a single result.
 
 ```csharp
 public abstract class OutputModel { /* DATA */ }
