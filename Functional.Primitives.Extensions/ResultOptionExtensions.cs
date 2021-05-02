@@ -167,6 +167,18 @@ namespace Functional
 			return Result.Success<Option<TSuccess>, TFailure>(Option.None<TSuccess>());
 		}
 
+		public static Result<Option<TSuccess>, TFailure> WhereOnSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> source, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+		{
+			return source.Where(
+				x => x.Match(predicate.Invoke, () => true),
+				x => x.Match(failureFactory, () => throw new InvalidOperationException("")));
+		}
+
+		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> source, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+		{
+			return (await source).WhereOnSome(predicate, failureFactory);
+		}
+
 		public static async Task<Result<Option<TSuccess>, TFailure>> Evert<TSuccess, TFailure>(this Task<Option<Result<TSuccess, TFailure>>> source)
 			=> (await source).Evert();
 	}
