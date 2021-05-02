@@ -155,6 +155,24 @@ namespace Functional
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
 			=> (await result).DoOnSome(onSuccessSome);
 
+		public static Result<Option<TSuccess>, TFailure> WhereOnSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+		{
+			if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+			if (failureFactory == null) throw new ArgumentNullException(nameof(failureFactory));
+
+			if (result.TryGetValue(out var success, out var failure) && success.TryGetValue(out var some))
+			{
+				return predicate.Invoke(some)
+					? result
+					: Result.Failure<Option<TSuccess>, TFailure>(failureFactory.Invoke(some));
+			}
+
+			return result;
+		}
+
+		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+			=> (await result).WhereOnSome(predicate, failureFactory);
+
 		public static Result<Option<TSuccess>, TFailure> Evert<TSuccess, TFailure>(this Option<Result<TSuccess, TFailure>> source)
 		{
 			if (source.TryGetValue(out var some))
@@ -165,18 +183,6 @@ namespace Functional
 			}
 
 			return Result.Success<Option<TSuccess>, TFailure>(Option.None<TSuccess>());
-		}
-
-		public static Result<Option<TSuccess>, TFailure> WhereOnSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> source, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
-		{
-			return source.Where(
-				x => x.Match(predicate.Invoke, () => true),
-				x => x.Match(failureFactory, () => throw new InvalidOperationException("")));
-		}
-
-		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> source, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
-		{
-			return (await source).WhereOnSome(predicate, failureFactory);
 		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> Evert<TSuccess, TFailure>(this Task<Option<Result<TSuccess, TFailure>>> source)
