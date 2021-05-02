@@ -1913,6 +1913,48 @@ namespace Functional.Tests.Results
 				}
 			}
 
+			public class WhenWhereOnSomeAsync
+			{
+				private const int SUCCESS = 1337;
+				private const string FAILURE = "error";
+
+				[Fact]
+				public async Task ShouldMapOptionSomeSatisfyingPredicateToOptionSome()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(SUCCESS)))
+						.WhereOnSomeAsync(i => Task.FromResult(i == SUCCESS), i => FAILURE)
+						.AssertSuccess()
+						.AssertSome()
+						.Should()
+						.Be(SUCCESS);
+
+				[Fact]
+				public async Task ShouldMapOptionNoneToOptionNone()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>()))
+						.WhereOnSomeAsync(i => Task.FromResult(i == SUCCESS), i => FAILURE)
+						.AssertSuccess()
+						.AssertNone();
+
+				[Fact]
+				public async Task ShouldMapOptionSomeNotSatisfyingPredicateToFailure()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(SUCCESS)))
+						.WhereOnSomeAsync(i => Task.FromResult(i != SUCCESS), i => FAILURE)
+						.AssertFailure()
+						.Should()
+						.Be(FAILURE);
+
+				[Fact]
+				public async Task ShouldMapFailureToFailure()
+				{
+					const string EXPECTED = "TEST";
+
+					await Task.FromResult(Result.Failure<Option<int>, string>(EXPECTED))
+						.WhereOnSomeAsync(i => Task.FromResult(i != SUCCESS), i => FAILURE)
+						.AssertFailure()
+						.Should()
+						.Be(EXPECTED);
+				}
+			}
+
 			public class AndEvert
 			{
 				private const int SUCCESS = 1337;
