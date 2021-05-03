@@ -284,7 +284,7 @@ string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR
 
 ``` csharp
 // 'returnValue' is "1337"
-string value = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
+string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Match(
     i => i.ToString(),
     () => "no value",
     exception => exception.Message);
@@ -419,7 +419,7 @@ Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failur
 ```
 
 ```csharp
-// bind to functions producing Result<Option<T>>, TFailure>
+// Bind to functions producing Result<Option<T>>, TFailure>
 
 // Returns Result<Option<float>, string> with a success value of Option.Some(200f)
 Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f)));
@@ -435,6 +435,26 @@ Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.
 
 // Returns Result<Option<float>, string> with a failure value of "Failure"
 Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Failure").BindOnNone(() => Result.Success<Option<float>, string>(Option.Some(i * 2f)));
+```
+
+### WhereOnSome
+
+If the input Result is `Success` and holds `Some`, this extension will invoke the first delegate parameter; then, if `true` is returned the extension will return `Success` of the input success value. If `false` is returned from the first delegate parameter, the extension will return a `Failure` Result with the failure value produced by the second delegate parameter. If the input Result is `Success` and holds `None` or if the input Result is a `Failure` the extension will return the unmodified input.
+
+```csharp
+// Returns Result<Option<int>, string> with a success value of Option.Some(1337)
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(1337)).WhereOnSome(i => true, i => "Failure");
+
+// Returns Result<Option<int>, string> with a failure value of "Failure"
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(1337)).WhereOnSome(i => false, i => "Failure");
+
+// Returns original result (Result<Option<int>, string> with a success value of Option.None<int>())
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).WhereOnSome(i => true, i => "Failure");
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.None<int>()).WhereOnSome(i => false, i => "Failure");
+
+// Returns original result (Result<Option<int>, string> with a failure value of "Original failure")
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Original failure").WhereOnSome(i => true, i => "Failure");
+Result<Option<int>, string> result = Result.Failure<Option<int>, string>("Original failure").WhereOnSome(i => false, i => "Failure");
 ```
 
 ### DoOnSome

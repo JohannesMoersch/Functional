@@ -155,6 +155,24 @@ namespace Functional
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Action<TSuccess> onSuccessSome)
 			=> (await result).DoOnSome(onSuccessSome);
 
+		public static Result<Option<TSuccess>, TFailure> WhereOnSome<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+		{
+			if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+			if (failureFactory == null) throw new ArgumentNullException(nameof(failureFactory));
+
+			if (result.TryGetValue(out var success, out var failure) && success.TryGetValue(out var some))
+			{
+				return predicate.Invoke(some)
+					? result
+					: Result.Failure<Option<TSuccess>, TFailure>(failureFactory.Invoke(some));
+			}
+
+			return result;
+		}
+
+		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSome<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, bool> predicate, Func<TSuccess, TFailure> failureFactory)
+			=> (await result).WhereOnSome(predicate, failureFactory);
+
 		public static Result<Option<TSuccess>, TFailure> Evert<TSuccess, TFailure>(this Option<Result<TSuccess, TFailure>> source)
 		{
 			if (source.TryGetValue(out var some))
