@@ -153,5 +153,31 @@ namespace Functional
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, TFailure> failureFactory)
 			=> await (await result).WhereOnSomeAsync(predicate, failureFactory);
+
+		public static async Task ApplyAsync<T, TFailure>(this Result<Option<T>, TFailure> result, Func<T, Task> onSome, Func<Task> onNone, Func<TFailure, Task> onFailure)
+		{
+			if (onSome == null) throw new ArgumentNullException(nameof(onSome));
+			if (onNone == null) throw new ArgumentNullException(nameof(onNone));
+			if (onFailure == null) throw new ArgumentNullException(nameof(onFailure));
+
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (success.TryGetValue(out var some))
+				{
+					await onSome.Invoke(some);
+				}
+				else
+				{
+					await onNone.Invoke();
+				}
+			}
+			else
+			{
+				await onFailure.Invoke(failure);
+			}
+		}
+
+		public static async Task ApplyAsync<T, TFailure>(this Task<Result<Option<T>, TFailure>> result, Func<T, Task> onSome, Func<Task> onNone, Func<TFailure, Task> onFailure)
+			=> await (await result).ApplyAsync(onSome, onNone, onFailure);
 	}
 }

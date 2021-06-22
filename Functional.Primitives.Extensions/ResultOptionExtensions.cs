@@ -187,5 +187,31 @@ namespace Functional
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> Evert<TSuccess, TFailure>(this Task<Option<Result<TSuccess, TFailure>>> source)
 			=> (await source).Evert();
+
+		public static void Apply<T, TFailure>(this Result<Option<T>, TFailure> result, Action<T> onSome, Action onNone, Action<TFailure> onFailure)
+		{
+			if (onSome == null) throw new ArgumentNullException(nameof(onSome));
+			if (onNone == null) throw new ArgumentNullException(nameof(onNone));
+			if (onFailure == null) throw new ArgumentNullException(nameof(onFailure));
+
+			if (result.TryGetValue(out var success, out var failure))
+			{
+				if (success.TryGetValue(out var some))
+				{
+					onSome.Invoke(some);
+				}
+				else
+				{
+					onNone.Invoke();
+				}
+			}
+			else
+			{
+				onFailure.Invoke(failure);
+			}
+		}
+
+		public static async Task Apply<T, TFailure>(this Task<Result<Option<T>, TFailure>> result, Action<T> onSome, Action onNone, Action<TFailure> onFailure)
+			=> (await result).Apply(onSome, onNone, onFailure);
 	}
 }
