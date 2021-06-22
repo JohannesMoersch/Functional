@@ -487,6 +487,48 @@ Result.Success<Option<int>, string>(Option.None<int>()).ApplyOnSome(i => Console
 Result.Failure<Option<int>, string>("Failure").ApplyOnSome(i => Console.WriteLine(i));
 ```
 
+### Apply (Overload)
+
+This extension method reduces noise caused by using two `Apply` actions: one for the Result and one for the contained Option.  It exists purely for convenience.  The following two code blocks are equivalent.
+
+``` csharp
+// "1337" is printed to the console
+string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Apply(
+    option => option.Apply(i => Console.WriteLine(i.ToString()), () => Console.WriteLine("no value")),
+    exception => Console.WriteLine(exception.Message));
+
+// "no value" is printed to the console
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Apply(
+    option => option.Apply(i => Console.WriteLine(i.ToString()), () => Console.WriteLine("no value")),
+    exception => Console.WriteLine(exception.Message));
+
+// "ERROR" is printed to the console
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Apply(
+    option => option.Apply(i => Console.WriteLine(i.ToString()), () => Console.WriteLine("no value")),
+    exception => Console.WriteLine(exception.Message));
+```
+
+``` csharp
+// "1337" is printed to the console
+string returnValue = Result.Success<Option<int>, Exception>(Option.Some(1337)).Apply(
+    i => Console.WriteLine(i.ToString()),
+    () => Console.WriteLine("no value"),
+    exception => Console.WriteLine(exception.Message));
+
+// "no value" is printed to the console
+string returnValue = Result.Success<Option<int>, Exception>(Option.None<int>()).Apply(
+    i => Console.WriteLine(i.ToString()),
+    () => Console.WriteLine("no value"),
+    exception => Console.WriteLine(exception.Message));
+
+// "ERROR" is printed to the console
+string returnValue = Result.Failure<Option<int>, Exception>(new Exception("ERROR")).Apply(
+    i => Console.WriteLine(i.ToString()),
+    () => Console.WriteLine("no value"),
+    exception => Console.WriteLine(exception.Message));
+)
+```
+
 ## Working with `Option<Result<TSuccess, TFailure>>`
 
 `Option<Result<TSuccess, TFailure>>` types can use all extension methods listed [for Options](option.md#working-with-optiontvalue), but some operations are easier to perform using the extension methods listed below.
