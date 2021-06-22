@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
@@ -1223,6 +1224,54 @@ namespace Functional.Tests.Results
 						.Should()
 						.Be(FAILURE);
 			}
+
+			public class AndApply
+			{
+				[Fact]
+				public void ApplySome()
+					=> Result.Success<Option<int>, string>(Option.Some(1337)).Apply(
+						some => { },
+						() => throw new InvalidOperationException("Expected onSome branch to be executed but onNone branch was executed instead!"),
+						error => throw new InvalidOperationException("Expected onSome branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public void ApplyNone()
+					=> Result.Success<Option<int>, string>(Option.None<int>()).Apply(
+						some => throw new InvalidOperationException("Expected onNone branch to be executed but onSome branch was executed instead!"),
+						() => { },
+						error => throw new InvalidOperationException("Expected onNone branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public void ApplyFailure()
+					=> Result.Failure<Option<int>, string>("ERROR").Apply(
+						some => throw new InvalidOperationException("Expected onFailure branch to be executed but onSome branch was executed instead!"),
+						() => throw new InvalidOperationException("Expected onFailure branch to be executed but onNone branch was executed instead!"),
+						failure => { });
+			}
+
+			public class AndApplyAsync
+			{
+				[Fact]
+				public async Task ApplySome()
+					=> await Result.Success<Option<int>, string>(Option.Some(1337)).ApplyAsync(
+						some => Task.CompletedTask,
+						() => throw new InvalidOperationException("Expected onSome branch to be executed but onNone branch was executed instead!"),
+						error => throw new InvalidOperationException("Expected onSome branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyNone()
+					=> await Result.Success<Option<int>, string>(Option.None<int>()).ApplyAsync(
+						some => throw new InvalidOperationException("Expected onNone branch to be executed but onSome branch was executed instead!"),
+						() => Task.CompletedTask,
+						error => throw new InvalidOperationException("Expected onNone branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyFailure()
+					=> await Result.Failure<Option<int>, string>("ERROR").ApplyAsync(
+						some => throw new InvalidOperationException("Expected onFailure branch to be executed but onSome branch was executed instead!"),
+						() => throw new InvalidOperationException("Expected onFailure branch to be executed but onNone branch was executed instead!"),
+						failure => Task.CompletedTask);
+			}
 		}
 
 		public class WhenTaskOfResultOfOption
@@ -1983,6 +2032,54 @@ namespace Functional.Tests.Results
 						.AssertFailure()
 						.Should()
 						.Be(FAILURE);
+			}
+
+			public class AndApply
+			{
+				[Fact]
+				public async Task ApplySome()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).Apply(
+						some => { },
+						() => throw new InvalidOperationException("Expected onSome branch to be executed but onNone branch was executed instead!"),
+						error => throw new InvalidOperationException("Expected onSome branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyNone()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).Apply(
+						some => throw new InvalidOperationException("Expected onNone branch to be executed but onSome branch was executed instead!"),
+						() => { },
+						error => throw new InvalidOperationException("Expected onNone branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyFailure()
+					=> await Task.FromResult(Result.Failure<Option<int>, string>("ERROR")).Apply(
+						some => throw new InvalidOperationException("Expected onFailure branch to be executed but onSome branch was executed instead!"),
+						() => throw new InvalidOperationException("Expected onFailure branch to be executed but onNone branch was executed instead!"),
+						failure => { });
+			}
+
+			public class AndApplyAsync
+			{
+				[Fact]
+				public async Task ApplySome()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.Some(1337))).ApplyAsync(
+						some => Task.CompletedTask,
+						() => throw new InvalidOperationException("Expected onSome branch to be executed but onNone branch was executed instead!"),
+						error => throw new InvalidOperationException("Expected onSome branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyNone()
+					=> await Task.FromResult(Result.Success<Option<int>, string>(Option.None<int>())).ApplyAsync(
+						some => throw new InvalidOperationException("Expected onNone branch to be executed but onSome branch was executed instead!"),
+						() => Task.CompletedTask,
+						error => throw new InvalidOperationException("Expected onNone branch to be executed but onFailure branch was executed instead!"));
+
+				[Fact]
+				public async Task ApplyFailure()
+					=> await Task.FromResult(Result.Failure<Option<int>, string>("ERROR")).ApplyAsync(
+						some => throw new InvalidOperationException("Expected onFailure branch to be executed but onSome branch was executed instead!"),
+						() => throw new InvalidOperationException("Expected onFailure branch to be executed but onNone branch was executed instead!"),
+						failure => Task.CompletedTask);
 			}
 		}
 	}
