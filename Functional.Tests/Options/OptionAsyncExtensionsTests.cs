@@ -65,9 +65,9 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task ToResult()
+			public Task ToFailureResult()
 				=> Value
-					.ToResultAsync(() => Task.FromResult("abc"))
+					.ToFailureResultAsync(() => Task.FromResult("abc"))
 					.AssertSuccess()
 					.Should()
 					.Be(10);
@@ -157,9 +157,9 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task ToResult()
+			public Task ToFailureResult()
 				=> Value
-					.ToResultAsync(() => Task.FromResult("abc"))
+					.ToFailureResultAsync(() => Task.FromResult("abc"))
 					.AssertSuccess()
 					.Should()
 					.Be(10);
@@ -251,9 +251,9 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task ToResult()
+			public Task ToFailureResult()
 				=> Value
-					.ToResultAsync(() => Task.FromResult("abc"))
+					.ToFailureResultAsync(() => Task.FromResult("abc"))
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -337,9 +337,9 @@ namespace Functional.Tests.Options
 					.AssertNone();
 
 			[Fact]
-			public Task ToResult()
+			public Task ToFailureResult()
 				=> Value
-					.ToResultAsync(() => Task.FromResult("abc"))
+					.ToFailureResultAsync(() => Task.FromResult("abc"))
 					.AssertFailure()
 					.Should()
 					.Be("abc");

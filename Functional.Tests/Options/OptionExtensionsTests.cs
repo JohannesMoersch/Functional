@@ -102,7 +102,7 @@ namespace Functional.Tests.Options
 					.Where(i => true)
 					.AssertSome()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public void WhereFalse()
@@ -115,15 +115,24 @@ namespace Functional.Tests.Options
 				=> Value
 					.ToNullable()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
-			public void ToResult()
+			public void ToSuccessResult()
 				=> Value
-					.ToResult(() => "abc")
+					.ToSuccessResult<int, string>()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(IntValue);
+
+			[Fact]
+			public void ToFailureResult()
+				=> Value
+					.ToFailureResult(() => "abc")
 					.AssertSuccess()
 					.Should()
-					.Be(10);
+					.Be(IntValue);
 
 			[Fact]
 			public void DoWithOneParameter()
@@ -271,9 +280,18 @@ namespace Functional.Tests.Options
 					.Be(IntValue);
 
 			[Fact]
-			public Task ToResult()
+			public Task ToSuccessResult()
 				=> Value
-					.ToResult(() => "abc")
+					.ToSuccessResult<int, string>()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(IntValue);
+
+			[Fact]
+			public Task ToFailureResult()
+				=> Value
+					.ToFailureResult(() => "abc")
 					.AssertSuccess()
 					.Should()
 					.Be(IntValue);
@@ -412,9 +430,16 @@ namespace Functional.Tests.Options
 					.BeNull();
 
 			[Fact]
-			public void ToResult()
+			public void ToSuccessResult()
 				=> Value
-					.ToResult(() => "abc")
+					.ToSuccessResult<int, string>()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void ToFailureResult()
+				=> Value
+					.ToFailureResult(() => "abc")
 					.AssertFailure()
 					.Should()
 					.Be("abc");
@@ -560,9 +585,16 @@ namespace Functional.Tests.Options
 					.BeNull();
 
 			[Fact]
-			public Task ToResult()
+			public Task ToSuccessResult()
 				=> Value
-					.ToResult(() => "abc")
+					.ToSuccessResult<int, string>()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public Task ToFailureResult()
+				=> Value
+					.ToFailureResult(() => "abc")
 					.AssertFailure()
 					.Should()
 					.Be("abc");

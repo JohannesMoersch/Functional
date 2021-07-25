@@ -212,9 +212,21 @@ int value = Option.Some<int>(1337).ThrowOnNone(() => new InvalidOperationExcepti
 Option.None<int>().ThrowOnNone(() => new InvalidOperationException("Expected value!"));
 ```
 
-### ToResult
+### ToSuccessResult
 
-If `Some`, this extension will return a `Success` result with the value, and if `None` it will a `Failure` result contains the failure produced by the delegate parameter.
+This extension will return a `Success` result with the option.
+
+```csharp
+// Returns Result<Option<int>, string> with a success value of Option.Some(100)
+Result<Option<int>, string> result = Option.Some<int>(100).ToSuccessResult<int, string>();
+
+// Returns Result<Option<int>, string> with a success value of Option.None<int>()
+Result<Option<int>, string> result = Option.None<int>().ToSuccessResult<int, string>();
+```
+
+### ToFailureResult
+
+If `Some`, this extension will return a `Success` result with the value, and if `None` it will return a `Failure` result contains the failure produced by the delegate parameter.
 
 ```csharp
 // Returns Result<int, string> with a success value of 100

@@ -49,6 +49,16 @@ namespace Functional
 		public static async Task<TValue?> ValueOrNull<TValue>(this Task<Option<TValue>> option)
 			where TValue : struct
 			=> (await option).ValueOrNull();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToFailureResult() instead.")]
+		public static Result<TValue, TFailure> ToResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
+			=> option.ToFailureResult(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToFailureResult() instead.")]
+		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
+			=> (await option).ToFailureResult(failureFactory);
 	}
 
 	public static partial class OptionAsyncExtensions
@@ -82,5 +92,15 @@ namespace Functional
 		[Obsolete("Please also handle none explicitly.")]
 		public static Task ApplyAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> apply)
 			=> option.DoAsync(apply);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToFailureResultAsync() instead.")]
+		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Option<TValue> option, Func<Task<TFailure>> failureFactory)
+			=> await option.ToFailureResultAsync(failureFactory);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Please use .ToFailureResultAsync() instead.")]
+		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Task<Option<TValue>> option, Func<Task<TFailure>> failureFactory)
+			=> await (await option).ToFailureResultAsync(failureFactory);
 	}
 }

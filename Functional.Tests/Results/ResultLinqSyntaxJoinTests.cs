@@ -91,7 +91,7 @@ namespace Functional.Tests.Results
 
 		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<(int, int)>> _output = values => values.OfType<(int, int)>();
 
-		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<Result<(int, int), string>>> _resultOutput = values => values.Select(i => Option.FromNullable(i).ToResult(() => "Failure"));
+		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<Result<(int, int), string>>> _resultOutput = values => values.Select(i => Option.FromNullable(i).ToFailureResult(() => "Failure"));
 
 		[Theory]
 		[ClassData(typeof(Standard))]

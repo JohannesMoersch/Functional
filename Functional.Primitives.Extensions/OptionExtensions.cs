@@ -96,7 +96,13 @@ namespace Functional
 			where TValue : struct
 			=> (await option).ToNullable();
 
-		public static Result<TValue, TFailure> ToResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
+		public static Result<Option<TValue>, TFailure> ToSuccessResult<TValue, TFailure>(this Option<TValue> option)
+			=> Result.Success<Option<TValue>, TFailure>(option);
+
+		public static async Task<Result<Option<TValue>, TFailure>> ToSuccessResult<TValue, TFailure>(this Task<Option<TValue>> option)
+			=> (await option).ToSuccessResult<TValue, TFailure>();
+
+		public static Result<TValue, TFailure> ToFailureResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -107,8 +113,8 @@ namespace Functional
 			return Result.Failure<TValue, TFailure>(failureFactory.Invoke());
 		}
 
-		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
-			=> (await option).ToResult(failureFactory);
+		public static async Task<Result<TValue, TFailure>> ToFailureResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
+			=> (await option).ToFailureResult(failureFactory);
 
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> doWhenSome, Action doWhenNone)
 		{

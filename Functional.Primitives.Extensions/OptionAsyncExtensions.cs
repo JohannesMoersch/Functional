@@ -63,7 +63,7 @@ namespace Functional
 		public static async Task<Option<TValue>> WhereAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task<bool>> predicate)
 			=> await (await option).WhereAsync(predicate);
 
-		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Option<TValue> option, Func<Task<TFailure>> failureFactory)
+		public static async Task<Result<TValue, TFailure>> ToFailureResultAsync<TValue, TFailure>(this Option<TValue> option, Func<Task<TFailure>> failureFactory)
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -74,8 +74,8 @@ namespace Functional
 			return Result.Failure<TValue, TFailure>(await failureFactory.Invoke());
 		}
 
-		public static async Task<Result<TValue, TFailure>> ToResultAsync<TValue, TFailure>(this Task<Option<TValue>> option, Func<Task<TFailure>> failureFactory)
-			=> await (await option).ToResultAsync(failureFactory);
+		public static async Task<Result<TValue, TFailure>> ToFailureResultAsync<TValue, TFailure>(this Task<Option<TValue>> option, Func<Task<TFailure>> failureFactory)
+			=> await (await option).ToFailureResultAsync(failureFactory);
 
 		public static async Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> doWhenSome, Func<Task> doWhenNone)
 		{
