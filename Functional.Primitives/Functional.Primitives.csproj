@@ -6,6 +6,7 @@
     <Title>Functional.Primitives</Title>
     <Description>This package contains allocation free Option and Result discriminated union types and associated factory methods.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

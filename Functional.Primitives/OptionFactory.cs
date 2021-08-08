@@ -25,9 +25,11 @@ namespace Functional
 			=> Some(await value);
 
 		public static Option<T> None<T>()
+#pragma warning disable CS8604 // Possible null reference argument.
 			=> new Option<T>(false, default);
+#pragma warning restore CS8604 // Possible null reference argument.
 
-		public static Option<T> FromNullable<T>(T value)
+		public static Option<T> FromNullable<T>(T? value)
 			where T : class
 			=> value != null
 				? Some(value)
@@ -35,11 +37,11 @@ namespace Functional
 
 		[Obsolete("Please use .FromNullableAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<T>> FromNullable<T>(Task<T> value)
+		public static Task<Option<T>> FromNullable<T>(Task<T?> value)
 			where T : class
 			=> FromNullableAsync(value);
 
-		public static async Task<Option<T>> FromNullableAsync<T>(Task<T> value)
+		public static async Task<Option<T>> FromNullableAsync<T>(Task<T?> value)
 			where T : class
 			=> FromNullable(await value);
 

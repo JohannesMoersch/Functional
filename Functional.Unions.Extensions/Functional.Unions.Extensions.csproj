@@ -6,6 +6,7 @@
     <Title>Functional.Unions.Extensions</Title>
     <Description>This package contains extension methods for working with Union types.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

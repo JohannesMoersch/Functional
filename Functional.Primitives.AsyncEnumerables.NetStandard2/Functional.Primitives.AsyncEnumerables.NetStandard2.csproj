@@ -6,8 +6,9 @@
     <Title>Functional.Primitives.AsyncEnumerables.NetStandard2</Title>
     <Description>This package contains a extension methods for primitives and async enumerables.</Description>
     <PackageTags>functional</PackageTags>
-		<AssemblyName>Functional.Primitives.AsyncEnumerables</AssemblyName>
-		<PackageId>Functional.Primitives.AsyncEnumerables.NetStandard2</PackageId>
+    <AssemblyName>Functional.Primitives.AsyncEnumerables</AssemblyName>
+    <PackageId>Functional.Primitives.AsyncEnumerables.NetStandard2</PackageId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

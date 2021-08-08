@@ -36,7 +36,9 @@ namespace Functional
 					_complete = true;
 			}
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 			value = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
 			return false;
 		}
 	}
@@ -45,14 +47,16 @@ namespace Functional
 	{
 		public T Current { get; private set; }
 
-		object IEnumerator.Current => Current;
+		object? IEnumerator.Current => Current;
 
 		private readonly ReplayableEnumerableData<T> _data;
 
 		private int _index = 0;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ReplayableEnumerator(ReplayableEnumerableData<T> data)
 			=> _data = data;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public void Dispose() { }
 
@@ -64,7 +68,9 @@ namespace Functional
 				return true;
 			}
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 			Current = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
 			return false;
 		}
 

@@ -14,7 +14,9 @@ namespace Functional
 			if (success == null)
 				throw new ArgumentNullException(nameof(success));
 
+#pragma warning disable CS8604 // Possible null reference argument.
 			return new Result<TSuccess, TFailure>(true, success, default);
+#pragma warning restore CS8604 // Possible null reference argument.
 		}
 
 		[Obsolete("Please use .SuccessAsync() instead.")]
@@ -30,7 +32,9 @@ namespace Functional
 			if (failure == null)
 				throw new ArgumentNullException(nameof(failure));
 
+#pragma warning disable CS8604 // Possible null reference argument.
 			return new Result<TSuccess, TFailure>(false, default, failure);
+#pragma warning restore CS8604 // Possible null reference argument.
 		}
 
 		[Obsolete("Please use .FailureAsync() instead.")]

@@ -7,8 +7,9 @@
     <Description>This package depends on all other packages in the Functional suite.</Description>
     <PackageTags>functional</PackageTags>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-		<AssemblyName>Functional.All</AssemblyName>
-		<PackageId>Functional.All.NetStandard2</PackageId>
+    <AssemblyName>Functional.All</AssemblyName>
+    <PackageId>Functional.All.NetStandard2</PackageId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
