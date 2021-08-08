@@ -6,6 +6,7 @@
     <Title>Functional.Unions</Title>
     <Description>This package contains discriminated union types for arbitrary unions of 2 to 8 types and associated factory methods.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

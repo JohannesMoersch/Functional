@@ -10,6 +10,7 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class UnionEnumerableWhereExtensions
 	{
+#pragma warning disable CS8603 // Possible null reference return.
 		public static IEnumerable<TOne> WhereOne<TUnionType, TUnionDefinition, TOne>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne>>> source)
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne>
@@ -369,5 +370,6 @@ namespace Functional
 			where TUnionType : struct
 			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
 			=> source.Where(union => union.Match(_ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => false, _ => true)).Select(union => union.Match(_ => default, _ => default, _ => default, _ => default, _ => default, _ => default, _ => default, _ => _));
+#pragma warning restore CS8603 // Possible null reference return.
 	}
 }

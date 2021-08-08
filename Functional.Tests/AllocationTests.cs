@@ -105,6 +105,7 @@ namespace Functional.Tests
 		private static IEnumerable<ParsedMethodBody> GetMethodBodiesInAssembly(Assembly assembly)
 			=> assembly
 				.GetTypes()
+				.Where(t => t.FullName != "System.Runtime.CompilerServices.NullableAttribute")
 				.SelectMany(GetMethodBodiesFromType);
 
 		private static IEnumerable<ParsedMethodBody> GetMethodBodiesFromType(Type type)

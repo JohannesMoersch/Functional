@@ -6,6 +6,7 @@
     <Title>Functional.AsyncEnumerables</Title>
     <Description>This package contains a framework and extension methods for asynchronous enumerables.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

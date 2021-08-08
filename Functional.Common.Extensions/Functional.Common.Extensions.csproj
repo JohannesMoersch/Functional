@@ -6,6 +6,7 @@
     <Title>Functional.Common.Extensions</Title>
     <Description>This package contains extension methods for .NET types.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@
     <Title>Functional.Primitives.AsyncEnumerables</Title>
     <Description>This package contains a extension methods for primitives and async enumerables.</Description>
     <PackageTags>functional</PackageTags>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

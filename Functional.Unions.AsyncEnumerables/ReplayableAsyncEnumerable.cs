@@ -36,7 +36,9 @@ namespace Functional
 					_complete = true;
 			}
 
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
 			return (false, default);
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 		}
 	}
 
@@ -48,8 +50,10 @@ namespace Functional
 
 		private int _index = 0;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ReplayableAsyncEnumerator(ReplayableAsyncEnumerableData<T> data)
 			=> _data = data;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public ValueTask DisposeAsync()
 			=> _data.DisposeAsync();
@@ -63,7 +67,9 @@ namespace Functional
 				return true;
 			}
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 			Current = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
 			return false;
 		}
 
