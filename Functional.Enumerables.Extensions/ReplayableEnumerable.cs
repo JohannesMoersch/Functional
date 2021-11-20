@@ -45,7 +45,7 @@ namespace Functional
 	{
 		public T Current { get; private set; }
 
-		object IEnumerator.Current => Current;
+		object? IEnumerator.Current => Current;
 
 		private readonly ReplayableEnumerableData<T> _data;
 
