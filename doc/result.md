@@ -203,16 +203,16 @@ Result<int, string> result = Result.Success<int, string>(100).Where(s => false, 
 Result<int, string> result = Result.Failure<int, string>("Failure").Where(s => true, s => $"Failed on value {v}");
 ```
 
-### MapFailure
+### MapOnFailure
 
 If `Success`, this extension will return a `Success` Result with the existing success value, and if `Failure` it will return a `Failure` Result with the value produced by the delegate parameter.
 
 ```csharp
 // Returns Result<int, int> with a success value of 100
-Result<int, int> result = Result.Success<int, string>(100).MapFailure(f => f.Length);
+Result<int, int> result = Result.Success<int, string>(100).MapOnFailure(f => f.Length);
 
 // Returns Result<int, int> with a failure value of 7
-Result<int, int> result = Result.Failure<int, string>("Failure").MapFailure(f => f.Length);
+Result<int, int> result = Result.Failure<int, string>("Failure").MapOnFailure(f => f.Length);
 ```
 
 ### Do
@@ -228,6 +228,16 @@ Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Cons
 
 // Outputs "Failure" to the console and returns Result<int, string> with a failure value of "Failure"
 Result<int, string> result = Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f));
+```
+
+## DoOnFailure
+
+```csharp
+// Returns Result<int, string> with a success value of 100
+Result<int, string> result = Result.Success<int, string>(100).DoOnFailure(message => Console.WriteLine(message));
+
+// Outputs "Failure" to the console and returns Result<int, string> with a failure value of "Failure"
+Result<int, string> result = Result.Failure<int, string>("Failure").DoOnFailure(message => Console.WriteLine(message));
 ```
 
 ### Apply

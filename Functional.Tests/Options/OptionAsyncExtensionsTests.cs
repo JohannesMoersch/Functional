@@ -96,6 +96,16 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
+			public async Task DoOnNone()
+			{
+				bool none = false;
+				await Value.DoOnNoneAsync(() => Task.FromResult(none = true));
+				none
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
 			public async Task Apply()
 			{
 				bool some = false, none = false;
@@ -182,6 +192,16 @@ namespace Functional.Tests.Options
 				some
 					.Should()
 					.BeTrue();
+				none
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
+			public async Task DoOnNone()
+			{
+				bool none = false;
+				await Value.DoOnNoneAsync(() => Task.FromResult(none = true));
 				none
 					.Should()
 					.BeFalse();
@@ -282,6 +302,16 @@ namespace Functional.Tests.Options
 			}
 
 			[Fact]
+			public async Task DoOnNone()
+			{
+				bool none = false;
+				await Value.DoOnNoneAsync(() => Task.FromResult(none = true));
+				none
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
 			public async Task Apply()
 			{
 				bool some = false, none = false;
@@ -362,6 +392,16 @@ namespace Functional.Tests.Options
 				some
 					.Should()
 					.BeFalse();
+				none
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
+			public async Task DoOnNone()
+			{
+				bool none = false;
+				await Value.DoOnNoneAsync(() => Task.FromResult(none = true));
 				none
 					.Should()
 					.BeTrue();

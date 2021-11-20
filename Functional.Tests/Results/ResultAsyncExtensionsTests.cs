@@ -103,6 +103,16 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
+			public async Task DoOnFailure()
+			{
+				bool failure = false;
+				await Value.DoOnFailureAsync(_ => Task.FromResult(failure = true));
+				failure
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
 			public async Task Apply()
 			{
 				bool success = false, failure = false;
@@ -236,6 +246,16 @@ namespace Functional.Tests.Results
 				success
 					.Should()
 					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
+			public async Task DoOnFailure()
+			{
+				bool failure = false;
+				await Value.DoOnFailureAsync(_ => Task.FromResult(failure = true));
 				failure
 					.Should()
 					.BeFalse();
@@ -385,6 +405,16 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
+			public async Task DoOnFailure()
+			{
+				bool failure = false;
+				await Value.DoOnFailureAsync(_ => Task.FromResult(failure = true));
+				failure
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
 			public async Task Apply()
 			{
 				bool success = false, failure = false;
@@ -518,6 +548,16 @@ namespace Functional.Tests.Results
 				success
 					.Should()
 					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
+			public async Task DoOnFailure()
+			{
+				bool failure = false;
+				await Value.DoOnFailureAsync(_ => Task.FromResult(failure = true));
 				failure
 					.Should()
 					.BeTrue();

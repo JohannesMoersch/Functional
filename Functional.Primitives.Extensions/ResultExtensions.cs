@@ -139,6 +139,12 @@ namespace Functional
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
 			=> (await result).Do(onSuccess);
 
+		public static Result<TSuccess, TFailure> DoOnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> onFailure)
+			=> result.Do(DelegateCache<TSuccess>.Void, onFailure);
+
+		public static async Task<Result<TSuccess, TFailure>> DoOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TFailure> onFailure)
+			=> (await result).DoOnFailure(onFailure);
+
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
 			=> result.Do(onSuccess, onFailure);
 
