@@ -102,6 +102,12 @@ namespace Functional
 		public static async Task<Option<TValue>> DoAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> @do)
 			=> await (await option).DoAsync(@do, DelegateCache.Task);
 
+		public static async Task<Option<TValue>> DoOnNoneAsync<TValue>(this Option<TValue> option, Func<Task> @do)
+			=> await option.DoAsync(DelegateCache<TValue>.Task, @do);
+
+		public static async Task<Option<TValue>> DoOnNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task> @do)
+			=> await (await option).DoOnNoneAsync(@do);
+
 		public static Task ApplyAsync<TValue>(this Option<TValue> option, Func<TValue, Task> applyWhenSome, Func<Task> applyWhenNone)
 			=> option.DoAsync(applyWhenSome, applyWhenNone);
 

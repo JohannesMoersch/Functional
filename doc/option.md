@@ -185,6 +185,18 @@ Option<int> option = Option.None<int>().Do(v => Console.WriteLine(v));
 Option<int> option = Option.None<int>().Do(v => Console.WriteLine(v), () => Console.WriteLine("None"));
 ```
 
+### DoOnNone
+
+This extension returns the input `Option` and is meant only to create side effects. If `Some`, this extension will do nothing, and if `None` it will invoke the delegate parameter.
+
+``` csharp
+// Returns Option<int> with a value of 100
+Option<int> option = Option.Some(100).DoOnNone(() => Console.WriteLine("NOTHING"));
+
+// Outputs "NOTHING" to the console and returns Option<int> with no value
+Option<int> option = Option.None<int>().DoOnNone(() => Console.WriteLine("NOTHING"));
+```
+
 ### Apply
 
 This extension returns void and is meant only to create side effects. If `Some`, this extension will invoke the first delegate parameter, and if `None` it will invoke the second delegate parameter (if provided).
