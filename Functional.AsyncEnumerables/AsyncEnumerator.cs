@@ -9,7 +9,9 @@ namespace Functional
     {
 		private readonly Lazy<Task<IEnumerator<T>>> _enumerator;
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public T Current => _enumerator.IsValueCreated && _enumerator.Value.IsCompleted ? _enumerator.Value.Result.Current : default;
+#pragma warning restore CS8603 // Possible null reference return.
 
 		internal AsyncEnumerator(Lazy<Task<IEnumerator<T>>> enumerator)
 			=> _enumerator = enumerator;

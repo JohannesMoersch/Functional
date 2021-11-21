@@ -20,7 +20,9 @@ namespace Functional
 	{
 		public static readonly Func<T, bool> True = _ => true;
 		public static readonly Func<T, bool> False = _ => false;
+#pragma warning disable CS8603 // Possible null reference return.
 		public static readonly Func<T> Default = () => default;
+#pragma warning restore CS8603 // Possible null reference return.
 		public static readonly Func<T, T> Passthrough = _ => _;
 		public static readonly Func<T, Option<T>> Some = _ => Option.Some(_);
 		public static readonly Action<T> Void = _ => { };
@@ -29,7 +31,9 @@ namespace Functional
 
 	internal static class DelegateCache<TIn, TOut>
 	{
+#pragma warning disable CS8603 // Possible null reference return.
 		public static readonly Func<TIn, TOut> Default = _ => default;
+#pragma warning restore CS8603 // Possible null reference return.
 	}
 
 	internal static class Helpers

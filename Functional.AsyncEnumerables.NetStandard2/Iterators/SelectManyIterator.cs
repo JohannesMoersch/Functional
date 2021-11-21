@@ -15,12 +15,14 @@ namespace Functional
 
 		public TResult Current { get; private set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public SelectManyIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
 			_collectionSelector = collectionSelector ?? throw new ArgumentNullException(nameof(collectionSelector));
 			_resultSelector = resultSelector ?? throw new ArgumentNullException(nameof(resultSelector));
 		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public async Task<bool> MoveNext()
 		{

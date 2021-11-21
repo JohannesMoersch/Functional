@@ -69,7 +69,7 @@ namespace Functional
 
 			public (TOuter outer, IEnumerable<TInner> inner) Current { get; private set; }
 
-			private ILookup<TKey, TInner> _lookup;
+			private ILookup<TKey, TInner>? _lookup;
 			private async Task<ILookup<TKey, TInner>> GetLookup()
 				=> _lookup ?? (_lookup = (await _inner).ToLookup(_innerKeySelector));
 

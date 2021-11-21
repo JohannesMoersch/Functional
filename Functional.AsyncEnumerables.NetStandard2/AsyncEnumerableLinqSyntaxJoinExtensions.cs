@@ -68,10 +68,11 @@ namespace Functional
 
 			public (TOuter outer, IEnumerable<TInner> inner) Current { get; private set; }
 
-			private ILookup<TKey, TInner> _lookup;
+			private ILookup<TKey, TInner>? _lookup;
 			private async Task<ILookup<TKey, TInner>> GetLookup()
 				=> _lookup ?? (_lookup = (await _inner).ToLookup(_innerKeySelector));
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 			public AsyncGroupJoinEnumerator(IAsyncEnumerator<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector)
 			{
 				_outer = outer ?? throw new ArgumentNullException(nameof(outer));
@@ -79,6 +80,7 @@ namespace Functional
 				_outerKeySelector = outerKeySelector ?? throw new ArgumentNullException(nameof(outerKeySelector));
 				_innerKeySelector = innerKeySelector ?? throw new ArgumentNullException(nameof(innerKeySelector));
 			}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 			public async Task<bool> MoveNext()
 			{

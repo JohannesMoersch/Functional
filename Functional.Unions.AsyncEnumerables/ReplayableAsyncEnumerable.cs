@@ -58,6 +58,7 @@ namespace Functional
 		public ValueTask DisposeAsync()
 			=> _data.DisposeAsync();
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 		public async ValueTask<bool> MoveNextAsync()
 		{
 			var value = await _data.TryGetValue(_index++);
@@ -67,11 +68,10 @@ namespace Functional
 				return true;
 			}
 
-#pragma warning disable CS8601 // Possible null reference assignment.
 			Current = default;
-#pragma warning restore CS8601 // Possible null reference assignment.
 			return false;
 		}
+#pragma warning restore CS8601 // Possible null reference assignment.
 
 		public void Reset()
 			=> _index = 0;

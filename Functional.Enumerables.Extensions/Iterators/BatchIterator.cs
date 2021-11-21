@@ -16,6 +16,7 @@ namespace Functional
 
 		private bool _ended;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public BatchIterator(IEnumerator<T> enumerator, int batchSize)
 		{
 			_enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
@@ -24,6 +25,7 @@ namespace Functional
 			if (_batchSize <= 0)
 				throw new ArgumentOutOfRangeException(nameof(batchSize), "Value must be greater than zero.");
 		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public void Dispose()
 			=> _enumerator.Dispose();
@@ -52,7 +54,9 @@ namespace Functional
 			}
 
 			_ended = true;
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 			Current = default;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 			return false;
 		}
 

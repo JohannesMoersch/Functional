@@ -18,6 +18,7 @@ namespace Functional
 
 		public TResult Current { get; private set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ConcurrentSelectIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
@@ -27,6 +28,7 @@ namespace Functional
 			if (_maxConcurrency <= 0)
 				throw new ArgumentOutOfRangeException(nameof(maxConcurrency), "Value must be greater than zero.");
 		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public ValueTask DisposeAsync()
 			=> _enumerator.DisposeAsync();
@@ -46,7 +48,9 @@ namespace Functional
 			if (_taskQueue.Count == 0)
 			{
 				_maxConcurrency = 0;
+#pragma warning disable CS8601 // Possible null reference assignment.
 				Current = default;
+#pragma warning restore CS8601 // Possible null reference assignment.
 				return false;
 			}
 

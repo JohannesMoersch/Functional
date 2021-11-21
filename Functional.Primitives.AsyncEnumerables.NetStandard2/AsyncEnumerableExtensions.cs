@@ -10,11 +10,14 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class AsyncEnumerableExtensions
     {
+#pragma warning disable CS8603 // Possible null reference return.
 		public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
+#pragma warning restore CS8603 // Possible null reference return.
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 		{
 			var successes = new TSuccess[4];
@@ -47,12 +50,13 @@ namespace Functional
 
 			return Result.Success<TSuccess[], TFailure>(successes);
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 		{
 			var successes = new TSuccess[4];
 
-			List<TFailure> failures = null;
+			List<TFailure>? failures = null;
 
 			var enumerator = source.GetEnumerator();
 
@@ -106,6 +110,7 @@ namespace Functional
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
 		{
 			var values = new TValue[4];
@@ -138,5 +143,6 @@ namespace Functional
 
 			return Option.Some(values);
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 	}
 }

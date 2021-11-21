@@ -10,16 +10,21 @@ namespace Functional
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class EnumerableExtensions
     {
+#pragma warning disable CS8603 // Possible null reference return.
 		public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
+#pragma warning restore CS8603 // Possible null reference return.
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<IEnumerable<T>> WhereSome<T>(this Task<IEnumerable<Option<T>>> source)
 			=> (await source)
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
+#pragma warning restore CS8603 // Possible null reference return.
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static Result<TSuccess[], TFailure> TakeUntilFailure<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
 		{	
 			TSuccess[] successes;
@@ -34,7 +39,7 @@ namespace Functional
 			int index = 0;
 			foreach (var value in source)	
 			{
-				if (value.Match(_ => false, _ => true))	
+				if (value.Match(_ => false, _ => true))
 					return Result.Failure<TSuccess[], TFailure>(value.Match(_ => default, failure => failure));
 
 				if (index == successes.Length)
@@ -55,10 +60,12 @@ namespace Functional
 
 			return Result.Success<TSuccess[], TFailure>(successes);	
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
 			=> (await source).TakeUntilFailure();
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
 		{
 			TSuccess[] successes;
@@ -96,6 +103,7 @@ namespace Functional
 
 			return Result.Success<TSuccess[], TFailure>(successes);
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 
 		public static Result<TSuccess[], TFailure[]> TakeAll<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
 		{
@@ -108,7 +116,7 @@ namespace Functional
 			else
 				successes = new TSuccess[4];
 
-			List<TFailure> failures = null;
+			List<TFailure>? failures = null;
 
 			int index = 0;
 			foreach (var value in source)
@@ -167,7 +175,7 @@ namespace Functional
 			else
 				successes = new TSuccess[4];
 
-			List<TFailure> failures = null;
+			List<TFailure>? failures = null;
 
 			int index = 0;
 			foreach (var value in source)
@@ -266,6 +274,7 @@ namespace Functional
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
 			=> (await source).TryLast(predicate);
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IEnumerable<Task<Option<TValue>>> source)
 		{
 			TValue[] values;
@@ -303,7 +312,9 @@ namespace Functional
 
 			return Option.Some(values);
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 
+#pragma warning disable CS8603 // Possible null reference return.
 		public static Option<TValue[]> TakeUntilNone<TValue>(this IEnumerable<Option<TValue>> source)
 		{
 			TValue[] values;
@@ -339,6 +350,7 @@ namespace Functional
 
 			return Option.Some(values);
 		}
+#pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this Task<IEnumerable<Option<TValue>>> source)
 			=> (await source).TakeUntilNone();

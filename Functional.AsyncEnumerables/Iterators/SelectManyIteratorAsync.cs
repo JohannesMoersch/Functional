@@ -11,16 +11,18 @@ namespace Functional
 		private readonly Func<TSource, int, IAsyncEnumerable<TCollection>> _collectionSelector;
 		private readonly Func<TSource, TCollection, Task<TResult>> _resultSelector;
 		private int _count;
-		private IAsyncEnumerator<TCollection> _subEnumerator;
+		private IAsyncEnumerator<TCollection>? _subEnumerator;
 
 		public TResult Current { get; private set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public SelectManyIteratorAsync(IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_collectionSelector = collectionSelector ?? throw new ArgumentNullException(nameof(collectionSelector));
 			_resultSelector = resultSelector ?? throw new ArgumentNullException(nameof(resultSelector));
 		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public async ValueTask DisposeAsync()
 		{

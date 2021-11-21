@@ -75,7 +75,7 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new Dictionary<TKey, List<TElement>>();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>> _groupingEnumerator;
+			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
 
 			public Result<IGrouping<TKey, TElement>, TFailure> Current { get; private set; }
 
@@ -196,7 +196,7 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new Dictionary<TKey, List<TElement>>();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>> _groupingEnumerator;
+			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
 
 			public Result<IGrouping<TKey, TElement>, TFailure> Current { get; private set; }
 

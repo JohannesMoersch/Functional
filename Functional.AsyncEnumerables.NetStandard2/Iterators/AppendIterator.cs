@@ -14,11 +14,13 @@ namespace Functional
 
 		public TSource Current { get; private set; }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public AppendIterator(IAsyncEnumerable<TSource> source, TSource element)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetEnumerator();
 			_element = element;
 		}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public async Task<bool> MoveNext()
 		{
