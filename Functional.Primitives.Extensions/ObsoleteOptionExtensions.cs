@@ -8,15 +8,19 @@ namespace Functional
 {
 	public static partial class OptionExtensions
 	{
+#pragma warning disable CS8601 // Possible null reference assignment.
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("This method always produces Some. If you need this behaviour, please use .Match() instead.")]
 		public static Option<TValue> DefaultIfNone<TValue>(this Option<TValue> option, TValue defaultValue = default)
 			=> option.TryGetValue(out var some) ? Option.Some(some) : Option.Some(defaultValue);
+#pragma warning restore CS8601 // Possible null reference assignment.
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("This method always produces Some. If you need this behaviour, please use .Match() instead.")]
 		public static async Task<Option<TValue>> DefaultIfNone<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
 			=> (await option).DefaultIfNone(defaultValue);
+#pragma warning restore CS8601 // Possible null reference assignment.
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("Please use .BindOnNone() instead.")]

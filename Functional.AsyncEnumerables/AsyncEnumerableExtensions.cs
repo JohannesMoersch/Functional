@@ -84,8 +84,8 @@ namespace Functional
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second));
 		
-		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source)
-			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource>(source, default));
+		public static IAsyncEnumerable<TSource?> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source)
+			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource?>(source, default));
 
 		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source, TSource defaultValue)
 			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource>(source, defaultValue));
@@ -106,7 +106,7 @@ namespace Functional
 			return enumerator.Current;
 		}
 
-		public static async Task<TSource> ElementAtOrDefault<TSource>(this IAsyncEnumerable<TSource> source, int index)
+		public static async Task<TSource?> ElementAtOrDefault<TSource>(this IAsyncEnumerable<TSource> source, int index)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -135,7 +135,7 @@ namespace Functional
 		public static Task<TSource> First<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> source.Where(predicate).First();
 
-		public static async Task<TSource> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source)
+		public static async Task<TSource?> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -145,7 +145,7 @@ namespace Functional
 			return (await enumerator.MoveNextAsync()) ? enumerator.Current : default;
 		}
 
-		public static Task<TSource> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		public static Task<TSource?> FirstOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> source.Where(predicate).FirstOrDefault();
 
 		public static IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
@@ -188,7 +188,7 @@ namespace Functional
 		public static Task<TSource> Single<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> source.Where(predicate).Single();
 
-		public static async Task<TSource> SingleOrDefault<TSource>(this IAsyncEnumerable<TSource> source)
+		public static async Task<TSource?> SingleOrDefault<TSource>(this IAsyncEnumerable<TSource> source)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -206,7 +206,7 @@ namespace Functional
 			return result;
 		}
 
-		public static Task<TSource> SingleOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		public static Task<TSource?> SingleOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> source.Where(predicate).SingleOrDefault();
 			
 		public static IAsyncEnumerable<TSource> Skip<TSource>(this IAsyncEnumerable<TSource> source, int count)

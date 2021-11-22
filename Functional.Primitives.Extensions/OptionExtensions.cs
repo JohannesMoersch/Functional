@@ -44,10 +44,16 @@ namespace Functional
 		public static async Task<Option<TResult>> Bind<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TResult>> bind)
 			=> (await option).Bind(bind);
 
-		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, TValue defaultValue = default)
+		public static TValue? ValueOrDefault<TValue>(this Option<TValue> option)
+			=> option.TryGetValue(out var some) ? some : default;
+
+		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, TValue defaultValue)
 			=> option.TryGetValue(out var some) ? some : defaultValue;
 
-		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue = default)
+		public static async Task<TValue?> ValueOrDefault<TValue>(this Task<Option<TValue>> option)
+			=> (await option).ValueOrDefault();
+
+		public static async Task<TValue> ValueOrDefault<TValue>(this Task<Option<TValue>> option, TValue defaultValue)
 			=> (await option).ValueOrDefault(defaultValue);
 
 		public static TValue ValueOrDefault<TValue>(this Option<TValue> option, Func<TValue> valueFactory)
