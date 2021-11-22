@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="_._" Pack="true" PackagePath="lib/netstandard2.0/_._" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Functional.AsyncEnumerables.NetStandard2\Functional.AsyncEnumerables.NetStandard2.csproj" />
     <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj" />
