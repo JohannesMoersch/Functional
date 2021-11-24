@@ -47,8 +47,17 @@ namespace Functional
 		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
 			where TValue : notnull
 		{
-			if (source.TryGetValue(key, out var value) && value != null)
+			if (source.TryRemove(key, out var value) && value != null)
 				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
+
+		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue?> source, TKey key)
+			where TValue : struct
+		{
+			if (source.TryRemove(key, out var value) && value is TValue v)
+				return Option.Some(v);
 
 			return Option.None<TValue>();
 		}

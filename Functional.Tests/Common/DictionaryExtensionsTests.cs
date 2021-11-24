@@ -46,6 +46,34 @@ namespace Functional.Tests.Common
 				.AssertNone();
 
 		[Fact]
+		public void TryRemoveValueWhenKeyPresent()
+		{
+			var dictionary = new ConcurrentDictionary<int, int>();
+			dictionary.TryAdd(1, 1);
+
+			dictionary
+				.TryRemove(1)
+				.AssertSome()
+				.Should()
+				.Be(1);
+
+			dictionary.ContainsKey(1).Should().BeFalse();
+		}
+
+		[Fact]
+		public void TryRemoveValueWhenKeyPresentAndObjectNull()
+		{
+			var dictionary = new ConcurrentDictionary<int, object>();
+			dictionary.TryAdd(1, null);
+
+			dictionary
+				.TryRemove(1)
+				.AssertNone();
+
+			dictionary.ContainsKey(1).Should().BeFalse();
+		}
+
+		[Fact]
 		public void TryRemoveValueWhenKeyPresentAndIntegerValueNotNull()
 		{
 			var dictionary = new ConcurrentDictionary<int, int?>();
