@@ -172,9 +172,11 @@ namespace Functional
 			=> (await option).Do(@do, DelegateCache.Void);
 
 		public static Option<TValue> DoOnNone<TValue>(this Option<TValue> option, Action @do)
+			where TValue : notnull
 			=> option.Do(DelegateCache<TValue>.Void, @do);
 
 		public static async Task<Option<TValue>> DoOnNone<TValue>(this Task<Option<TValue>> option, Action @do)
+			where TValue : notnull
 			=> (await option).DoOnNone(@do);
 
 		public static void Apply<TValue>(this Option<TValue> option, Action<TValue> applyWhenSome, Action applyWhenNone)

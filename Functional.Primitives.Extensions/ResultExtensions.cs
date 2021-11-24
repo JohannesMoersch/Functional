@@ -192,9 +192,13 @@ namespace Functional
 			=> (await result).Do(onSuccess);
 
 		public static Result<TSuccess, TFailure> DoOnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> onFailure)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> result.Do(DelegateCache<TSuccess>.Void, onFailure);
 
 		public static async Task<Result<TSuccess, TFailure>> DoOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TFailure> onFailure)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> (await result).DoOnFailure(onFailure);
 
 		public static void Apply<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess, Action<TFailure> onFailure)
