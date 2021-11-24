@@ -15,11 +15,17 @@ namespace Functional
 		private static class ResultJoinEnumerable
 		{
 			public static IResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new ResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner, outerKeySelector, innerKeySelector)
 					.SelectMany(result => result.Match(success => success.inner.Select(value => resultSelector.Invoke(success.outer, value)).Select(Result.Success<TResult, TFailure>), failure => new[] { Result.Failure<TResult, TFailure>(failure) }))
 					.AsResultEnumerable();
 
 			public static async Task<IResultEnumerable<TResult, TFailure>> Create<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new ResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, await inner, outerKeySelector, innerKeySelector)
 					.SelectMany(result => result.Match(success => success.inner.Select(value => resultSelector.Invoke(success.outer, value)).Select(Result.Success<TResult, TFailure>), failure => new[] { Result.Failure<TResult, TFailure>(failure) }))
 					.AsResultEnumerable();
@@ -28,17 +34,25 @@ namespace Functional
 		private static class ResultGroupJoinEnumerable
 		{
 			public static IResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new ResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner, outerKeySelector, innerKeySelector)
 					.Select(result => result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success.outer, success.inner)), Result.Failure<TResult, TFailure>))
 					.AsResultEnumerable();
 
 			public static async Task<IResultEnumerable<TResult, TFailure>> Create<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new ResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, await inner, outerKeySelector, innerKeySelector)
 					.Select(result => result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success.outer, success.inner)), Result.Failure<TResult, TFailure>))
 					.AsResultEnumerable();
 		}
 
 		private class ResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure> : IResultEnumerable<(TOuter outer, IEnumerable<TInner> inner), TFailure>
+			where TOuter : notnull
+			where TFailure : notnull
 		{
 			public readonly IResultEnumerable<TOuter, TFailure> _outer;
 			public readonly IEnumerable<TInner> _inner;
@@ -61,6 +75,8 @@ namespace Functional
 		}
 
 		private class ResultGroupJoinEnumerator<TOuter, TInner, TKey, TFailure> : IEnumerator<Result<(TOuter outer, IEnumerable<TInner> inner), TFailure>>
+			where TOuter : notnull
+			where TFailure : notnull
 		{
 			private readonly IEnumerator<Result<TOuter, TFailure>> _outer;
 			private readonly IEnumerable<TInner> _inner;
@@ -115,16 +131,25 @@ namespace Functional
 		private static class AsyncResultJoinEnumerable
 		{
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, Task.FromResult(inner), outerKeySelector, innerKeySelector)
 					.SelectMany(result => result.Match(success => success.inner.Select(value => resultSelector.Invoke(success.outer, value)).Select(value => Result.Success<TResult, TFailure>(value)), failure => new[] { Result.Failure<TResult, TFailure>(failure) }))
 					.AsAsyncResultEnumerable();
 
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner, outerKeySelector, innerKeySelector)
 					.SelectMany(result => result.Match(success => success.inner.Select(value => resultSelector.Invoke(success.outer, value)).Select(value => Result.Success<TResult, TFailure>(value)), failure => new[] { Result.Failure<TResult, TFailure>(failure) }))
 					.AsAsyncResultEnumerable();
 
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector)
 					.SelectMany(result => result.Match(success => success.inner.Select(value => resultSelector.Invoke(success.outer, value)).Select(value => Result.Success<TResult, TFailure>(value)), failure => new[] { Result.Failure<TResult, TFailure>(failure) }))
 					.AsAsyncResultEnumerable();
@@ -133,22 +158,33 @@ namespace Functional
 		private static class AsyncResultGroupJoinEnumerable
 		{
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, Task.FromResult(inner), outerKeySelector, innerKeySelector)
 					.Select(result => result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success.outer, success.inner)), Result.Failure<TResult, TFailure>))
 					.AsAsyncResultEnumerable();
 
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner, outerKeySelector, innerKeySelector)
 					.Select(result => result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success.outer, success.inner)), Result.Failure<TResult, TFailure>))
 					.AsAsyncResultEnumerable();
 
 			public static IAsyncResultEnumerable<TResult, TFailure> Create<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+				where TOuter : notnull
+				where TFailure : notnull
+				where TResult : notnull
 				=> new AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure>(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector)
 					.Select(result => result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success.outer, success.inner)), Result.Failure<TResult, TFailure>))
 					.AsAsyncResultEnumerable();
 		}
 
 		private class AsyncResultGroupJoinEnumerable<TOuter, TInner, TKey, TFailure> : IAsyncResultEnumerable<(TOuter outer, IEnumerable<TInner> inner), TFailure>
+			where TOuter : notnull
+			where TFailure : notnull
 		{
 			public readonly IAsyncResultEnumerable<TOuter, TFailure> _outer;
 			public readonly Task<IEnumerable<TInner>> _inner;
@@ -168,6 +204,8 @@ namespace Functional
 		}
 
 		private class AsyncResultGroupJoinEnumerator<TOuter, TInner, TKey, TFailure> : IAsyncEnumerator<Result<(TOuter outer, IEnumerable<TInner> inner), TFailure>>
+			where TOuter : notnull
+			where TFailure : notnull
 		{
 			private readonly IAsyncEnumerator<Result<TOuter, TFailure>> _outer;
 			private readonly Task<IEnumerable<TInner>> _inner;
@@ -220,18 +258,30 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultJoinEnumerable.Create(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -244,26 +294,43 @@ namespace Functional
 				);
 
 		private static async Task<IResultEnumerable<TResult, TFailure>> DoJoin<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -273,25 +340,37 @@ namespace Functional
 				.AsResultEnumerable();
 
 		private static async Task<IResultEnumerable<TResult, TFailure>> DoJoin<TOuter, TInner, TKey, TResult, TFailure>(IEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		private static Task<IEnumerable<Result<TResult, TFailure>>> DoJoin<TOuter, TInner, TKey, TResult, TFailure>(Task<IEnumerable<TOuter>> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -300,6 +379,8 @@ namespace Functional
 				);
 
 		private static Task<IEnumerable<Result<TResult, TFailure>>> DoJoin<TOuter, TInner, TKey, TResult, TFailure>(Task<IEnumerable<TOuter>> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -309,40 +390,62 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		// ------------------------- //
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -355,14 +458,23 @@ namespace Functional
 				);
 
 		private static async Task<IAsyncResultEnumerable<TResult, TFailure>> DoJoin<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -376,14 +488,22 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -394,6 +514,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -404,6 +526,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -414,6 +538,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -424,6 +550,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Join<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -437,18 +565,30 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> ResultGroupJoinEnumerable.Create(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -461,26 +601,43 @@ namespace Functional
 				);
 
 		private static async Task<IResultEnumerable<TResult, TFailure>> DoGroupJoin<TOuter, TInner, TKey, TResult, TFailure>(IResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IResultEnumerable<TOuter, TFailure> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -490,25 +647,37 @@ namespace Functional
 				.AsResultEnumerable();
 
 		private static async Task<IResultEnumerable<TResult, TFailure>> DoGroupJoin<TOuter, TInner, TKey, TResult, TFailure>(IEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IEnumerable<TOuter> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		private static Task<IEnumerable<Result<TResult, TFailure>>> DoGroupJoin<TOuter, TInner, TKey, TResult, TFailure>(Task<IEnumerable<TOuter>> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -517,6 +686,8 @@ namespace Functional
 				);
 
 		private static Task<IEnumerable<Result<TResult, TFailure>>> DoGroupJoin<TOuter, TInner, TKey, TResult, TFailure>(Task<IEnumerable<TOuter>> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -526,40 +697,62 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async success => Result.Success<IEnumerable<TInner>, TFailure>(await success.AsEnumerable()), failure => Task.FromResult(Result.Failure<IEnumerable<TInner>, TFailure>(failure))), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this Task<IEnumerable<TOuter>> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		// ------------------------- //
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncResultGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -572,14 +765,23 @@ namespace Functional
 				);
 
 		private static async Task<IAsyncResultEnumerable<TResult, TFailure>> DoGroupJoin<TOuter, TInner, TKey, TResult, TFailure>(IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector).AsAsyncResultEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -593,14 +795,22 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncResultEnumerable<TOuter, TFailure> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TOuter : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<IEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -611,6 +821,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Task<Result<IEnumerable<TInner>, TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -621,6 +833,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<IAsyncEnumerable<TInner>, TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 				=> inner
 					.Match
 					(
@@ -631,6 +845,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Result<TInner[], TFailure> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(
@@ -641,6 +857,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> GroupJoin<TOuter, TInner, TKey, TResult, TFailure>(this IAsyncEnumerable<TOuter> outer, Task<Result<TInner[], TFailure>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
+			where TFailure : notnull
+			where TResult : notnull
 			=> inner
 				.Match
 				(

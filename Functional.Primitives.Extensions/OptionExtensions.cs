@@ -126,6 +126,7 @@ namespace Functional
 
 		public static Result<TValue, TFailure> ToResult<TValue, TFailure>(this Option<TValue> option, Func<TFailure> failureFactory)
 			where TValue : notnull
+			where TFailure : notnull
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -138,6 +139,7 @@ namespace Functional
 
 		public static async Task<Result<TValue, TFailure>> ToResult<TValue, TFailure>(this Task<Option<TValue>> option, Func<TFailure> failureFactory)
 			where TValue : notnull
+			where TFailure : notnull
 			=> (await option).ToResult(failureFactory);
 
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> doWhenSome, Action doWhenNone)

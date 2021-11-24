@@ -12,6 +12,8 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TSuccess, TFailure> Where<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
@@ -24,6 +26,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
@@ -38,6 +42,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
@@ -50,6 +56,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TSuccess, TFailure>> Where<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));

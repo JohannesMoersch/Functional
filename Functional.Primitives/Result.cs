@@ -8,6 +8,8 @@ namespace Functional
 {
 	[Serializable]
 	public struct Result<TSuccess, TFailure> : IEquatable<Result<TSuccess, TFailure>>, ISerializable
+		where TSuccess : notnull
+		where TFailure : notnull
 	{
 		private readonly bool? _isSuccess;
 

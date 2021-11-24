@@ -12,6 +12,8 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.Select((Func<TSuccess, Result<TSuccess, TFailure>>)(success => (Result<TSuccess, TFailure>)ResultExtensions.Map<Unit, TFailure, TSuccess>(failurePredicate
 					.Invoke((TSuccess)success)
@@ -21,6 +23,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IEnumerable<TSuccess> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.SelectAsync(success => failurePredicate
 					.Invoke(success)
@@ -30,6 +34,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.Select(success => failurePredicate
 					.Invoke(success)
@@ -39,6 +45,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.SelectAsync(success => failurePredicate
 					.Invoke(success)
@@ -48,6 +56,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.Select((Func<Result<TSuccess, TFailure>, Result<TSuccess, TFailure>>)(value => value
 					.Bind((Func<TSuccess, Result<TSuccess, TFailure>>)(success => (Result<TSuccess, TFailure>)ResultExtensions.Map<Unit, TFailure, TSuccess>(failurePredicate
@@ -59,6 +69,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.SelectAsync(value => value
 					.BindAsync(success => failurePredicate
@@ -70,6 +82,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.Select(value => value
 					.Bind(success => failurePredicate
@@ -81,6 +95,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> source
 				.SelectAsync(value => value
 					.BindAsync(success => failurePredicate

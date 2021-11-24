@@ -21,6 +21,8 @@ namespace Functional
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			var successes = new TSuccess[4];
 
@@ -55,6 +57,8 @@ namespace Functional
 #pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			TSuccess[] successes = new TSuccess[4];
 

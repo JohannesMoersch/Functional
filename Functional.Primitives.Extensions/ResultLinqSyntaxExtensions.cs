@@ -10,10 +10,16 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> result.Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> result.Map(map);
 	}
 
@@ -22,6 +28,10 @@ namespace Functional
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -42,10 +52,18 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -66,10 +84,18 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -90,10 +116,18 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await result).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -114,6 +148,10 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Result<TResult, TFailure>> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await result).SelectMany(bind, resultSelector);
 	}
 }

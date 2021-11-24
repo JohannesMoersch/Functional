@@ -10,6 +10,8 @@ namespace Functional
 	public static class Result
 	{
 		public static Result<TSuccess, TFailure> Success<TSuccess, TFailure>(TSuccess success)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (success == null)
 				throw new ArgumentNullException(nameof(success));
@@ -22,12 +24,18 @@ namespace Functional
 		[Obsolete("Please use .SuccessAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, TFailure>> Success<TSuccess, TFailure>(Task<TSuccess> success)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> SuccessAsync<TSuccess, TFailure>(success);
 		
 		public static async Task<Result<TSuccess, TFailure>> SuccessAsync<TSuccess, TFailure>(Task<TSuccess> success)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> Success<TSuccess, TFailure>(await success);
 
 		public static Result<TSuccess, TFailure> Failure<TSuccess, TFailure>(TFailure failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failure == null)
 				throw new ArgumentNullException(nameof(failure));
@@ -40,17 +48,25 @@ namespace Functional
 		[Obsolete("Please use .FailureAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, TFailure>> Failure<TSuccess, TFailure>(Task<TFailure> failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> FailureAsync<TSuccess, TFailure>(failure);
 
 		public static async Task<Result<TSuccess, TFailure>> FailureAsync<TSuccess, TFailure>(Task<TFailure> failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> Failure<TSuccess, TFailure>(await failure);
 
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, TSuccess success, TFailure failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> isSuccess
 				? Success<TSuccess, TFailure>(success)
 				: Failure<TSuccess, TFailure>(failure);
 
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, TSuccess success, Func<TFailure> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -61,6 +77,8 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, TSuccess success, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -71,6 +89,8 @@ namespace Functional
 		}
 
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, TFailure failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -81,6 +101,8 @@ namespace Functional
 		}
 
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, Func<TFailure> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -94,6 +116,8 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -107,6 +131,8 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, TFailure failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -117,6 +143,8 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<TFailure> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -130,6 +158,8 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -145,15 +175,19 @@ namespace Functional
 		[Obsolete("Please use .CreateAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, TFailure>> Create<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> CreateAsync(isSuccess, successFactory, failureFactory);
 
 		public static Result<TSuccess, Exception> Try<TSuccess>(Func<TSuccess> successFactory)
+			where TSuccess : notnull
 			=> Try<TSuccess, Exception>(successFactory);
 
 		public static Result<Unit, Exception> Try(Action successFactory)
 			=> Try<Exception>(successFactory);
 
 		public static Result<TSuccess, TException> Try<TSuccess, TException>(Func<TSuccess> successFactory) where TException : Exception
+			where TSuccess : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -188,9 +222,11 @@ namespace Functional
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, Exception>> Try<TSuccess>(Func<Task<TSuccess>> successFactory)
+			where TSuccess : notnull
 			=> TryAsync(successFactory);
 
 		public static async Task<Result<TSuccess, Exception>> TryAsync<TSuccess>(Func<Task<TSuccess>> successFactory)
+			where TSuccess : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -228,6 +264,8 @@ namespace Functional
 		}
 
 		public static Result<TSuccess, TFailure> Try<TSuccess, TFailure>(Func<TSuccess> successFactory, Func<Exception, TFailure> @catch)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -246,6 +284,7 @@ namespace Functional
 		}
 
 		public static Result<Unit, TFailure> Try<TFailure>(Action successFactory, Func<Exception, TFailure> @catch)
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -268,9 +307,13 @@ namespace Functional
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<TSuccess, TFailure>> Try<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> TryAsync(successFactory, @catch);
 
 		public static async Task<Result<TSuccess, TFailure>> TryAsync<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -291,9 +334,11 @@ namespace Functional
 		[Obsolete("Please use .TryAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Result<Unit, TFailure>> Try<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
+			where TFailure : notnull
 			=> TryAsync(successFactory, @catch);
 
 		public static async Task<Result<Unit, TFailure>> TryAsync<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
+			where TFailure : notnull
 		{
 			if (successFactory == null)
 				throw new ArgumentNullException(nameof(successFactory));
@@ -314,18 +359,26 @@ namespace Functional
 		}
 
 		public static Result<Unit, TFailure> Unit<TFailure>()
+			where TFailure : notnull
 			=> Success<Unit, TFailure>(Functional.Unit.Value);
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, TFailure failure)
+			where TFailure : notnull
 			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failure);
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, Func<TFailure> failureFactory)
+			where TFailure : notnull
 			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failureFactory.Invoke());
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>(
+		public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
-			Result<TSuccess2, TFailure> r2)
+			Result<TSuccess2, TFailure> r2
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess())
 				return Success<(TSuccess1, TSuccess2), TFailure[]>((r1.SuccessUnsafe(), r2.SuccessUnsafe()));
@@ -340,11 +393,16 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
-			Result<TSuccess3, TFailure> r3)
+			Result<TSuccess3, TFailure> r3
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3), TFailure[]>((
@@ -364,12 +422,18 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
-			Result<TSuccess4, TFailure> r4)
+			Result<TSuccess4, TFailure> r4
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]>((
@@ -392,13 +456,20 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
 			Result<TSuccess4, TFailure> r4,
-			Result<TSuccess5, TFailure> r5)
+			Result<TSuccess5, TFailure> r5
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TSuccess5 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess() && r5.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]>((
@@ -424,14 +495,22 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
 			Result<TSuccess4, TFailure> r4,
 			Result<TSuccess5, TFailure> r5,
-			Result<TSuccess6, TFailure> r6)
+			Result<TSuccess6, TFailure> r6
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TSuccess5 : notnull
+			where TSuccess6 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess() && r5.IsSuccess() && r6.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]>((
@@ -460,15 +539,24 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
 			Result<TSuccess4, TFailure> r4,
 			Result<TSuccess5, TFailure> r5,
 			Result<TSuccess6, TFailure> r6,
-			Result<TSuccess7, TFailure> r7)
+			Result<TSuccess7, TFailure> r7
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TSuccess5 : notnull
+			where TSuccess6 : notnull
+			where TSuccess7 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess() && r5.IsSuccess() && r6.IsSuccess() && r7.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]>((
@@ -500,8 +588,8 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -509,7 +597,17 @@ namespace Functional
 			Result<TSuccess5, TFailure> r5,
 			Result<TSuccess6, TFailure> r6,
 			Result<TSuccess7, TFailure> r7,
-			Result<TSuccess8, TFailure> r8)
+			Result<TSuccess8, TFailure> r8
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TSuccess5 : notnull
+			where TSuccess6 : notnull
+			where TSuccess7 : notnull
+			where TSuccess8 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess() && r5.IsSuccess() && r6.IsSuccess() && r7.IsSuccess() && r8.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]>((
@@ -544,8 +642,8 @@ namespace Functional
 		}
 
 		[AllowAllocations]
-		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]>
-			Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>(
+		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>
+		(
 			Result<TSuccess1, TFailure> r1,
 			Result<TSuccess2, TFailure> r2,
 			Result<TSuccess3, TFailure> r3,
@@ -554,7 +652,18 @@ namespace Functional
 			Result<TSuccess6, TFailure> r6,
 			Result<TSuccess7, TFailure> r7,
 			Result<TSuccess8, TFailure> r8,
-			Result<TSuccess9, TFailure> r9)
+			Result<TSuccess9, TFailure> r9
+		)
+			where TSuccess1 : notnull
+			where TSuccess2 : notnull
+			where TSuccess3 : notnull
+			where TSuccess4 : notnull
+			where TSuccess5 : notnull
+			where TSuccess6 : notnull
+			where TSuccess7 : notnull
+			where TSuccess8 : notnull
+			where TSuccess9 : notnull
+			where TFailure : notnull
 		{
 			if (r1.IsSuccess() && r2.IsSuccess() && r3.IsSuccess() && r4.IsSuccess() && r5.IsSuccess() && r6.IsSuccess() && r7.IsSuccess() && r8.IsSuccess() && r9.IsSuccess())
 				return Success<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]>((

@@ -14,21 +14,31 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<IGrouping<TKey, TSuccess>, TFailure> GroupBy<TKey, TSuccess, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> new ResultGroupByEnumerable<TKey, TSuccess, TSuccess, TFailure>(source, keySelector, _ => _);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<IGrouping<TKey, TElement>, TFailure> GroupBy<TKey, TSuccess, TElement, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> new ResultGroupByEnumerable<TKey, TSuccess, TElement, TFailure>(source, keySelector, elementSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<IGrouping<TKey, TSuccess>, TFailure> GroupBy<TKey, TSuccess, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> new AsyncResultGroupByEnumerable<TKey, TSuccess, TSuccess, TFailure>(source, keySelector, _ => _);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<IGrouping<TKey, TElement>, TFailure> GroupBy<TKey, TSuccess, TElement, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> new AsyncResultGroupByEnumerable<TKey, TSuccess, TElement, TFailure>(source, keySelector, elementSelector);
 
 		private class ResultGroupByEnumerable<TKey, TSuccess, TElement, TFailure> : IResultEnumerable<IGrouping<TKey, TElement>, TFailure>
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			private readonly IResultEnumerable<TSuccess, TFailure> _successEnumerable;
 			private readonly Func<TSuccess, TKey> _keySelector;
@@ -49,6 +59,8 @@ namespace Functional
 		}
 
 		private class ResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure> : IEnumerator<Result<IGrouping<TKey, TElement>, TFailure>>
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			private class Grouping : IGrouping<TKey, TElement>
 			{
@@ -153,6 +165,8 @@ namespace Functional
 		}
 
 		private class AsyncResultGroupByEnumerable<TKey, TSuccess, TElement, TFailure> : IAsyncResultEnumerable<IGrouping<TKey, TElement>, TFailure>
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			private readonly IAsyncResultEnumerable<TSuccess, TFailure> _successEnumerable;
 			private readonly Func<TSuccess, TKey> _keySelector;
@@ -170,6 +184,8 @@ namespace Functional
 		}
 
 		private class AsyncResultGroupByEnumerator<TKey, TSuccess, TElement, TFailure> : IAsyncEnumerator<Result<IGrouping<TKey, TElement>, TFailure>>
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			private class Grouping : IGrouping<TKey, TElement>
 			{

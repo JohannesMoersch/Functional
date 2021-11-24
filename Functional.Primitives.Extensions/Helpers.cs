@@ -49,6 +49,8 @@ namespace Functional
 		}
 
 		public static bool TryGetValue<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, out TSuccess success, out TFailure failure)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			success = result.Match(DelegateCache<TSuccess>.Passthrough, DelegateCache<TFailure, TSuccess>.Default);
 

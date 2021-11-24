@@ -28,6 +28,8 @@ namespace Functional
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static Result<TSuccess[], TFailure> TakeUntilFailure<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{	
 			TSuccess[] successes;
 
@@ -65,10 +67,14 @@ namespace Functional
 #pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> (await source).TakeUntilFailure();
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			TSuccess[] successes;
 
@@ -108,6 +114,8 @@ namespace Functional
 #pragma warning restore CS8603 // Possible null reference return.
 
 		public static Result<TSuccess[], TFailure[]> TakeAll<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			TSuccess[] successes;
 
@@ -164,9 +172,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> (await source).TakeAll();
 
 		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			TSuccess[] successes;
 
