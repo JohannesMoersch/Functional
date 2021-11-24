@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Functional
 {
+#pragma warning disable SYSLIB0011 // Type or member is obsolete
 	public static class SerializationUtility
 	{
 		public static Stream Serialize<T>(T obj)
@@ -33,4 +34,5 @@ namespace Functional
 				return Deserialize<T>(stream);
 		}
 	}
+#pragma warning restore SYSLIB0011 // Type or member is obsolete
 }
