@@ -7,6 +7,7 @@ namespace Functional
 {
 	[Serializable]
 	public struct Option<TValue> : IEquatable<Option<TValue>>, ISerializable
+		where TValue : notnull
 	{
 		private readonly bool _hasValue;
 

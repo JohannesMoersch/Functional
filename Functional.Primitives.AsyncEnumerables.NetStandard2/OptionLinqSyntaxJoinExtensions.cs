@@ -14,11 +14,15 @@ namespace Functional
 		private static class OptionJoinEnumerable
 		{
 			public static IOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new OptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner, outerKeySelector, innerKeySelector)
 					.SelectMany(option => option.Match(some => some.inner.Select(value => optionSelector.Invoke(some.outer, value)).Select(Option.Some), () => new[] { Option.None<TValue>() }))
 					.AsOptionEnumerable();
 
 			public static async Task<IOptionEnumerable<TValue>> Create<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new OptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, await inner, outerKeySelector, innerKeySelector)
 					.SelectMany(option => option.Match(some => some.inner.Select(value => optionSelector.Invoke(some.outer, value)).Select(Option.Some), () => new[] { Option.None<TValue>() }))
 					.AsOptionEnumerable();
@@ -27,17 +31,22 @@ namespace Functional
 		private static class OptionGroupJoinEnumerable
 		{
 			public static IOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new OptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner, outerKeySelector, innerKeySelector)
 					.Select(option => option.Match(value => Option.Some(optionSelector.Invoke(value.outer, value.inner)), Option.None<TValue>))
 					.AsOptionEnumerable();
 
 			public static async Task<IOptionEnumerable<TValue>> Create<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new OptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, await inner, outerKeySelector, innerKeySelector)
 					.Select(option => option.Match(value => Option.Some(optionSelector.Invoke(value.outer, value.inner)), Option.None<TValue>))
 					.AsOptionEnumerable();
 		}
 
 		private class OptionGroupJoinEnumerable<TOuter, TInner, TKey> : IOptionEnumerable<(TOuter outer, IEnumerable<TInner> inner)>
+			where TOuter : notnull
 		{
 			public readonly IOptionEnumerable<TOuter> _outer;
 			public readonly IEnumerable<TInner> _inner;
@@ -60,6 +69,7 @@ namespace Functional
 		}
 
 		private class OptionGroupJoinEnumerator<TOuter, TInner, TKey> : IEnumerator<Option<(TOuter outer, IEnumerable<TInner> inner)>>
+			where TOuter : notnull
 		{
 			private readonly IEnumerator<Option<TOuter>> _outer;
 			private readonly IEnumerable<TInner> _inner;
@@ -112,16 +122,22 @@ namespace Functional
 		private static class AsyncOptionJoinEnumerable
 		{
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, Task.FromResult(inner), outerKeySelector, innerKeySelector)
 					.SelectMany(option => option.Match(some => some.inner.Select(value => optionSelector.Invoke(some.outer, value)).Select(value => Option.Some(value)), () => new[] { Option.None<TValue>() }))
 					.AsAsyncOptionEnumerable();
 
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner, outerKeySelector, innerKeySelector)
 					.SelectMany(option => option.Match(some => some.inner.Select(value => optionSelector.Invoke(some.outer, value)).Select(value => Option.Some(value)), () => new[] { Option.None<TValue>() }))
 					.AsAsyncOptionEnumerable();
 
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector)
 					.SelectMany(option => option.Match(some => some.inner.Select(value => optionSelector.Invoke(some.outer, value)).Select(value => Option.Some(value)), () => new[] { Option.None<TValue>() }))
 					.AsAsyncOptionEnumerable();
@@ -130,22 +146,29 @@ namespace Functional
 		private static class AsyncOptionGroupJoinEnumerable
 		{
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, Task.FromResult(inner), outerKeySelector, innerKeySelector)
 					.Select(option => option.Match(value => Option.Some(optionSelector.Invoke(value.outer, value.inner)), Option.None<TValue>))
 					.AsAsyncOptionEnumerable();
 
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner, outerKeySelector, innerKeySelector)
 					.Select(option => option.Match(value => Option.Some(optionSelector.Invoke(value.outer, value.inner)), Option.None<TValue>))
 					.AsAsyncOptionEnumerable();
 
 			public static IAsyncOptionEnumerable<TValue> Create<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+				where TOuter : notnull
+				where TValue : notnull
 				=> new AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey>(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector)
 					.Select(option => option.Match(value => Option.Some(optionSelector.Invoke(value.outer, value.inner)), Option.None<TValue>))
 					.AsAsyncOptionEnumerable();
 		}
 
 		private class AsyncOptionGroupJoinEnumerable<TOuter, TInner, TKey> : IAsyncOptionEnumerable<(TOuter outer, IEnumerable<TInner> inner)>
+			where TOuter : notnull
 		{
 			public readonly IAsyncOptionEnumerable<TOuter> _outer;
 			public readonly Task<IEnumerable<TInner>> _inner;
@@ -165,6 +188,7 @@ namespace Functional
 		}
 
 		private class AsyncOptionGroupJoinEnumerator<TOuter, TInner, TKey> : IAsyncEnumerator<Option<(TOuter outer, IEnumerable<TInner> inner)>>
+			where TOuter : notnull
 		{
 			private readonly IAsyncEnumerator<Option<TOuter>> _outer;
 			private readonly Task<IEnumerable<TInner>> _inner;
@@ -207,18 +231,26 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionJoinEnumerable.Create(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -231,26 +263,37 @@ namespace Functional
 				);
 
 		private static async Task<IOptionEnumerable<TValue>> DoJoin<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -260,25 +303,31 @@ namespace Functional
 				.AsOptionEnumerable();
 
 		private static async Task<IOptionEnumerable<TValue>> DoJoin<TOuter, TInner, TKey, TValue>(IEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		private static Task<IEnumerable<Option<TValue>>> DoJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -287,6 +336,7 @@ namespace Functional
 				);
 
 		private static Task<IEnumerable<Option<TValue>>> DoJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -296,40 +346,53 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> DoJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		// ------------------------- //
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -342,14 +405,20 @@ namespace Functional
 				);
 
 		private static async Task<IAsyncOptionEnumerable<TValue>> DoJoin<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.Join(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -363,14 +432,19 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.Join(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -381,6 +455,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -391,6 +466,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -401,6 +477,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -411,6 +488,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> Join<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -423,18 +501,26 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> OptionGroupJoinEnumerable.Create(outer, inner.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -447,26 +533,37 @@ namespace Functional
 				);
 
 		private static async Task<IOptionEnumerable<TValue>> DoGroupJoin<TOuter, TInner, TKey, TValue>(IOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -476,25 +573,31 @@ namespace Functional
 				.AsOptionEnumerable();
 
 		private static async Task<IOptionEnumerable<TValue>> DoGroupJoin<TOuter, TInner, TKey, TValue>(IEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		private static Task<IEnumerable<Option<TValue>>> DoGroupJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -503,6 +606,7 @@ namespace Functional
 				);
 
 		private static Task<IEnumerable<Option<TValue>>> DoGroupJoin<TOuter, TInner, TKey, TValue>(Task<IEnumerable<TOuter>> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.MatchAsync
 				(
@@ -512,40 +616,53 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.MatchAsync(async value => Option.Some<IEnumerable<TInner>>(await value.AsEnumerable()), () => Task.FromResult(Option.None<IEnumerable<TInner>>())), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this Task<IEnumerable<TOuter>> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		// ------------------------- //
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, IAsyncEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> AsyncOptionGroupJoinEnumerable.Create(outer, inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -558,14 +675,20 @@ namespace Functional
 				);
 
 		private static async Task<IAsyncOptionEnumerable<TValue>> DoGroupJoin<TOuter, TInner, TKey, TValue>(IAsyncOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.GroupJoin(await inner, outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> DoGroupJoin(outer, inner, outerKeySelector, innerKeySelector, optionSelector).AsAsyncOptionEnumerable();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -579,14 +702,19 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncOptionEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TOuter : notnull
+			where TValue : notnull
 			=> outer.GroupJoin(inner.Map(arr => arr.AsEnumerable()), outerKeySelector, innerKeySelector, optionSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -597,6 +725,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Task<Option<IEnumerable<TInner>>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -607,6 +736,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<IAsyncEnumerable<TInner>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 				=> inner
 					.Match
 					(
@@ -617,6 +747,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Option<TInner[]> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(
@@ -627,6 +758,7 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TValue> GroupJoin<TOuter, TInner, TKey, TValue>(this IAsyncEnumerable<TOuter> outer, Task<Option<TInner[]>> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TValue> optionSelector)
+			where TValue : notnull
 			=> inner
 				.Match
 				(

@@ -9,18 +9,48 @@ namespace Functional
 	public static class DictionaryExtensions
     {
 		public static Option<TValue> TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
+			where TValue : notnull
+		{
+			if (source.TryGetValue(key, out var value) && value != null)
+				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
+			where TValue : notnull
+		{
+			if (source.TryGetValue(key, out var value) && value != null)
+				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
+			where TValue : notnull
+		{
+			if (source.TryGetValue(key, out var value) && value != null)
+				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryGetValue(key, out var value) && value != null, value);
+			where TValue : notnull
+		{
+			if (source.TryGetValue(key, out var value) && value != null)
+				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
 
 		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
-			=> Option.Create(source.TryRemove(key, out var value) && value != null, value);
+			where TValue : notnull
+		{
+			if (source.TryGetValue(key, out var value) && value != null)
+				return Option.Some(value);
+
+			return Option.None<TValue>();
+		}
 	}
 }

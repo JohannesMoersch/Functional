@@ -9,6 +9,7 @@ namespace Functional
 	public static class Option
 	{
 		public static Option<T> Some<T>(T value)
+			where T : notnull
 		{
 			if (value == null)
 				throw new ArgumentNullException(nameof(value));
@@ -19,12 +20,15 @@ namespace Functional
 		[Obsolete("Please use .SomeAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Option<T>> Some<T>(Task<T> value)
+			where T : notnull
 			=> SomeAsync(value);
 
 		public static async Task<Option<T>> SomeAsync<T>(Task<T> value)
+			where T : notnull
 			=> Some(await value);
 
 		public static Option<T> None<T>()
+			where T : notnull
 #pragma warning disable CS8604 // Possible null reference argument.
 			=> new Option<T>(false, default);
 #pragma warning restore CS8604 // Possible null reference argument.
@@ -62,11 +66,13 @@ namespace Functional
 			=> FromNullable(await value);
 
 		public static Option<T> Create<T>(bool isSome, T value)
+			where T : notnull
 			=> isSome
 				? Some(value)
 				: None<T>();
 
 		public static Option<T> Create<T>(bool isSome, Func<T> valueFactory)
+			where T : notnull
 		{
 			if (valueFactory == null)
 				throw new ArgumentNullException(nameof(valueFactory));
@@ -79,9 +85,11 @@ namespace Functional
 		[Obsolete("Please use .CreateAsync() instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Option<T>> Create<T>(bool isSome, Func<Task<T>> valueFactory)
+			where T : notnull
 			=> CreateAsync(isSome, valueFactory);
 		
 		public static async Task<Option<T>> CreateAsync<T>(bool isSome, Func<Task<T>> valueFactory)
+			where T : notnull
 		{
 			if (valueFactory == null)
 				throw new ArgumentNullException(nameof(valueFactory));

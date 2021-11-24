@@ -12,6 +12,7 @@ namespace Functional
     {
 #pragma warning disable CS8603 // Possible null reference return.
 		public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
+			where T : notnull
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
@@ -105,13 +106,16 @@ namespace Functional
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
+			where T : notnull
 			=> (await source.Any()) ? Option.Some(await source.First()) : Option.None<T>();
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
+			where T : notnull
 			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
+			where TValue : notnull
 		{
 			var values = new TValue[4];
 

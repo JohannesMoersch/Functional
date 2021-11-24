@@ -24,7 +24,9 @@ namespace Functional
 		public static readonly Func<T> Default = () => default;
 #pragma warning restore CS8603 // Possible null reference return.
 		public static readonly Func<T, T> Passthrough = _ => _;
+#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 		public static readonly Func<T, Option<T>> Some = _ => Option.Some(_);
+#pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 		public static readonly Action<T> Void = _ => { };
 		public static readonly Func<T, Task> Task = _ => System.Threading.Tasks.Task.CompletedTask;
 	}
@@ -39,6 +41,7 @@ namespace Functional
 	internal static class Helpers
 	{
 		public static bool TryGetValue<TValue>(this Option<TValue> option, out TValue some)
+			where TValue : notnull
 		{
 			some = option.Match(DelegateCache<TValue>.Passthrough, DelegateCache<TValue>.Default);
 

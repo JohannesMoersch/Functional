@@ -16,15 +16,19 @@ namespace Functional
 			=> (await result).IsSuccess();
 
 		public static Option<TSuccess> Success<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+			where TSuccess : notnull
 			=> result.TryGetValue(out var success, out var failure) ? Option.Some(success) : Option.None<TSuccess>();
 
 		public static async Task<Option<TSuccess>> Success<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
+			where TSuccess : notnull
 			=> (await result).Success();
 
 		public static Option<TFailure> Failure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+			where TFailure : notnull
 			=> result.TryGetValue(out var success, out var failure) ? Option.None<TFailure>() : Option.Some(failure);
 
 		public static async Task<Option<TFailure>> Failure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result)
+			where TFailure : notnull
 			=> (await result).Failure();
 
 		public static Result<TResult, TFailure> Map<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> map)

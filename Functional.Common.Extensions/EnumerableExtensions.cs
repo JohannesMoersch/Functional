@@ -12,6 +12,7 @@ namespace Functional
     {
 #pragma warning disable CS8603 // Possible null reference return.
 		public static IEnumerable<T> WhereSome<T>(this IEnumerable<Option<T>> source)
+			where T : notnull
 			=> source
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
@@ -19,6 +20,7 @@ namespace Functional
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<IEnumerable<T>> WhereSome<T>(this Task<IEnumerable<Option<T>>> source)
+			where T : notnull
 			=> (await source)
 				.Where(option => option.Match(_ => true, () => false))
 				.Select(option => option.Match(o => o, () => default));
@@ -221,12 +223,15 @@ namespace Functional
 		}
 
 		public static Option<T> TryFirst<T>(this IEnumerable<T> source)
+			where T : notnull
 			=> source.Any() ? Option.Some(source.First()) : Option.None<T>();
 
 		public static async Task<Option<T>> TryFirst<T>(this Task<IEnumerable<T>> source)
+			where T : notnull
 			=> (await source).TryFirst();
 
 		public static Option<T> TryFirst<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+			where T : notnull
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -244,15 +249,19 @@ namespace Functional
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
+			where T : notnull
 			=> (await source).TryFirst(predicate);
 
 		public static Option<T> TryLast<T>(this IEnumerable<T> source)
+			where T : notnull
 			=> source.Any() ? Option.Some(source.Last()) : Option.None<T>();
 
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source)
+			where T : notnull
 			=> (await source).TryLast();
 
 		public static Option<T> TryLast<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+			where T : notnull
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -272,10 +281,12 @@ namespace Functional
 		}
 
 		public static async Task<Option<T>> TryLast<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
+			where T : notnull
 			=> (await source).TryLast(predicate);
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IEnumerable<Task<Option<TValue>>> source)
+			where TValue : notnull
 		{
 			TValue[] values;
 
@@ -316,6 +327,7 @@ namespace Functional
 
 #pragma warning disable CS8603 // Possible null reference return.
 		public static Option<TValue[]> TakeUntilNone<TValue>(this IEnumerable<Option<TValue>> source)
+			where TValue : notnull
 		{
 			TValue[] values;
 
@@ -353,6 +365,7 @@ namespace Functional
 #pragma warning restore CS8603 // Possible null reference return.
 
 		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this Task<IEnumerable<Option<TValue>>> source)
+			where TValue : notnull
 			=> (await source).TakeUntilNone();
 	}
 }

@@ -12,6 +12,8 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -30,6 +32,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Task<Option<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -48,6 +52,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<IEnumerable<TSuccess>> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -66,6 +72,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<IEnumerable<TSuccess>> source, Func<TSuccess, Task<Option<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -84,6 +92,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -101,6 +111,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Task<Option<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -118,6 +130,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -141,6 +155,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -165,6 +181,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -188,6 +206,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -210,6 +231,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, Task<Option<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -232,6 +256,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -255,6 +281,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -278,6 +306,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -300,6 +330,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, Option<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -321,6 +354,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, Task<Option<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -342,30 +378,44 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Option<TSuccess> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Option<TSuccess> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Option<TSuccess> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, Task<TResult>> resultSelector)
+			where TSuccess : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> Select<TSuccess, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, Task<TResult>> selector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));
@@ -382,6 +432,8 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<TResult> Select<TSuccess, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, Task<TResult>> selector)
+			where TSuccess : notnull
+			where TResult : notnull
 		{
 			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));

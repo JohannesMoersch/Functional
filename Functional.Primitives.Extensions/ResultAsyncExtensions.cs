@@ -10,6 +10,7 @@ namespace Functional
 	public static partial class ResultAsyncExtensions
 	{
 		public static Task<T> MatchAsync<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<T>> onSuccessSome, Func<Task<T>> onSuccessNone, Func<TFailure, Task<T>> onFailure)
+			where TSuccess : notnull
 		{
 			if (result.TryGetValue(out var success, out var failure))
 				return success.MatchAsync(onSuccessSome, onSuccessNone);
@@ -18,6 +19,7 @@ namespace Functional
 		}
 
 		public static async Task<T> MatchAsync<TSuccess, TFailure, T>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<T>> successSome, Func<Task<T>> successNone, Func<TFailure, Task<T>> failure)
+			where TSuccess : notnull
 			=> await (await result).MatchAsync(successSome, successNone, failure);
 
 		public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
