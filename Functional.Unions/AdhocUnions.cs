@@ -8,6 +8,8 @@ namespace Functional
 {
 	[Serializable]
 	public struct Union<TOne, TTwo> : IEquatable<Union<TOne, TTwo>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo>> Value => _value ?? throw new UnionNotInitializedException();
@@ -42,6 +44,9 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree> : IEquatable<Union<TOne, TTwo, TThree>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree>> Value => _value ?? throw new UnionNotInitializedException();
@@ -76,6 +81,10 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour> : IEquatable<Union<TOne, TTwo, TThree, TFour>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour>> Value => _value ?? throw new UnionNotInitializedException();
@@ -110,6 +119,11 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive>> Value => _value ?? throw new UnionNotInitializedException();
@@ -144,6 +158,12 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix>> Value => _value ?? throw new UnionNotInitializedException();
@@ -178,6 +198,13 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> Value => _value ?? throw new UnionNotInitializedException();
@@ -212,6 +239,14 @@ namespace Functional
 
 	[Serializable]
 	public struct Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> : IEquatable<Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>, ISerializable
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
+			where TEight : notnull
 	{
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> _value;
 		internal IUnionValue<AdhocUnionDefinition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Value => _value ?? throw new UnionNotInitializedException();

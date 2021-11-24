@@ -8,38 +8,61 @@ namespace Functional
 	public static partial class ResultOptionAsyncExtensions
 	{
 		public static async Task<Result<Option<TResult>, TFailure>> MapOnSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<TResult>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> result.TryGetValue(out var success, out var failure)
 				? Result.Success<Option<TResult>, TFailure>(await success.MapAsync(map))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> MapOnSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<TResult>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> await (await result).MapOnSomeAsync(map);
 
 		public static async Task<Result<Option<TResult>, TFailure>> MapOnSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Option<TResult>>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> result.TryGetValue(out var success, out var failure)
 				? Result.Success<Option<TResult>, TFailure>(await success.BindAsync(map))
 				: Result.Failure<Option<TResult>, TFailure>(failure);
 
 		public static async Task<Result<Option<TResult>, TFailure>> MapOnSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Option<TResult>>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> await (await result).MapOnSomeAsync(map);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> MapOnNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TSuccess>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
 				? Result.Success<Option<TSuccess>, TFailure>(Option.Some(await map()))
 				: result;
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> MapOnNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TSuccess>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).MapOnNoneAsync(map);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> MapOnNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Option<TSuccess>>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
 				? Result.Success<Option<TSuccess>, TFailure>(await map())
 				: result;
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> MapOnNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Option<TSuccess>>> map)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).MapOnNoneAsync(map);
 
 		public static async Task<Result<Option<TResult>, TFailure>> BindOnSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -56,9 +79,15 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TResult>, TFailure>> BindOnSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Result<TResult, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> await (await result).BindOnSomeAsync(bind);
 
 		public static async Task<Result<Option<TResult>, TFailure>> BindOnSomeAsync<TSuccess, TFailure, TResult>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<Result<Option<TResult>, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -75,9 +104,14 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TResult>, TFailure>> BindOnSomeAsync<TSuccess, TFailure, TResult>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<Result<Option<TResult>, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> await (await result).BindOnSomeAsync(bind);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindOnNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<TSuccess, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -88,9 +122,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindOnNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<TSuccess, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).BindOnNoneAsync(bind);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindOnNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -101,9 +139,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> BindOnNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<Result<Option<TSuccess>, TFailure>>> bind)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).BindOnNoneAsync(bind);
 
 		public static async Task<Result<TSuccess, TFailure>> FailOnNoneAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (failureFactory == null)
 				throw new ArgumentNullException(nameof(failureFactory));
@@ -120,9 +162,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<TSuccess, TFailure>> FailOnNoneAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<Task<TFailure>> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).FailOnNoneAsync(failureFactory);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task> onSuccessSome)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (onSuccessSome == null)
 				throw new ArgumentNullException(nameof(onSuccessSome));
@@ -134,9 +180,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> DoOnSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task> onSuccessSome)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).DoOnSomeAsync(onSuccessSome);
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSomeAsync<TSuccess, TFailure>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, TFailure> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 			if (failureFactory == null) throw new ArgumentNullException(nameof(failureFactory));
@@ -152,9 +202,13 @@ namespace Functional
 		}
 
 		public static async Task<Result<Option<TSuccess>, TFailure>> WhereOnSomeAsync<TSuccess, TFailure>(this Task<Result<Option<TSuccess>, TFailure>> result, Func<TSuccess, Task<bool>> predicate, Func<TSuccess, TFailure> failureFactory)
+			where TSuccess : notnull
+			where TFailure : notnull
 			=> await (await result).WhereOnSomeAsync(predicate, failureFactory);
 
 		public static async Task ApplyAsync<T, TFailure>(this Result<Option<T>, TFailure> result, Func<T, Task> onSome, Func<Task> onNone, Func<TFailure, Task> onFailure)
+			where TFailure : notnull
+			where T : notnull
 		{
 			if (onSome == null) throw new ArgumentNullException(nameof(onSome));
 			if (onNone == null) throw new ArgumentNullException(nameof(onNone));
@@ -178,6 +232,8 @@ namespace Functional
 		}
 
 		public static async Task ApplyAsync<T, TFailure>(this Task<Result<Option<T>, TFailure>> result, Func<T, Task> onSome, Func<Task> onNone, Func<TFailure, Task> onFailure)
+			where T : notnull
+			where TFailure : notnull
 			=> await (await result).ApplyAsync(onSome, onNone, onFailure);
 	}
 }

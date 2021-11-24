@@ -20,7 +20,7 @@ namespace Functional
 		public ValueTask DisposeAsync()
 			=> _enumerator.DisposeAsync();
 
-		public async Task<(bool hasValue, T value)> TryGetValue(int index)
+		public async Task<(bool hasValue, T? value)> TryGetValue(int index)
 		{
 			if (index < _values.Count)
 				return (true, _values[index]);
@@ -48,12 +48,15 @@ namespace Functional
 
 		private int _index = 0;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public ReplayableAsyncEnumerator(ReplayableAsyncEnumerableData<T> data)
 			=> _data = data;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		public ValueTask DisposeAsync()
 			=> _data.DisposeAsync();
 
+#pragma warning disable CS8601 // Possible null reference assignment.
 		public async ValueTask<bool> MoveNextAsync()
 		{
 			var value = await _data.TryGetValue(_index++);
@@ -66,6 +69,7 @@ namespace Functional
 			Current = default;
 			return false;
 		}
+#pragma warning restore CS8601 // Possible null reference assignment.
 
 		public void Reset()
 			=> _index = 0;

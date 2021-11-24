@@ -51,10 +51,10 @@ namespace Functional
 		public static Task<TSource> FirstAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().FirstAsync(predicate);
 
-		public static Task<TSource> FirstOrDefaultAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
+		public static Task<TSource?> FirstOrDefaultAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().FirstOrDefaultAsync(predicate);
 
-		public static Task<TSource> FirstOrDefaultAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
+		public static Task<TSource?> FirstOrDefaultAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().FirstOrDefaultAsync(predicate);
 
 		public static IAsyncEnumerable<TResult> SelectAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<TResult>> selector)
@@ -95,7 +95,7 @@ namespace Functional
 		public static Task<TSource> SingleAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().SingleAsync(predicate);
 
-		public static Task<TSource> SingleOrDefaultAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
+		public static Task<TSource?> SingleOrDefaultAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 			=> source.AsAsyncEnumerable().SingleOrDefaultAsync(predicate);
 
 		public static IAsyncEnumerable<TSource> SkipWhileAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)

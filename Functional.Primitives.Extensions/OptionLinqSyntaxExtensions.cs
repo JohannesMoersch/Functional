@@ -10,10 +10,14 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
+			where TValue : notnull
+			where TResult : notnull
 			=> option.Map(map);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+			where TValue : notnull
+			where TResult : notnull
 			=> option.Map(map);
 	}
 
@@ -22,6 +26,9 @@ namespace Functional
     {
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static Option<TResult> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, TResult> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -37,10 +44,16 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, TResult> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, TResult> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -56,10 +69,16 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, TResult> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -75,10 +94,16 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Task<Option<TValue>> option, Func<TValue, Option<TBind>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await option).SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Option<TValue> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -94,6 +119,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static async Task<Option<TResult>> SelectMany<TValue, TBind, TResult>(this Task<Option<TValue>> option, Func<TValue, Task<Option<TBind>>> bind, Func<TValue, TBind, Task<TResult>> resultSelector)
+			where TValue : notnull
+			where TBind : notnull
+			where TResult : notnull
 			=> await (await option).SelectMany(bind, resultSelector);
 	}
 }

@@ -25,7 +25,7 @@ namespace Functional
 			};
 
 		public static IUnionValue<TUnionDefinition> CreateUnionValue<TUnionDefinition>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
 		{
 			var type = typeof(TUnionDefinition);
 			while (type != null && !(type.IsConstructedGenericType && IsTypeAUnionDefinition(type.GetGenericTypeDefinition())))
@@ -53,40 +53,77 @@ namespace Functional
 			type == typeof(UnionDefinition<,,,,,,,,>);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne> CreateUnionValueOneFromDefinition<TUnionDefinition, TOne>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo> CreateUnionValueTwoFromDefinition<TUnionDefinition, TOne, TTwo>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree> CreateUnionValueThreeFromDefinition<TUnionDefinition, TOne, TTwo, TThree>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour> CreateUnionValueFourFromDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> CreateUnionValueFiveFromDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> CreateUnionValueSixFromDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> CreateUnionValueSevenFromDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		private static UnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> CreateUnionValueEightFromDefinition<TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(SerializationInfo info)
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
+			where TEight : notnull
 			=> CreateUnionValue<Union<TUnionDefinition>, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(info, UnionFactoryExtensions.CreateUnionFromDefinition);
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne> CreateUnionValue<TUnionType, TUnionDefinition, TOne>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -99,7 +136,9 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -114,7 +153,10 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -131,7 +173,11 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -150,7 +196,12 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -171,7 +222,13 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -194,7 +251,14 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
 		{
 			switch (info.GetByte(StateName))
 			{
@@ -219,7 +283,15 @@ namespace Functional
 
 		public static UnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> CreateUnionValue<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(SerializationInfo info, Func<IUnionValue<TUnionDefinition>, TUnionType> unionFactory)
 			where TUnionType : struct
-			where TUnionDefinition : IUnionDefinition
+			where TUnionDefinition : notnull, IUnionDefinition
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
+			where TEight : notnull
 		{
 			switch (info.GetByte(StateName))
 			{

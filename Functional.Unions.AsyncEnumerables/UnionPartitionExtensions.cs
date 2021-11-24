@@ -13,7 +13,9 @@ namespace Functional
 	{
 		public static UnionPartition<TOne, TTwo> Partition<TUnionType, TUnionDefinition, TOne, TTwo>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>
+			where TOne : notnull
+			where TTwo : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>>(source);
 
@@ -26,7 +28,9 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo>> Partition<TUnionType, TUnionDefinition, TOne, TTwo>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>
+			where TOne : notnull
+			where TTwo : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo>>>(await source);
 
@@ -39,7 +43,10 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>(source);
 
@@ -53,7 +60,10 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree>>>(await source);
 
@@ -67,7 +77,11 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree, TFour> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>(source);
 
@@ -82,7 +96,11 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour>>>(await source);
 
@@ -97,7 +115,12 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>(source);
 
@@ -113,7 +136,12 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive>>>(await source);
 
@@ -129,7 +157,13 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>(source);
 
@@ -146,7 +180,13 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix>>>(await source);
 
@@ -163,7 +203,14 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>(source);
 
@@ -181,7 +228,14 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>>>(await source);
 
@@ -199,7 +253,15 @@ namespace Functional
 
 		public static UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
+			where TEight : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>(source);
 
@@ -218,7 +280,15 @@ namespace Functional
 
 		public static async Task<UnionPartition<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>> Partition<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(this IUnionTask<IEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>> source)
 			where TUnionType : struct
-			where TUnionDefinition : UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			where TUnionDefinition : notnull, UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>
+			where TOne : notnull
+			where TTwo : notnull
+			where TThree : notnull
+			where TFour : notnull
+			where TFive : notnull
+			where TSix : notnull
+			where TSeven : notnull
+			where TEight : notnull
 		{
 			var values = new ReplayableEnumerable<IUnionValue<UnionDefinitionBase<TUnionType, TUnionDefinition, TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>>>(await source);
 

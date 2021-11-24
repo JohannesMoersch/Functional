@@ -12,6 +12,9 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -29,6 +32,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IEnumerable<TSuccess> source, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -47,6 +53,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<IEnumerable<TSuccess>> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -65,6 +74,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<IEnumerable<TSuccess>> source, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -83,6 +95,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -100,6 +115,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -117,6 +135,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -139,6 +160,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -163,6 +187,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -185,6 +212,10 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -206,6 +237,10 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -228,6 +263,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -250,6 +288,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -273,6 +314,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -295,6 +339,10 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -316,6 +364,10 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<TBind, TFailure>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TBind : notnull
+			where TResult : notnull
 		{
 			if (bind == null)
 				throw new ArgumentNullException(nameof(bind));
@@ -337,30 +389,51 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> Enumerable.Repeat(source, 1).AsResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 			=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));
@@ -377,6 +450,9 @@ namespace Functional
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)
+			where TSuccess : notnull
+			where TFailure : notnull
+			where TResult : notnull
 		{
 			if (selector == null)
 				throw new ArgumentNullException(nameof(selector));

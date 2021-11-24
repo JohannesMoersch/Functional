@@ -14,21 +14,26 @@ namespace Functional
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<IGrouping<TKey, TSuccess>> GroupBy<TKey, TSuccess>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, TKey> keySelector)
+			where TSuccess : notnull
 			=> new OptionGroupByEnumerable<TKey, TSuccess, TSuccess>(source, keySelector, _ => _);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IOptionEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TSuccess, TElement>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
+			where TSuccess : notnull
 			=> new OptionGroupByEnumerable<TKey, TSuccess, TElement>(source, keySelector, elementSelector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<IGrouping<TKey, TSuccess>> GroupBy<TKey, TSuccess>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, TKey> keySelector)
+			where TSuccess : notnull
 			=> new AsyncOptionGroupByEnumerable<TKey, TSuccess, TSuccess>(source, keySelector, _ => _);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncOptionEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TSuccess, TElement>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
+			where TSuccess : notnull
 			=> new AsyncOptionGroupByEnumerable<TKey, TSuccess, TElement>(source, keySelector, elementSelector);
 
 		private class OptionGroupByEnumerable<TKey, TSuccess, TElement> : IOptionEnumerable<IGrouping<TKey, TElement>>
+			where TSuccess : notnull
 		{
 			private readonly IOptionEnumerable<TSuccess> _successEnumerable;
 			private readonly Func<TSuccess, TKey> _keySelector;
@@ -49,6 +54,7 @@ namespace Functional
 		}
 
 		private class OptionGroupByEnumerator<TKey, TSuccess, TElement> : IEnumerator<Option<IGrouping<TKey, TElement>>>
+			where TSuccess : notnull
 		{
 			private class Grouping : IGrouping<TKey, TElement>
 			{
@@ -75,7 +81,7 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new Dictionary<TKey, List<TElement>>();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>> _groupingEnumerator;
+			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
 
 			public Option<IGrouping<TKey, TElement>> Current { get; private set; }
 
@@ -153,6 +159,7 @@ namespace Functional
 		}
 
 		private class AsyncOptionGroupByEnumerable<TKey, TSuccess, TElement> : IAsyncOptionEnumerable<IGrouping<TKey, TElement>>
+			where TSuccess : notnull
 		{
 			private readonly IAsyncOptionEnumerable<TSuccess> _successEnumerable;
 			private readonly Func<TSuccess, TKey> _keySelector;
@@ -170,6 +177,7 @@ namespace Functional
 		}
 
 		private class AsyncOptionGroupByEnumerator<TKey, TSuccess, TElement> : IAsyncEnumerator<Option<IGrouping<TKey, TElement>>>
+			where TSuccess : notnull
 		{
 			private class Grouping : IGrouping<TKey, TElement>
 			{
@@ -196,7 +204,7 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new Dictionary<TKey, List<TElement>>();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>> _groupingEnumerator;
+			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
 
 			public Option<IGrouping<TKey, TElement>> Current { get; private set; }
 
