@@ -543,7 +543,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					success => outer.Join(success, outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
+					success => outer.Join(success.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
 					failure => new[] { Result.Failure<TResult, TFailure>(failure) }.AsAsyncEnumerable()
 				)
 				.AsAsyncResultEnumerable();
@@ -555,7 +555,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					success => outer.Join(success, outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
+					success => outer.Join(success.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
 					failure => new[] { Result.Failure<TResult, TFailure>(failure) }.AsAsyncEnumerable()
 				)
 				.AsAsyncResultEnumerable();
@@ -850,7 +850,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					success => outer.GroupJoin(success, outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
+					success => outer.GroupJoin(success.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
 					failure => new[] { Result.Failure<TResult, TFailure>(failure) }.AsAsyncEnumerable()
 				)
 				.AsAsyncResultEnumerable();
@@ -862,7 +862,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					success => outer.GroupJoin(success, outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
+					success => outer.GroupJoin(success.AsEnumerable(), outerKeySelector, innerKeySelector, resultSelector).Select(Result.Success<TResult, TFailure>),
 					failure => new[] { Result.Failure<TResult, TFailure>(failure) }.AsAsyncEnumerable()
 				)
 				.AsAsyncResultEnumerable();

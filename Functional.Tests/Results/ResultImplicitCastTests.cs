@@ -11,11 +11,25 @@ namespace Functional.Tests.Results
 	public class ResultImplicitCastTests
 	{
 		[Fact]
+		public void ImplicitSuccessCastFromValue()
+			=> ResultTestExtensions
+				.AssertSuccess<int, string>(1)
+				.Should()
+				.Be(1);
+
+		[Fact]
 		public void ImplicitSuccessCastFromResultSuccess()
 			=> ResultTestExtensions
 				.AssertSuccess<int, string>(Result.Success(1))
 				.Should()
 				.Be(1);
+
+		[Fact]
+		public void ImplicitFailureCastFromValue()
+			=> ResultTestExtensions
+				.AssertFailure<int, string>("One")
+				.Should()
+				.Be("One");
 
 		[Fact]
 		public void ImplicitFailureCastFromResultFailure()

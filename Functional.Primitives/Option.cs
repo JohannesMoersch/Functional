@@ -72,6 +72,9 @@ namespace Functional
 		public static bool operator !=(Option<TValue> left, Option<TValue> right)
 			=> !left.Equals(right);
 
+		public static implicit operator Option<TValue>(TValue some)
+			=> Option.Some(some);
+
 		public static implicit operator Option<TValue>(NoneOption none)
 			=> Option.None<TValue>();
 	}

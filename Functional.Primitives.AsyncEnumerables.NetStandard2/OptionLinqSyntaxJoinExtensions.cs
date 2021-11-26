@@ -482,7 +482,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					value => outer.Join(value, outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
+					value => outer.Join(value.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
 					() => new[] { Option.None<TValue>() }.AsAsyncEnumerable()
 				)
 				.AsAsyncOptionEnumerable();
@@ -493,7 +493,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					value => outer.Join(value, outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
+					value => outer.Join(value.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
 					() => new[] { Option.None<TValue>() }.AsAsyncEnumerable()
 				)
 				.AsAsyncOptionEnumerable();
@@ -752,7 +752,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					value => outer.GroupJoin(value, outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
+					value => outer.GroupJoin(value.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
 					() => new[] { Option.None<TValue>() }.AsAsyncEnumerable()
 				)
 				.AsAsyncOptionEnumerable();
@@ -763,7 +763,7 @@ namespace Functional
 			=> inner
 				.Match
 				(
-					value => outer.GroupJoin(value, outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
+					value => outer.GroupJoin(value.AsEnumerable(), outerKeySelector, innerKeySelector, optionSelector).Select(Option.Some),
 					() => new[] { Option.None<TValue>() }.AsAsyncEnumerable()
 				)
 				.AsAsyncOptionEnumerable();

@@ -92,6 +92,12 @@ namespace Functional
 		public static bool operator !=(Result<TSuccess, TFailure> left, Result<TSuccess, TFailure> right)
 			=> !left.Equals(right);
 
+		public static implicit operator Result<TSuccess, TFailure>(TSuccess success)
+			=> Result.Success<TSuccess, TFailure>(success);
+
+		public static implicit operator Result<TSuccess, TFailure>(TFailure failure)
+			=> Result.Failure<TSuccess, TFailure>(failure);
+
 		public static implicit operator Result<TSuccess, TFailure>(SuccessResult<TSuccess> success)
 			=> Result.Success<TSuccess, TFailure>(success.Value);
 
