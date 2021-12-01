@@ -98,10 +98,10 @@ namespace Functional
 		public static implicit operator Result<TSuccess, TFailure>(TFailure failure)
 			=> Result.Failure<TSuccess, TFailure>(failure);
 
-		public static implicit operator Result<TSuccess, TFailure>(SuccessResult<TSuccess> success)
+		public static implicit operator Result<TSuccess, TFailure>(PartialResult.Success<TSuccess> success)
 			=> Result.Success<TSuccess, TFailure>(success.Value);
 
-		public static implicit operator Result<TSuccess, TFailure>(FailureResult<TFailure> failure)
+		public static implicit operator Result<TSuccess, TFailure>(PartialResult.Failure<TFailure> failure)
 			=> Result.Failure<TSuccess, TFailure>(failure.Value);
 	}
 }

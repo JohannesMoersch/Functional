@@ -9,9 +9,9 @@ namespace Functional
 {
 	public static class Result
 	{
-		public static SuccessResult<TSuccess> Success<TSuccess>(TSuccess success)
+		public static PartialResult.Success<TSuccess> Success<TSuccess>(TSuccess success)
 			where TSuccess : notnull
-			=> new SuccessResult<TSuccess>(success);
+			=> new PartialResult.Success<TSuccess>(success);
 
 		public static Result<TSuccess, TFailure> Success<TSuccess, TFailure>(TSuccess success)
 			where TSuccess : notnull
@@ -37,9 +37,9 @@ namespace Functional
 			where TFailure : notnull
 			=> Success<TSuccess, TFailure>(await success);
 
-		public static FailureResult<TFailure> Failure<TFailure>(TFailure failure)
+		public static PartialResult.Failure<TFailure> Failure<TFailure>(TFailure failure)
 			where TFailure : notnull
-			=> new FailureResult<TFailure>(failure);
+			=> new PartialResult.Failure<TFailure>(failure);
 
 		public static Result<TSuccess, TFailure> Failure<TSuccess, TFailure>(TFailure failure)
 			where TSuccess : notnull

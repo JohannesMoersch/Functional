@@ -75,7 +75,7 @@ namespace Functional
 		public static implicit operator Option<TValue>(TValue some)
 			=> Option.Some(some);
 
-		public static implicit operator Option<TValue>(NoneOption none)
+		public static implicit operator Option<TValue>(PartialOption.None none)
 			=> Option.None<TValue>();
 	}
 }
