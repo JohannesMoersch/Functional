@@ -27,6 +27,18 @@ Result<Unit, string> success = Result.Success<Unit, string>(Unit.Value);
 Result<int, string> failure = Result.Failure<int, string>("Failure");
 ```
 
+### With type inferencing when target type is known
+
+```csharp
+Result<int, string> success = 100;
+// or
+Result<int, string> success = Result.Success(100);
+
+Result<int, string> failure = "Failure";
+// or
+Result<int, string> failure = Result.Failure("Failure");
+```
+
 ### Conditionally
 
 ```csharp

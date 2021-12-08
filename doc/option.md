@@ -16,6 +16,14 @@ Option<int> some = Option.Some(100);
 Option<int> none = Option.None<int>();
 ```
 
+### With type inferencing when target type is known
+
+```csharp
+Option<int> success = 100;
+
+Option<int> none = Option.None();
+```
+
 ### Conditionally
 
 ```csharp
