@@ -27,6 +27,9 @@ namespace Functional
 			where T : notnull
 			=> Some(await value);
 
+		public static PartialOption.None None() 
+			=> new PartialOption.None();
+
 		public static Option<T> None<T>()
 			where T : notnull
 #pragma warning disable CS8604 // Possible null reference argument.

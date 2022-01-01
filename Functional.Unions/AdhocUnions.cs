@@ -40,6 +40,12 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo> left, Union<TOne, TTwo> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo>(TOne one)
+			=> Union.FromTypes<TOne, TTwo>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo>().Create(one);
 	}
 
 	[Serializable]
@@ -77,6 +83,15 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree> left, Union<TOne, TTwo, TThree> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree>().Create(one);
 	}
 
 	[Serializable]
@@ -115,6 +130,18 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree, TFour> left, Union<TOne, TTwo, TThree, TFour> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour>(TFour one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour>().Create(one);
 	}
 
 	[Serializable]
@@ -154,6 +181,21 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree, TFour, TFive> left, Union<TOne, TTwo, TThree, TFour, TFive> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive>(TFour one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive>(TFive one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive>().Create(one);
 	}
 
 	[Serializable]
@@ -194,6 +236,24 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree, TFour, TFive, TSix> left, Union<TOne, TTwo, TThree, TFour, TFive, TSix> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TFour one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TFive one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix>(TSix one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix>().Create(one);
 	}
 
 	[Serializable]
@@ -235,6 +295,27 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> left, Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TFour one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TFive one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TSix one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>(TSeven one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven>().Create(one);
 	}
 
 	[Serializable]
@@ -277,5 +358,29 @@ namespace Functional
 
 		public static bool operator !=(Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> left, Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight> right)
 			=> !left.Equals(right);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TOne one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TTwo one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TThree one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TFour one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TFive one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TSix one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TSeven one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
+
+		public static implicit operator Union<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>(TEight one)
+			=> Union.FromTypes<TOne, TTwo, TThree, TFour, TFive, TSix, TSeven, TEight>().Create(one);
 	}
 }
