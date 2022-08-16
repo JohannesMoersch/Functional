@@ -184,8 +184,8 @@ namespace Functional
 
 			if (source is ICollection<Result<TSuccess, TFailure>> collection)
 				successes = new TSuccess[collection.Count];
-			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollecton)
-				successes = new TSuccess[readOnlyCollecton.Count];
+			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollection)
+				successes = new TSuccess[readOnlyCollection.Count];
 			else
 				successes = new TSuccess[4];
 
@@ -232,6 +232,61 @@ namespace Functional
 			}
 
 			return Result.Success<TSuccess[], TFailure[]>(successes);
+		}
+
+		public static (TSuccess[], TFailure[]) Partition<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+		{
+			var successCollection = new List<TSuccess>();
+			var failureCollection = new List<TFailure>();
+
+			foreach (var item in source)
+			{
+				item.Match(
+					success =>
+					{
+						successCollection.Add(success);
+						return true;
+					},
+					failure =>
+					{
+						failureCollection.Add(failure);
+						return false;
+					});
+			}
+
+			return (successCollection.ToArray(), failureCollection.ToArray());
+		}
+
+		public static async Task<(TSuccess[], TFailure[])> Partition<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> (await source).Partition();
+
+		public static async Task<(TSuccess[], TFailure[])> Partition<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+		{
+			var successCollection = new List<TSuccess>();
+			var failureCollection = new List<TFailure>();
+
+			foreach (var item in source)
+			{
+				(await item).Match(
+					success =>
+					{
+						successCollection.Add(success);
+						return true;
+					},
+					failure =>
+					{
+						failureCollection.Add(failure);
+						return false;
+					});
+			}
+
+			return (successCollection.ToArray(), failureCollection.ToArray());
 		}
 
 		public static Option<T> TryFirst<T>(this IEnumerable<T> source)
