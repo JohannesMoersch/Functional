@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Functional.Tests.Results;
 
-public class PartitionTests
+public class ResultCollectionPartitionTests
 {
 	[Fact]
 	public void EnumerablePartitionAllSuccesses()

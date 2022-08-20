@@ -234,7 +234,7 @@ namespace Functional
 			return Result.Success<TSuccess[], TFailure[]>(successes);
 		}
 
-		public static (TSuccess[], TFailure[]) Partition<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
+		public static ResultPartition<TSuccess, TFailure> Partition<TSuccess, TFailure>(this IEnumerable<Result<TSuccess, TFailure>> source)
 			where TSuccess : notnull
 			where TFailure : notnull
 		{
@@ -256,15 +256,15 @@ namespace Functional
 					});
 			}
 
-			return (successCollection.ToArray(), failureCollection.ToArray());
+			return new ResultPartition<TSuccess, TFailure>(successCollection, failureCollection);
 		}
 
-		public static async Task<(TSuccess[], TFailure[])> Partition<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
+		public static async Task<ResultPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> (await source).Partition();
 
-		public static async Task<(TSuccess[], TFailure[])> Partition<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
+		public static async Task<ResultPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this IEnumerable<Task<Result<TSuccess, TFailure>>> source)
 			where TSuccess : notnull
 			where TFailure : notnull
 		{
@@ -286,7 +286,7 @@ namespace Functional
 					});
 			}
 
-			return (successCollection.ToArray(), failureCollection.ToArray());
+			return new ResultPartition<TSuccess, TFailure>(successCollection, failureCollection);
 		}
 
 		public static Option<T> TryFirst<T>(this IEnumerable<T> source)
