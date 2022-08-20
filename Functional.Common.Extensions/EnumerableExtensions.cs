@@ -35,8 +35,8 @@ namespace Functional
 
 			if (source is ICollection<Result<TSuccess, TFailure>> collection)
 				successes = new TSuccess[collection.Count];
-			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollecton)
-				successes = new TSuccess[readOnlyCollecton.Count];
+			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollection)
+				successes = new TSuccess[readOnlyCollection.Count];
 			else
 				successes = new TSuccess[4];
 
@@ -121,8 +121,8 @@ namespace Functional
 
 			if (source is ICollection<Result<TSuccess, TFailure>> collection)
 				successes = new TSuccess[collection.Count];
-			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollecton)
-				successes = new TSuccess[readOnlyCollecton.Count];
+			else if (source is IReadOnlyCollection<Result<TSuccess, TFailure>> readOnlyCollection)
+				successes = new TSuccess[readOnlyCollection.Count];
 			else
 				successes = new TSuccess[4];
 
@@ -359,8 +359,8 @@ namespace Functional
 
 			if (source is ICollection<Option<TValue>> collection)
 				values = new TValue[collection.Count];
-			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollecton)
-				values = new TValue[readOnlyCollecton.Count];
+			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollection)
+				values = new TValue[readOnlyCollection.Count];
 			else
 				values = new TValue[4];
 
@@ -400,8 +400,8 @@ namespace Functional
 
 			if (source is ICollection<Option<TValue>> collection)
 				values = new TValue[collection.Count];
-			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollecton)
-				values = new TValue[readOnlyCollecton.Count];
+			else if (source is IReadOnlyCollection<Option<TValue>> readOnlyCollection)
+				values = new TValue[readOnlyCollection.Count];
 			else
 				values = new TValue[4];
 
