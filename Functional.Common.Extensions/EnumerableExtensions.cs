@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Functional.Common.Extensions;
 
 namespace Functional
 {
@@ -238,25 +240,13 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 		{
-			var successCollection = new List<TSuccess>();
-			var failureCollection = new List<TFailure>();
+			var values = new ReplayableEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
 
-			foreach (var item in source)
-			{
-				item.Match(
-					success =>
-					{
-						successCollection.Add(success);
-						return true;
-					},
-					failure =>
-					{
-						failureCollection.Add(failure);
-						return false;
-					});
-			}
-
-			return new ResultPartition<TSuccess, TFailure>(successCollection, failureCollection);
+			return new ResultPartition<TSuccess, TFailure>
+			(
+				values.Where(set => set.matches).Select(set => set.value.Match(success => success, failure => throw new InvalidOperationException("Expected success!"))),
+				values.Where(set => !set.matches).Select(set => set.value.Match(success => throw new InvalidOperationException("Expected failure!"), failure => failure))
+			);
 		}
 
 		public static async Task<ResultPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this Task<IEnumerable<Result<TSuccess, TFailure>>> source)
