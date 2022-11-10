@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Functional.PartialResult;
 
 namespace Functional
 {
@@ -115,12 +117,53 @@ namespace Functional
 			where TFailure : notnull
 		{
 			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
-			var successCollection = new List<TSuccess>();
-			var failureCollection = new List<TFailure>();
+			var successCollection = new TSuccess[4];
+			var failureCollection = new TFailure[4];
 
+			int successIndex = 0;
+			int failureIndex = 0;
 			while (await enumerator.MoveNextAsync())
 			{
-				enumerator.Current.Apply(successCollection.Add, failureCollection.Add);
+				enumerator.Current.Match(
+					success =>
+					{
+						if (successIndex == successCollection.Length)
+						{
+							var old = successCollection;
+							successCollection = new TSuccess[old.Length * 2];
+							Array.Copy(old, successCollection, old.Length);
+						}
+						successCollection[successIndex++] = success;
+
+						return false;
+					},
+					failure =>
+					{
+						if (failureIndex == failureCollection.Length)
+						{
+							var old = failureCollection;
+							failureCollection = new TFailure[old.Length * 2];
+							Array.Copy(old, failureCollection, old.Length);
+						}
+						failureCollection[failureIndex++] = failure;
+
+						return false;
+					}
+				);
+			}
+
+			if (successIndex != successCollection.Length)
+			{
+				var old = successCollection;
+				successCollection = new TSuccess[successIndex];
+				Array.Copy(old, successCollection, successIndex);
+			}
+
+			if (failureIndex != failureCollection.Length)
+			{
+				var old = failureCollection;
+				failureCollection = new TFailure[failureIndex];
+				Array.Copy(old, failureCollection, failureIndex);
 			}
 
 			return new ResultAsyncPartition<TSuccess, TFailure>(successCollection, failureCollection);

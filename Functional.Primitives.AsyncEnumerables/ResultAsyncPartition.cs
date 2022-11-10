@@ -7,16 +7,16 @@ public readonly struct ResultAsyncPartition<TSuccess, TFailure>
 	where TSuccess : notnull
 	where TFailure : notnull
 {
-	internal ResultAsyncPartition(IReadOnlyCollection<TSuccess> successCollection, IReadOnlyCollection<TFailure> failureCollection)
+	internal ResultAsyncPartition(TSuccess[] successCollection, TFailure[] failureCollection)
 	{
 		SuccessCollection = successCollection ?? throw new ArgumentNullException(nameof(successCollection));
 		FailureCollection = failureCollection ?? throw new ArgumentNullException(nameof(failureCollection));
 	}
 
-	public IReadOnlyCollection<TSuccess> SuccessCollection { get; }
-	public IReadOnlyCollection<TFailure> FailureCollection { get; }
+	public TSuccess[] SuccessCollection { get; }
+	public TFailure[] FailureCollection { get; }
 
-	public void Deconstruct(out IReadOnlyCollection<TSuccess> successCollection, out IReadOnlyCollection<TFailure> failureCollection)
+	public void Deconstruct(out TSuccess[] successCollection, out TFailure[] failureCollection)
 	{
 		successCollection = SuccessCollection;
 		failureCollection = FailureCollection;
