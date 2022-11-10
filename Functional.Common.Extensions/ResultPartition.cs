@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Functional;
 
-public class ResultPartition<TSuccess, TFailure>
+public readonly struct ResultPartition<TSuccess, TFailure>
 	where TSuccess : notnull
 	where TFailure : notnull
 {
