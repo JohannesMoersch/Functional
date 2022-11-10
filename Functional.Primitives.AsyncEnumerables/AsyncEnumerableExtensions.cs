@@ -110,6 +110,22 @@ namespace Functional
 			return Result.Success<TSuccess[], TFailure[]>(successes);
 		}
 
+		public static async Task<ResultAsyncPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+		{
+			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+			var successCollection = new List<TSuccess>();
+			var failureCollection = new List<TFailure>();
+
+			while (await enumerator.MoveNextAsync())
+			{
+				enumerator.Current.Apply(successCollection.Add, failureCollection.Add);
+			}
+
+			return new ResultAsyncPartition<TSuccess, TFailure>(successCollection, failureCollection);
+		}
+
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
 			where T : notnull
 			=> (await source.Any()) ? Option.Some(await source.First()) : Option.None<T>();
