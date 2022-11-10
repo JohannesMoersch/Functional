@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -107,6 +108,63 @@ namespace Functional
 			}
 
 			return Result.Success<TSuccess[], TFailure[]>(successes);
+		}
+
+		public static async Task<ResultAsyncPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+		{
+			var enumerator = source.GetEnumerator();
+			var successCollection = new TSuccess[4];
+			var failureCollection = new TFailure[4];
+
+			int successIndex = 0;
+			int failureIndex = 0;
+			while (await enumerator.MoveNext())
+			{
+				enumerator.Current.Match(
+					success =>
+					{
+						if (successIndex == successCollection.Length)
+						{
+							var old = successCollection;
+							successCollection = new TSuccess[old.Length * 2];
+							Array.Copy(old, successCollection, old.Length);
+						}
+						successCollection[successIndex++] = success;
+
+						return false;
+					},
+					failure =>
+					{
+						if (failureIndex == failureCollection.Length)
+						{
+							var old = failureCollection;
+							failureCollection = new TFailure[old.Length * 2];
+							Array.Copy(old, failureCollection, old.Length);
+						}
+						failureCollection[failureIndex++] = failure;
+
+						return false;
+					}
+				);
+			}
+
+			if (successIndex != successCollection.Length)
+			{
+				var old = successCollection;
+				successCollection = new TSuccess[successIndex];
+				Array.Copy(old, successCollection, successIndex);
+			}
+
+			if (failureIndex != failureCollection.Length)
+			{
+				var old = failureCollection;
+				failureCollection = new TFailure[failureIndex];
+				Array.Copy(old, failureCollection, failureIndex);
+			}
+
+			return new ResultAsyncPartition<TSuccess, TFailure>(successCollection, failureCollection);
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
