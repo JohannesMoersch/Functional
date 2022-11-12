@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Functional;
-
-public readonly struct ResultPartition<TSuccess, TFailure>
-	where TSuccess : notnull
-	where TFailure : notnull
+namespace Functional
 {
-	internal ResultPartition(IEnumerable<TSuccess> successCollection, IEnumerable<TFailure> failureCollection)
+	public readonly struct ResultPartition<TSuccess, TFailure>
+		where TSuccess : notnull
+		where TFailure : notnull
 	{
-		SuccessCollection = successCollection ?? throw new ArgumentNullException(nameof(successCollection));
-		FailureCollection = failureCollection ?? throw new ArgumentNullException(nameof(failureCollection));
-	}
+		internal ResultPartition(IEnumerable<TSuccess> successes, IEnumerable<TFailure> failures)
+		{
+			Successes = successes ?? throw new ArgumentNullException(nameof(successes));
+			Failures = failures ?? throw new ArgumentNullException(nameof(failures));
+		}
 
-	public IEnumerable<TSuccess> SuccessCollection { get; }
-	public IEnumerable<TFailure> FailureCollection { get; }
+		public IEnumerable<TSuccess> Successes { get; }
+		public IEnumerable<TFailure> Failures { get; }
 
-	public void Deconstruct(out IEnumerable<TSuccess> successCollection, out IEnumerable<TFailure> failureCollection)
-	{
-		successCollection = SuccessCollection;
-		failureCollection = FailureCollection;
+		public void Deconstruct(out IEnumerable<TSuccess> successes, out IEnumerable<TFailure> failures)
+		{
+			successes = Successes;
+			failures = Failures;
+		}
 	}
 }
