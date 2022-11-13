@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Functional.Common.Extensions
+namespace Functional
 {
 	internal class ReplayableEnumerableData<T>
 	{

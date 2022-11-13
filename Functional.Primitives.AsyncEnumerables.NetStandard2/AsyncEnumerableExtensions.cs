@@ -110,61 +110,17 @@ namespace Functional
 			return Result.Success<TSuccess[], TFailure[]>(successes);
 		}
 
-		public static async Task<ResultAsyncPartition<TSuccess, TFailure>> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+		public static AsyncResultPartition<TSuccess, TFailure> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 			where TSuccess : notnull
 			where TFailure : notnull
 		{
-			var enumerator = source.GetEnumerator();
-			var successCollection = new TSuccess[4];
-			var failureCollection = new TFailure[4];
+			var values = new ReplayableAsyncEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
 
-			int successIndex = 0;
-			int failureIndex = 0;
-			while (await enumerator.MoveNext())
-			{
-				enumerator.Current.Match(
-					success =>
-					{
-						if (successIndex == successCollection.Length)
-						{
-							var old = successCollection;
-							successCollection = new TSuccess[old.Length * 2];
-							Array.Copy(old, successCollection, old.Length);
-						}
-						successCollection[successIndex++] = success;
-
-						return false;
-					},
-					failure =>
-					{
-						if (failureIndex == failureCollection.Length)
-						{
-							var old = failureCollection;
-							failureCollection = new TFailure[old.Length * 2];
-							Array.Copy(old, failureCollection, old.Length);
-						}
-						failureCollection[failureIndex++] = failure;
-
-						return false;
-					}
-				);
-			}
-
-			if (successIndex != successCollection.Length)
-			{
-				var old = successCollection;
-				successCollection = new TSuccess[successIndex];
-				Array.Copy(old, successCollection, successIndex);
-			}
-
-			if (failureIndex != failureCollection.Length)
-			{
-				var old = failureCollection;
-				failureCollection = new TFailure[failureIndex];
-				Array.Copy(old, failureCollection, failureIndex);
-			}
-
-			return new ResultAsyncPartition<TSuccess, TFailure>(successCollection, failureCollection);
+			return new AsyncResultPartition<TSuccess, TFailure>
+			(
+				values.Where(set => set.matches).Select(set => set.value.Match(success => success, failure => throw new InvalidOperationException("Expected success!"))),
+				values.Where(set => !set.matches).Select(set => set.value.Match(success => throw new InvalidOperationException("Expected failure!"), failure => failure))
+			);
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)

@@ -201,10 +201,10 @@ public class ResultCollectionPartitionTests
 				Task.FromResult(Result.Success<int, string>(ITEM2)),
 				Task.FromResult(Result.Success<int, string>(ITEM3))
 			};
-			var (successCollection, failureCollection) = await tasks.AsAsyncEnumerable().Partition();
+			var (successCollection, failureCollection) = tasks.AsAsyncEnumerable().Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
-			failureCollection.Should().BeEmpty();
+			await successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			(await failureCollection.AsEnumerable()).Should().BeEmpty();
 		}
 
 		[Fact]
@@ -220,10 +220,10 @@ public class ResultCollectionPartitionTests
 				Task.FromResult(Result.Failure<int, string>(ERROR3))
 			};
 
-			var (successCollection, failureCollection) = await tasks.AsAsyncEnumerable().Partition();
+			var (successCollection, failureCollection) = tasks.AsAsyncEnumerable().Partition();
 
-			successCollection.Should().BeEmpty();
-			failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
+			(await successCollection.AsEnumerable()).Should().BeEmpty();
+			await failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
 		}
 
 		[Fact]
@@ -245,10 +245,10 @@ public class ResultCollectionPartitionTests
 				Task.FromResult(Result.Failure<int, string>(ERROR3))
 			};
 
-			var (successCollection, failureCollection) = await tasks.AsAsyncEnumerable().Partition();
+			var (successCollection, failureCollection) = tasks.AsAsyncEnumerable().Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
-			failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
+			await successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			await failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
 		}
 	}
 }
