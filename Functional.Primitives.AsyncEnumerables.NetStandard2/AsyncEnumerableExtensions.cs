@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Functional
@@ -107,6 +108,19 @@ namespace Functional
 			}
 
 			return Result.Success<TSuccess[], TFailure[]>(successes);
+		}
+
+		public static AsyncResultPartition<TSuccess, TFailure> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+		{
+			var values = new ReplayableAsyncEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
+
+			return new AsyncResultPartition<TSuccess, TFailure>
+			(
+				values.Where(set => set.matches).Select(set => set.value.Match(success => success, failure => throw new InvalidOperationException("Expected success!"))),
+				values.Where(set => !set.matches).Select(set => set.value.Match(success => throw new InvalidOperationException("Expected failure!"), failure => failure))
+			);
 		}
 
 		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
