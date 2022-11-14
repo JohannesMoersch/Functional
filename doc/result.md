@@ -271,6 +271,18 @@ Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s));
 Result.Failure<int, string>("Failure").Do(s => Console.WriteLine(s), f => Console.WriteLine(f));
 ```
 
+### ApplyOnFailure
+
+This extension (for `Result<Unit, TFailure>` only) returns void and is meant only to create side effects. If `Failure` it will invoke the delegate parameter.
+
+```csharp
+// Does nothing
+Result.Success<Unit, string>(Unit.Value).ApplyOnFailure(s => Console.WriteLine(s));
+
+// Outputs "Failure" to the console
+Result.Failure<Unit, string>("Failure").ApplyOnFailure(s => Console.WriteLine(s));
+```
+
 ### Transpose
 
 This extension returns a `Result` with `Success` and `Failure` values reversed.

@@ -211,6 +211,14 @@ namespace Functional
 			where TFailure : notnull
 			=> result.Do(onSuccess, onFailure);
 
+		public static void ApplyOnFailure<TFailure>(this Result<Unit, TFailure> result, Action<TFailure> onFailure)
+			where TFailure : notnull
+			=> result.Apply(DelegateCache<Unit>.Void, onFailure);
+
+		public static Task ApplyOnFailure<TFailure>(this Task<Result<Unit, TFailure>> result, Action<TFailure> onFailure)
+			where TFailure : notnull
+			=> result.Apply(DelegateCache<Unit>.Void, onFailure);
+
 		public static Result<TResult, TFailure> TryMap<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
