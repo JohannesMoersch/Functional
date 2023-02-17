@@ -451,7 +451,7 @@ namespace Functional.Tests.Results
 			public void ReturnsFailureWhenAtLeastOneFailure(Result<int, string>[] resultCollection)
 				=> Result.Zip(
 						resultCollection[0],
-						resultCollection[1])
+						resultCollection[1].Map(i => (Decimal)i))
 					.AssertFailure()
 					.Should()
 					.Match(errorCollection

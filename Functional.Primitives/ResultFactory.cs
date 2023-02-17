@@ -13,6 +13,14 @@ namespace Functional
 			where TSuccess : notnull
 			=> new PartialResult.Success<TSuccess>(success);
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/> holding a success value.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="success">The success value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Success<TSuccess, TFailure>(TSuccess success)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -31,7 +39,15 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> SuccessAsync<TSuccess, TFailure>(success);
-		
+
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/> holding a success value.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="success">The success value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> SuccessAsync<TSuccess, TFailure>(Task<TSuccess> success)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -41,6 +57,14 @@ namespace Functional
 			where TFailure : notnull
 			=> new PartialResult.Failure<TFailure>(failure);
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/> holding a failure value.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="failure">The failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Failure<TSuccess, TFailure>(TFailure failure)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -60,11 +84,29 @@ namespace Functional
 			where TFailure : notnull
 			=> FailureAsync<TSuccess, TFailure>(failure);
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/> holding a failure value.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="failure">The failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> FailureAsync<TSuccess, TFailure>(Task<TFailure> failure)
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> Failure<TSuccess, TFailure>(await failure);
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold <paramref name="success"/>; otherwise, hold <paramref name="failure"/>.</param>
+		/// <param name="success">The success value.</param>
+		/// <param name="failure">The failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, TSuccess success, TFailure failure)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -72,6 +114,16 @@ namespace Functional
 				? Success<TSuccess, TFailure>(success)
 				: Failure<TSuccess, TFailure>(failure);
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold <paramref name="success"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="success">The success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, TSuccess success, Func<TFailure> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -84,6 +136,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(failureFactory.Invoke());
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold <paramref name="success"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="success">The success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, TSuccess success, Func<Task<TFailure>> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -96,6 +158,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(await failureFactory.Invoke());
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold <paramref name="failure"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failure">The failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, TFailure failure)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -108,6 +180,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(failure);
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static Result<TSuccess, TFailure> Create<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, Func<TFailure> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -123,6 +205,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(failureFactory.Invoke());
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<TSuccess> successFactory, Func<Task<TFailure>> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -138,6 +230,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(await failureFactory.Invoke());
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold <paramref name="failure"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failure">The failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, TFailure failure)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -150,6 +252,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(failure);
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<TFailure> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -165,6 +277,16 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(failureFactory.Invoke());
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Result{TSuccess,TFailure}"/>.
+		/// </summary>
+		/// <typeparam name="TSuccess">The success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="isSuccess">If <see langword="true"/>, hold the value produced by <paramref name="successFactory"/>; otherwise, hold the value produced by <paramref name="failureFactory"/>.</param>
+		/// <param name="successFactory">The function producing the success value.</param>
+		/// <param name="failureFactory">The function producing the failure value.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
 		public static async Task<Result<TSuccess, TFailure>> CreateAsync<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<Task<TFailure>> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -372,12 +494,26 @@ namespace Functional
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, TFailure failure)
 			where TFailure : notnull
-			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failure);
+			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Failure<Unit, TFailure>(failure);
 
 		public static Result<Unit, TFailure> Where<TFailure>(bool isSuccess, Func<TFailure> failureFactory)
 			where TFailure : notnull
-			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failureFactory.Invoke());
+			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Failure<Unit, TFailure>(failureFactory.Invoke());
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>) if both
+		/// <paramref name="r1"/> and <paramref name="r2"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>
 		(
@@ -400,6 +536,22 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, and <paramref name="r3"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TFailure>
 		(
@@ -429,6 +581,24 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, and <paramref name="r4"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>
 		(
@@ -463,6 +633,27 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TSuccess5">The fifth success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <param name="r5">The fifth result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, <paramref name="r4"/>, and <paramref name="r5"/> hold success values;
+		/// otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>
 		(
@@ -502,6 +693,29 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TSuccess5">The fifth success type.</typeparam>
+		/// <typeparam name="TSuccess6">The sixth success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <param name="r5">The fifth result.</param>
+		/// <param name="r6">The sixth result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, <paramref name="r4"/>, <paramref name="r5"/>, and <paramref name="r6"/> hold
+		/// success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>
 		(
@@ -546,6 +760,31 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TSuccess5">The fifth success type.</typeparam>
+		/// <typeparam name="TSuccess6">The sixth success type.</typeparam>
+		/// <typeparam name="TSuccess7">The seventh success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <param name="r5">The fifth result.</param>
+		/// <param name="r6">The sixth result.</param>
+		/// <param name="r7">The seventh result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, <paramref name="r4"/>, <paramref name="r5"/>, <paramref name="r6"/>, and
+		/// <paramref name="r7"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>
 		(
@@ -595,6 +834,33 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TSuccess5">The fifth success type.</typeparam>
+		/// <typeparam name="TSuccess6">The sixth success type.</typeparam>
+		/// <typeparam name="TSuccess7">The seventh success type.</typeparam>
+		/// <typeparam name="TSuccess8">The eighth success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <param name="r5">The fifth result.</param>
+		/// <param name="r6">The sixth result.</param>
+		/// <param name="r7">The seventh result.</param>
+		/// <param name="r8">The eighth result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, <paramref name="r4"/>, <paramref name="r5"/>, <paramref name="r6"/>,
+		/// <paramref name="r7"/>, and <paramref name="r8"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>
 		(
@@ -649,6 +915,35 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]>(errorCollection.ToArray());
 		}
 
+		/// <summary>
+		/// Given a set of <see cref="Result{TSuccess,TFailure}"/> with identical failure types (<typeparamref name="TFailure"/>), produce
+		/// a result holding all success values from the set if all input results hold success; otherwise, produce a result holding all
+		/// failure values from the set.
+		/// </summary>
+		/// <typeparam name="TSuccess1">The first success type.</typeparam>
+		/// <typeparam name="TSuccess2">The second success type.</typeparam>
+		/// <typeparam name="TSuccess3">The third success type.</typeparam>
+		/// <typeparam name="TSuccess4">The fourth success type.</typeparam>
+		/// <typeparam name="TSuccess5">The fifth success type.</typeparam>
+		/// <typeparam name="TSuccess6">The sixth success type.</typeparam>
+		/// <typeparam name="TSuccess7">The seventh success type.</typeparam>
+		/// <typeparam name="TSuccess8">The eighth success type.</typeparam>
+		/// <typeparam name="TSuccess9">The ninth success type.</typeparam>
+		/// <typeparam name="TFailure">The failure type.</typeparam>
+		/// <param name="r1">The first result.</param>
+		/// <param name="r2">The second result.</param>
+		/// <param name="r3">The third result.</param>
+		/// <param name="r4">The fourth result.</param>
+		/// <param name="r5">The fifth result.</param>
+		/// <param name="r6">The sixth result.</param>
+		/// <param name="r7">The seventh result.</param>
+		/// <param name="r8">The eighth result.</param>
+		/// <param name="r9">The ninth result.</param>
+		/// <returns>
+		/// A <see cref="Result{TSuccess,TFailure}"/> holding (<typeparamref name="TSuccess1"/>, <typeparamref name="TSuccess2"/>, <typeparamref name="TSuccess3"/>)
+		/// if all of <paramref name="r1"/>, <paramref name="r2"/>, <paramref name="r3"/>, <paramref name="r4"/>, <paramref name="r5"/>, <paramref name="r6"/>,
+		/// <paramref name="r7"/>, <paramref name="r8"/>, and <paramref name="r9"/> hold success values; otherwise, a result holding all failures.
+		/// </returns>
 		[AllowAllocations]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>
 		(
