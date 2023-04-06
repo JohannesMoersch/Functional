@@ -1,15 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives", "Functional.Primitives\Functional.Primitives.csproj", "{77BA7FE8-AF44-47B0-BE4A-39787D45B04E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.Extensions", "Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj", "{3292A1A9-A8ED-47D9-888F-F63957229AA4}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions", "Functional.Unions\Functional.Unions.csproj", "{E10D8262-25B2-4066-AA1C-DA0A5AF5F185}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions.Extensions", "Functional.Unions.Extensions\Functional.Unions.Extensions.csproj", "{CF3D3712-7380-4F0A-9B3E-F4766B934851}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Enumerables.Extensions", "Functional.Enumerables.Extensions\Functional.Enumerables.Extensions.csproj", "{C7D27C23-70A1-4139-986C-F10B18E0062C}"
 EndProject
@@ -18,30 +14,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Common.Extensions", "Functional.Common.Extensions\Functional.Common.Extensions.csproj", "{D928B74D-5CED-4C86-96D3-88928BB9928C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Tests", "Functional.Tests\Functional.Tests.csproj", "{01DF0B82-75DC-420D-A2A5-31025C930237}"
-	ProjectSection(ProjectDependencies) = postProject
-		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1} = {628D8B2B-C7A6-4A9D-962C-948DD2E117B1}
-		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6} = {ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}
-		{62470C59-88FA-4E07-A36A-EEB475CD5A93} = {62470C59-88FA-4E07-A36A-EEB475CD5A93}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables", "Functional.AsyncEnumerables\Functional.AsyncEnumerables.csproj", "{F3FFBCD4-11BB-412C-BAEB-256118C2560F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables", "Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj", "{5F598749-794A-4078-9591-B09BA20E8C81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions.AsyncEnumerables", "Functional.Unions.AsyncEnumerables\Functional.Unions.AsyncEnumerables.csproj", "{2BC81670-210C-4702-8606-6B9A73459FE6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5070C042-BF0A-4756-9157-7B149AE6418F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Unions.AsyncEnumerables.NetStandard2", "Functional.Unions.AsyncEnumerables.NetStandard2\Functional.Unions.AsyncEnumerables.NetStandard2.csproj", "{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.AsyncEnumerables.NetStandard2", "Functional.Primitives.AsyncEnumerables.NetStandard2\Functional.Primitives.AsyncEnumerables.NetStandard2.csproj", "{62470C59-88FA-4E07-A36A-EEB475CD5A93}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.AsyncEnumerables.NetStandard2", "Functional.AsyncEnumerables.NetStandard2\Functional.AsyncEnumerables.NetStandard2.csproj", "{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.All.NetStandard2", "Functional.All.NetStandard2\Functional.All.NetStandard2.csproj", "{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,14 +38,6 @@ Global
 		{3292A1A9-A8ED-47D9-888F-F63957229AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3292A1A9-A8ED-47D9-888F-F63957229AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3292A1A9-A8ED-47D9-888F-F63957229AA4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E10D8262-25B2-4066-AA1C-DA0A5AF5F185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E10D8262-25B2-4066-AA1C-DA0A5AF5F185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E10D8262-25B2-4066-AA1C-DA0A5AF5F185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E10D8262-25B2-4066-AA1C-DA0A5AF5F185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF3D3712-7380-4F0A-9B3E-F4766B934851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF3D3712-7380-4F0A-9B3E-F4766B934851}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF3D3712-7380-4F0A-9B3E-F4766B934851}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF3D3712-7380-4F0A-9B3E-F4766B934851}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D27C23-70A1-4139-986C-F10B18E0062C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,26 +62,6 @@ Global
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F598749-794A-4078-9591-B09BA20E8C81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BC81670-210C-4702-8606-6B9A73459FE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BC81670-210C-4702-8606-6B9A73459FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BC81670-210C-4702-8606-6B9A73459FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BC81670-210C-4702-8606-6B9A73459FE6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED095F4D-8842-4594-BA5E-9CF89CAA5DC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62470C59-88FA-4E07-A36A-EEB475CD5A93}.Release|Any CPU.Build.0 = Release|Any CPU
-		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{628D8B2B-C7A6-4A9D-962C-948DD2E117B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09BA504B-31DC-4FB4-A7DF-1575F1F28FA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

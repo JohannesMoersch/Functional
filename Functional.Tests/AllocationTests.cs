@@ -29,7 +29,7 @@ namespace Functional.Tests
 
 		private static bool FilterForNewObject(ParsedMethodBody methodBody)
 		{
-			var isAsyncMethod = methodBody.Parent.Value().Match(c => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
+			var isAsyncMethod = methodBody.Parent.Match(c => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
 
 			foreach (var instruction in methodBody.Instructions.Skip(isAsyncMethod ? 1 : 0).Where(i => i.OpCode == OpCodes.Newobj))
 			{
@@ -85,10 +85,10 @@ namespace Functional.Tests
 		private static void SearchMethodsInAssembly(Assembly assembly, string message, Func<ParsedMethodBody, bool> methodFilter)
 		{
 			var members = GetMethodBodiesInAssembly(assembly)
-				.Where(b => b.Parent.Value().Match(c => !ContainsAllowAllocations(c.GetCustomAttributes()), m => !ContainsAllowAllocations(m.GetCustomAttributes())))
-				.Where(b => !ContainsAllowAllocations(b.Parent.Value().Match(c => c.ReflectedType, m => m.ReflectedType).GetCustomAttributes()))
+				.Where(b => b.Parent.Match(c => !ContainsAllowAllocations(c.GetCustomAttributes()), m => !ContainsAllowAllocations(m.GetCustomAttributes())))
+				.Where(b => !ContainsAllowAllocations(b.Parent.Match(c => c.ReflectedType, m => m.ReflectedType).GetCustomAttributes()))
 				.Where(methodFilter)
-				.Select(b => (name: b.Parent.Value().Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())})", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())})"), className: b.Parent.Value().Match(c => c.ReflectedType.FullName, m => m.ReflectedType.FullName)))
+				.Select(b => (name: b.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())})", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())})"), className: b.Parent.Match(c => c.ReflectedType.FullName, m => m.ReflectedType.FullName)))
 				.Select(b => $"{Environment.NewLine}\t{b.name} in {b.className}")
 				.ToArray();
 

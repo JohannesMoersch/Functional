@@ -22,9 +22,6 @@
     <ProjectReference Include="..\Functional.Primitives.AsyncEnumerables\Functional.Primitives.AsyncEnumerables.csproj" />
     <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
-    <ProjectReference Include="..\Functional.Unions.AsyncEnumerables\Functional.Unions.AsyncEnumerables.csproj" />
-    <ProjectReference Include="..\Functional.Unions.Extensions\Functional.Unions.Extensions.csproj" />
-    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
   </ItemGroup>
 
 </Project>
