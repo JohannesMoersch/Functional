@@ -17,12 +17,6 @@ namespace Functional
 			return new Option<T>(true, value);
 		}
 
-		[Obsolete("Please use .SomeAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<T>> Some<T>(Task<T> value)
-			where T : notnull
-			=> SomeAsync(value);
-
 		public static async Task<Option<T>> SomeAsync<T>(Task<T> value)
 			where T : notnull
 			=> Some(await value);
@@ -42,12 +36,6 @@ namespace Functional
 				? Some(value)
 				: None<T>();
 
-		[Obsolete("Please use .FromNullableAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<T>> FromNullable<T>(Task<T?> value)
-			where T : class
-			=> FromNullableAsync(value);
-
 		public static async Task<Option<T>> FromNullableAsync<T>(Task<T?> value)
 			where T : class
 			=> FromNullable(await value);
@@ -57,12 +45,6 @@ namespace Functional
 			=> value.HasValue
 				? Some(value.Value)
 				: None<T>();
-
-		[Obsolete("Please use .FromNullableAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<T>> FromNullable<T>(Task<T?> value)
-			where T : struct
-			=> FromNullableAsync(value);
 
 		public static async Task<Option<T>> FromNullableAsync<T>(Task<T?> value)
 			where T : struct
@@ -85,12 +67,6 @@ namespace Functional
 				: None<T>();
 		}
 
-		[Obsolete("Please use .CreateAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<T>> Create<T>(bool isSome, Func<Task<T>> valueFactory)
-			where T : notnull
-			=> CreateAsync(isSome, valueFactory);
-		
 		public static async Task<Option<T>> CreateAsync<T>(bool isSome, Func<Task<T>> valueFactory)
 			where T : notnull
 		{

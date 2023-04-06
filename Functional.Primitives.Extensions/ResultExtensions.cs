@@ -120,19 +120,6 @@ namespace Functional
 			where TResult : notnull
 			=> (await result).Bind(bind);
 
-		[Obsolete]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Result<TSuccess, TFailure> BindOnFailure<TSuccess, TFailure>(Result<TSuccess, TFailure> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
-			where TSuccess : notnull
-			where TFailure : notnull
-		{
-			if (bind == null) throw new ArgumentNullException(nameof(bind));
-
-			return !result.TryGetValue(out _, out var failure)
-				? bind.Invoke(failure)
-				: result;
-		}
-
 		public static Result<TSuccess, TResult> BindOnFailure<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TFailure, Result<TSuccess, TResult>> bind)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -144,13 +131,6 @@ namespace Functional
 				? bind.Invoke(failure)
 				: Result.Success<TSuccess, TResult>(success);
 		}
-
-		[Obsolete]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Result<TSuccess, TFailure>> BindOnFailure<TSuccess, TFailure>(Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TFailure>> bind)
-			where TSuccess : notnull
-			where TFailure : notnull
-			=> BindOnFailure<TSuccess, TFailure>(await result, bind);
 
 		public static async Task<Result<TSuccess, TResult>> BindOnFailure<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Result<TSuccess, TResult>> bind)
 			where TSuccess : notnull

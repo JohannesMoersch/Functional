@@ -25,13 +25,6 @@ namespace Functional
 #pragma warning restore CS8604 // Possible null reference argument.
 		}
 
-		[Obsolete("Please use .SuccessAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TSuccess, TFailure>> Success<TSuccess, TFailure>(Task<TSuccess> success)
-			where TSuccess : notnull
-			where TFailure : notnull
-			=> SuccessAsync<TSuccess, TFailure>(success);
-		
 		public static async Task<Result<TSuccess, TFailure>> SuccessAsync<TSuccess, TFailure>(Task<TSuccess> success)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -52,13 +45,6 @@ namespace Functional
 			return new Result<TSuccess, TFailure>(false, default, failure);
 #pragma warning restore CS8604 // Possible null reference argument.
 		}
-
-		[Obsolete("Please use .FailureAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TSuccess, TFailure>> Failure<TSuccess, TFailure>(Task<TFailure> failure)
-			where TSuccess : notnull
-			where TFailure : notnull
-			=> FailureAsync<TSuccess, TFailure>(failure);
 
 		public static async Task<Result<TSuccess, TFailure>> FailureAsync<TSuccess, TFailure>(Task<TFailure> failure)
 			where TSuccess : notnull
@@ -180,13 +166,6 @@ namespace Functional
 				: Failure<TSuccess, TFailure>(await failureFactory.Invoke());
 		}
 
-		[Obsolete("Please use .CreateAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TSuccess, TFailure>> Create<TSuccess, TFailure>(bool isSuccess, Func<Task<TSuccess>> successFactory, Func<Task<TFailure>> failureFactory)
-			where TSuccess : notnull
-			where TFailure : notnull
-			=> CreateAsync(isSuccess, successFactory, failureFactory);
-
 		public static Result<TSuccess, Exception> Try<TSuccess>(Func<TSuccess> successFactory)
 			where TSuccess : notnull
 			=> Try<TSuccess, Exception>(successFactory);
@@ -227,12 +206,6 @@ namespace Functional
 			}
 		}
 
-		[Obsolete("Please use .TryAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TSuccess, Exception>> Try<TSuccess>(Func<Task<TSuccess>> successFactory)
-			where TSuccess : notnull
-			=> TryAsync(successFactory);
-
 		public static async Task<Result<TSuccess, Exception>> TryAsync<TSuccess>(Func<Task<TSuccess>> successFactory)
 			where TSuccess : notnull
 		{
@@ -248,11 +221,6 @@ namespace Functional
 				return Failure<TSuccess, Exception>(ex);
 			}
 		}
-
-		[Obsolete("Please use .TryAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<Unit, Exception>> Try(Func<Task> successFactory)
-			=> TryAsync(successFactory);
 
 		public static async Task<Result<Unit, Exception>> TryAsync(Func<Task> successFactory)
 		{
@@ -312,13 +280,6 @@ namespace Functional
 			}
 		}
 
-		[Obsolete("Please use .TryAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<TSuccess, TFailure>> Try<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
-			where TSuccess : notnull
-			where TFailure : notnull
-			=> TryAsync(successFactory, @catch);
-
 		public static async Task<Result<TSuccess, TFailure>> TryAsync<TSuccess, TFailure>(Func<Task<TSuccess>> successFactory, Func<Exception, TFailure> @catch)
 			where TSuccess : notnull
 			where TFailure : notnull
@@ -338,12 +299,6 @@ namespace Functional
 				return Failure<TSuccess, TFailure>(@catch.Invoke(ex));
 			}
 		}
-
-		[Obsolete("Please use .TryAsync() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Result<Unit, TFailure>> Try<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
-			where TFailure : notnull
-			=> TryAsync(successFactory, @catch);
 
 		public static async Task<Result<Unit, TFailure>> TryAsync<TFailure>(Func<Task> successFactory, Func<Exception, TFailure> @catch)
 			where TFailure : notnull
