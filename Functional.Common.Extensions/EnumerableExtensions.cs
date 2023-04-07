@@ -151,8 +151,7 @@ namespace Functional
 						},
 						failure =>
 						{
-							if (failures == null)
-								failures = new List<TFailure>();
+							failures ??= new List<TFailure>();
 							failures.Add(failure);
 							return false;
 						}
@@ -214,8 +213,7 @@ namespace Functional
 						},
 						failure =>
 						{
-							if (failures == null)
-								failures = new List<TFailure>();
+							failures ??= new List<TFailure>();
 							failures.Add(failure);
 							return false;
 						}

@@ -88,12 +88,15 @@ namespace Functional
 			=> await collection;
 
 		public static async Task<IEnumerable<KeyValuePair<TKey, TValue>>> AsEnumerable<TKey, TValue>(this Task<SortedDictionary<TKey, TValue>> collection)
+			where TKey : notnull
 			=> await collection;
 
 		public static async Task<IEnumerable<KeyValuePair<TKey, TValue>>> AsEnumerable<TKey, TValue>(this Task<SortedList<TKey, TValue>> collection)
+			where TKey : notnull
 			=> await collection;
 
 		public static async Task<IEnumerable<KeyValuePair<TKey, TValue>>> AsEnumerable<TKey, TValue>(this Task<Dictionary<TKey, TValue>> collection)
+			where TKey : notnull
 			=> await collection;
 
 		public static async Task<IEnumerable<T>> AsEnumerable<T>(this Task<IProducerConsumerCollection<T>> collection)
@@ -109,6 +112,7 @@ namespace Functional
 			=> await collection;
 
 		public static async Task<IEnumerable<KeyValuePair<TKey, TValue>>> AsEnumerable<TKey, TValue>(this Task<ConcurrentDictionary<TKey, TValue>> collection)
+			where TKey : notnull
 			=> await collection;
 	}
 }

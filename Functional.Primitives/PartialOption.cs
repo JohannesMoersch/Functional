@@ -11,7 +11,7 @@ namespace Functional
 			public bool Equals(None other)
 				=> true;
 
-			public override bool Equals(object obj)
+			public override bool Equals(object? obj)
 				=> obj is None;
 
 			public override int GetHashCode()

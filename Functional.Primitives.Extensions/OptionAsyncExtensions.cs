@@ -118,15 +118,15 @@ namespace Functional
 
 		public static Task<Option<TValue>> DoAsync<TValue>(this Option<TValue> option, Func<TValue, Task> @do)
 			where TValue : notnull
-			=> option.DoAsync(@do, DelegateCache.Task);
+			=> option.DoAsync(@do, static () => Task.CompletedTask);
 
 		public static async Task<Option<TValue>> DoAsync<TValue>(this Task<Option<TValue>> option, Func<TValue, Task> @do)
 			where TValue : notnull
-			=> await (await option).DoAsync(@do, DelegateCache.Task);
+			=> await (await option).DoAsync(@do, static () => Task.CompletedTask);
 
 		public static async Task<Option<TValue>> DoOnNoneAsync<TValue>(this Option<TValue> option, Func<Task> @do)
 			where TValue : notnull
-			=> await option.DoAsync(DelegateCache<TValue>.Task, @do);
+			=> await option.DoAsync(static _ => Task.CompletedTask, @do);
 
 		public static async Task<Option<TValue>> DoOnNoneAsync<TValue>(this Task<Option<TValue>> option, Func<Task> @do)
 			where TValue : notnull

@@ -149,22 +149,22 @@ namespace Functional
 		public static Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> result.DoAsync(success, DelegateCache<TFailure>.Task);
+			=> result.DoAsync(success, static _ => Task.CompletedTask);
 
 		public static async Task<Result<TSuccess, TFailure>> DoAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task> success)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> await (await result).DoAsync(success, DelegateCache<TFailure>.Task);
+			=> await (await result).DoAsync(success, static _ => Task.CompletedTask);
 
 		public static Task<Result<TSuccess, TFailure>> DoOnFailureAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TFailure, Task> failure)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> result.DoAsync(DelegateCache<TSuccess>.Task, failure);
+			=> result.DoAsync(static _ => Task.CompletedTask, failure);
 
 		public static async Task<Result<TSuccess, TFailure>> DoOnFailureAsync<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TFailure, Task> failure)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> await (await result).DoAsync(DelegateCache<TSuccess>.Task, failure);
+			=> await (await result).DoAsync(static _ => Task.CompletedTask, failure);
 
 		public static Task ApplyAsync<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task> success, Func<TFailure, Task> failure)
 			where TSuccess : notnull
@@ -205,7 +205,7 @@ namespace Functional
 		public static Task<Result<TResult, Exception>> TryMapAsync<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, Task<TResult>> successFactory)
 			where TSuccess : notnull
 			where TResult : notnull
-			=> TryMapAsync(result, successFactory, DelegateCache<Exception>.Passthrough);
+			=> TryMapAsync(result, successFactory, static _ => _);
 
 		public static async Task<Result<TResult, TFailure>> TryMapAsync<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
 			where TSuccess : notnull
@@ -216,6 +216,6 @@ namespace Functional
 		public static async Task<Result<TResult, Exception>> TryMapAsync<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, Task<TResult>> successFactory)
 			where TSuccess : notnull
 			where TResult : notnull
-			=> await (await result).TryMapAsync(successFactory, DelegateCache<Exception>.Passthrough);
+			=> await (await result).TryMapAsync(successFactory, static _ => _);
 	}
 }

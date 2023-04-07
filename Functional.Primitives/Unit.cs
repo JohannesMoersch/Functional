@@ -15,7 +15,7 @@ namespace Functional
 		public override int GetHashCode()
 			=> 0;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Unit;
 
 		public override string ToString()

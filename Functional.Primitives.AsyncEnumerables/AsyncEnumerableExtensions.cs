@@ -60,7 +60,7 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 		{
-			TSuccess[] successes = new TSuccess[4];
+			var successes = new TSuccess[4];
 
 			List<TFailure>? failures = null;
 
@@ -89,8 +89,7 @@ namespace Functional
 						},
 						failure =>
 						{
-							if (failures == null)
-								failures = new List<TFailure>();
+							failures ??= new List<TFailure>();
 							failures.Add(failure);
 							return false;
 						}

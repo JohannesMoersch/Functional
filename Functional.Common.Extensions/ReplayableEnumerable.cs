@@ -7,7 +7,7 @@ namespace Functional
 	{
 		private readonly IEnumerator<T> _enumerator;
 
-		private readonly List<T> _values = new List<T>();
+		private readonly List<T> _values = new();
 
 		private bool _complete;
 

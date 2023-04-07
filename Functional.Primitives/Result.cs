@@ -24,7 +24,7 @@ namespace Functional
 			_failure = failure;
 		}
 
-#pragma warning disable CS8618, CS8601 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. Possible null reference assignment.
+#pragma warning disable CS8600, CS8601, CS8618 // Converting null literal or possible null value to non-nullable type. Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		private Result(SerializationInfo info, StreamingContext context)
 		{
 			var isSuccess = info.GetBoolean(nameof(_isSuccess));
@@ -42,7 +42,7 @@ namespace Functional
 				_failure = (TFailure)info.GetValue(nameof(_failure), typeof(TFailure));
 			}
 		}
-#pragma warning restore CS8618, CS8601 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. Possible null reference assignment.
+#pragma warning restore CS8600, CS8601, CS8618 // Converting null literal or possible null value to non-nullable type. Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
@@ -79,7 +79,7 @@ namespace Functional
 			=> IsSuccess() ? _success.GetHashCode() * 31 : _failure.GetHashCode() * 31;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Result<TSuccess, TFailure> result && Equals(result);
 
 		[AllowAllocations]

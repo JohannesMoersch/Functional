@@ -12,7 +12,7 @@ namespace Functional
 	{
 		public static bool HasValue<TValue>(this Option<TValue> option)
 			where TValue : notnull
-			=> option.Match(DelegateCache<TValue>.True, DelegateCache.False);
+			=> option.Match(static _ => true, static () => false);
 
 		public static async Task<bool> HasValue<TValue>(this Task<Option<TValue>> option)
 			where TValue : notnull
@@ -165,15 +165,15 @@ namespace Functional
 
 		public static Option<TValue> Do<TValue>(this Option<TValue> option, Action<TValue> @do)
 			where TValue : notnull
-			=> option.Do(@do, DelegateCache.Void);
+			=> option.Do(@do, static () => { });
 
 		public static async Task<Option<TValue>> Do<TValue>(this Task<Option<TValue>> option, Action<TValue> @do)
 			where TValue : notnull
-			=> (await option).Do(@do, DelegateCache.Void);
+			=> (await option).Do(@do, static () => { });
 
 		public static Option<TValue> DoOnNone<TValue>(this Option<TValue> option, Action @do)
 			where TValue : notnull
-			=> option.Do(DelegateCache<TValue>.Void, @do);
+			=> option.Do(static _ => { }, @do);
 
 		public static async Task<Option<TValue>> DoOnNone<TValue>(this Task<Option<TValue>> option, Action @do)
 			where TValue : notnull

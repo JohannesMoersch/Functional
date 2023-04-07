@@ -9,6 +9,7 @@ namespace Functional
 	public static class DictionaryExtensions
     {
 		public static Option<TValue> TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> source, TKey key)
+			where TKey : notnull
 			where TValue : notnull
 		{
 			if (source.TryGetValue(key, out var value) && value != null)
@@ -18,6 +19,7 @@ namespace Functional
 		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
+			where TKey : notnull
 			where TValue : notnull
 		{
 			if (source.TryGetValue(key, out var value) && value != null)
@@ -45,6 +47,7 @@ namespace Functional
 		}
 
 		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue> source, TKey key)
+			where TKey : notnull
 			where TValue : notnull
 		{
 			if (source.TryRemove(key, out var value) && value != null)
@@ -54,6 +57,7 @@ namespace Functional
 		}
 
 		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue?> source, TKey key)
+			where TKey : notnull
 			where TValue : struct
 		{
 			if (source.TryRemove(key, out var value) && value is TValue v)

@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="_._" Pack="true" PackagePath="lib/netstandard2.1/_._" Visible="false" />
+    <None Include="_._" Pack="true" PackagePath="lib/net6.0/_._" Visible="false" />
   </ItemGroup>
 	
   <ItemGroup>

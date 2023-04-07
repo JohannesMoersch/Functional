@@ -164,7 +164,7 @@ namespace Functional
 		public static Result<TSuccess, TFailure> Do<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TSuccess> onSuccess)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> result.Do(onSuccess, DelegateCache<TFailure>.Void);
+			=> result.Do(onSuccess, static _ => { });
 
 		public static async Task<Result<TSuccess, TFailure>> Do<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TSuccess> onSuccess)
 			where TSuccess : notnull
@@ -174,7 +174,7 @@ namespace Functional
 		public static Result<TSuccess, TFailure> DoOnFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Action<TFailure> onFailure)
 			where TSuccess : notnull
 			where TFailure : notnull
-			=> result.Do(DelegateCache<TSuccess>.Void, onFailure);
+			=> result.Do(static _ => { }, onFailure);
 
 		public static async Task<Result<TSuccess, TFailure>> DoOnFailure<TSuccess, TFailure>(this Task<Result<TSuccess, TFailure>> result, Action<TFailure> onFailure)
 			where TSuccess : notnull
@@ -220,7 +220,7 @@ namespace Functional
 		public static Result<TResult, Exception> TryMap<TSuccess, TResult>(this Result<TSuccess, Exception> result, Func<TSuccess, TResult> successFactory)
 			where TSuccess : notnull
 			where TResult : notnull
-			=> TryMap(result, successFactory, DelegateCache<Exception>.Passthrough);
+			=> TryMap(result, successFactory, static _ => _);
 
 		public static async Task<Result<TResult, TFailure>> TryMap<TSuccess, TResult, TFailure>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> successFactory, Func<Exception, TFailure> failureFactory)
 			where TSuccess : notnull
@@ -231,7 +231,7 @@ namespace Functional
 		public static async Task<Result<TResult, Exception>> TryMap<TSuccess, TResult>(this Task<Result<TSuccess, Exception>> result, Func<TSuccess, TResult> successFactory)
 			where TSuccess : notnull
 			where TResult : notnull
-			=> (await result).TryMap(successFactory, DelegateCache<Exception>.Passthrough);
+			=> (await result).TryMap(successFactory, static _ => _);
 
 		public static Result<T2, T1> Transpose<T1, T2>(this Result<T1, T2> source)
 			where T1 : notnull

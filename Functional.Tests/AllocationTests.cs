@@ -14,7 +14,7 @@ namespace Functional.Tests
 {
 	public class AllocationTests
 	{
-		private Assembly[] Assemblies => new[]
+		private static Assembly[] Assemblies => new[]
 		{
 			typeof(Option).Assembly,
 			typeof(OptionExtensions).Assembly
@@ -31,14 +31,32 @@ namespace Functional.Tests
 		{
 			var isAsyncMethod = methodBody.Parent.Match(c => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
 
-			foreach (var instruction in methodBody.Instructions.Skip(isAsyncMethod ? 1 : 0).Where(i => i.OpCode == OpCodes.Newobj))
+			for (var i = isAsyncMethod ? 1 : 0; i < methodBody.Instructions.Count; ++i)
 			{
-				if (instruction.Operand.OfType<ConstructorInfo>().Match(constructor => !constructor.ReflectedType.IsValueType && !typeof(Exception).IsAssignableFrom(constructor.ReflectedType), () => false))
-					return true;
+				var instruction = methodBody.Instructions[i];
+
+				if (instruction.OpCode != OpCodes.Newobj || !instruction.Operand.OfType<ConstructorInfo>().TryGetValue(out var constructor))
+					continue;
+
+				if (constructor.DeclaringType.IsValueType || constructor.DeclaringType.IsAssignableTo(typeof(Exception)))
+					continue;
+
+				if (i < methodBody.Instructions.Count - 2 && IsStaticDelegateInstantiation(constructor, methodBody.Instructions[i + 1], methodBody.Instructions[i + 2]))
+					continue;
+
+				return true;
 			}
 
 			return false;
 		}
+
+		private static bool IsStaticDelegateInstantiation(ConstructorInfo constructor, Instruction two, Instruction three)
+			=> constructor.DeclaringType.IsAssignableTo(typeof(Delegate))
+				&& two.OpCode == OpCodes.Dup
+				&& three.OpCode == OpCodes.Stsfld
+				&& three.Operand.OfType<FieldInfo>().TryGetValue(out var field)
+				&& field.Attributes.HasFlag(FieldAttributes.Static)
+				&& field.DeclaringType.Name.StartsWith("<>");
 
 		[Fact]
 		public void ContainsNewArr()
@@ -56,7 +74,7 @@ namespace Functional.Tests
 
 		private static bool FilterForBox(ParsedMethodBody methodBody)
 		{
-			for (int i = 0; i < methodBody.Instructions.Count; ++i)
+			for (var i = 0; i < methodBody.Instructions.Count; ++i)
 			{
 				var instruction = methodBody.Instructions[i];
 

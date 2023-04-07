@@ -69,13 +69,16 @@ namespace Functional.Tests.IL
 					operandSize = 8;
 					break;
 				case OperandType.InlineBrTarget:
-				case OperandType.InlineField:
 				case OperandType.InlineI:
 				case OperandType.InlineString:
 				case OperandType.InlineTok:
 				case OperandType.InlineSig:
 				case OperandType.ShortInlineR:
 					operandSize = 4;
+					break;
+				case OperandType.InlineField:
+					operandSize = 0;
+					operand = Option.Some<object>(module.ResolveField(ReadInt32(bytes), typeGenerics, methodGenerics));
 					break;
 				case OperandType.InlineType:
 					operandSize = 0;

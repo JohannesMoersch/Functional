@@ -124,7 +124,7 @@ namespace Functional
 		public static async Task<int> Count<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).Count(predicate);
 
-		public static async Task<IEnumerable<TSource>> DefaultIfEmpty<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<IEnumerable<TSource?>> DefaultIfEmpty<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).DefaultIfEmpty();
 
 		public static async Task<IEnumerable<TSource>> DefaultIfEmpty<TSource>(this Task<IEnumerable<TSource>> source, TSource defaultValue)
@@ -139,7 +139,7 @@ namespace Functional
 		public static async Task<TSource> ElementAt<TSource>(this Task<IEnumerable<TSource>> source, int index)
 			=> (await source).ElementAt(index);
 
-		public static async Task<TSource> ElementAtOrDefault<TSource>(this Task<IEnumerable<TSource>> source, int index)
+		public static async Task<TSource?> ElementAtOrDefault<TSource>(this Task<IEnumerable<TSource>> source, int index)
 			=> (await source).ElementAtOrDefault(index);
 
 		public static async Task<IEnumerable<TSource>> Except<TSource>(this Task<IEnumerable<TSource>> first, IEnumerable<TSource> second)
@@ -166,10 +166,10 @@ namespace Functional
 		public static async Task<TSource> First<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).First(predicate);
 
-		public static async Task<TSource> FirstOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<TSource?> FirstOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).FirstOrDefault();
 
-		public static async Task<TSource> FirstOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
+		public static async Task<TSource?> FirstOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).FirstOrDefault(predicate);
 
 		public static async Task<IEnumerable<TResult>> GroupBy<TSource, TKey, TElement, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
@@ -256,10 +256,10 @@ namespace Functional
 		public static async Task<TSource> Last<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).Last(predicate);
 
-		public static async Task<TSource> LastOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<TSource?> LastOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).LastOrDefault();
 
-		public static async Task<TSource> LastOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
+		public static async Task<TSource?> LastOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).LastOrDefault(predicate);
 
 		public static async Task<long> LongCount<TSource>(this Task<IEnumerable<TSource>> source)
@@ -298,7 +298,7 @@ namespace Functional
 		public static async Task<decimal> Max<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, decimal> selector)
 			=> (await source).Max(selector);
 
-		public static async Task<TResult> Max<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TResult> selector)
+		public static async Task<TResult?> Max<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TResult> selector)
 			=> (await source).Max(selector);
 
 		public static async Task<float> Max(this Task<IEnumerable<float>> source)
@@ -316,7 +316,7 @@ namespace Functional
 		public static async Task<long> Max(this Task<IEnumerable<long>> source)
 			=> (await source).Max();
 
-		public static async Task<TSource> Max<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<TSource?> Max<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).Max();
 
 		public static async Task<double?> Max(this Task<IEnumerable<double?>> source)
@@ -337,7 +337,7 @@ namespace Functional
 		public static async Task<int> Min<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int> selector)
 			=> (await source).Min(selector);
 
-		public static async Task<TResult> Min<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TResult> selector)
+		public static async Task<TResult?> Min<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, TResult> selector)
 			=> (await source).Min(selector);
 
 		public static async Task<float> Min<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, float> selector)
@@ -397,7 +397,7 @@ namespace Functional
 		public static async Task<decimal> Min(this Task<IEnumerable<decimal>> source)
 			=> (await source).Min();
 
-		public static async Task<TSource> Min<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<TSource?> Min<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).Min();
 
 		public static async Task<IEnumerable<TResult>> OfType<TResult>(this Task<IEnumerable> source)
@@ -463,10 +463,10 @@ namespace Functional
 		public static async Task<TSource> Single<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).Single(predicate);
 
-		public static async Task<TSource> SingleOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
+		public static async Task<TSource?> SingleOrDefault<TSource>(this Task<IEnumerable<TSource>> source)
 			=> (await source).SingleOrDefault();
 
-		public static async Task<TSource> SingleOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
+		public static async Task<TSource?> SingleOrDefault<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, bool> predicate)
 			=> (await source).SingleOrDefault(predicate);
 
 		public static async Task<IEnumerable<TSource>> Skip<TSource>(this Task<IEnumerable<TSource>> source, int count)
@@ -551,15 +551,19 @@ namespace Functional
 			=> (await source).ToArray();
 
 		public static async Task<Dictionary<TKey, TSource>> ToDictionary<TSource, TKey>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector)
+			where TKey : notnull
 			=> (await source).ToDictionary(keySelector);
 
 		public static async Task<Dictionary<TKey, TSource>> ToDictionary<TSource, TKey>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
+			where TKey : notnull
 			=> (await source).ToDictionary(keySelector, comparer);
 
 		public static async Task<Dictionary<TKey, TElement>> ToDictionary<TSource, TKey, TElement>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
+			where TKey : notnull
 			=> (await source).ToDictionary(keySelector, elementSelector);
 
 		public static async Task<Dictionary<TKey, TElement>> ToDictionary<TSource, TKey, TElement>(this Task<IEnumerable<TSource>> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
+			where TKey : notnull
 			=> (await source).ToDictionary(keySelector, elementSelector, comparer);
 
 		public static async Task<List<TSource>> ToList<TSource>(this Task<IEnumerable<TSource>> source)

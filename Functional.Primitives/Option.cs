@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace Functional
 			_value = value;
 		}
 
-#pragma warning disable CS8618, CS8601 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. Possible null reference assignment.
+#pragma warning disable CS8600, CS8601, CS8618 // Converting null literal or possible null value to non-nullable type. Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		private Option(SerializationInfo info, StreamingContext context)
 		{
 			_hasValue = info.GetBoolean(nameof(_hasValue));
@@ -30,7 +31,7 @@ namespace Functional
 			else
 				_value = default;
 		}
-#pragma warning restore CS8618, CS8601 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. Possible null reference assignment.
+#pragma warning restore CS8600, CS8601, CS8618 // Converting null literal or possible null value to non-nullable type. Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 		[AllowAllocations]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
@@ -59,7 +60,7 @@ namespace Functional
 			=> _hasValue ? _value.GetHashCode() * 31 : 0;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Option<TValue> option && Equals(option);
 
 		[AllowAllocations]

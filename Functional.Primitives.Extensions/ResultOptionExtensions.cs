@@ -93,7 +93,7 @@ namespace Functional
 			if (result.TryGetValue(out var success, out var failure))
 			{
 				if (success.TryGetValue(out var some))
-					return bind.Invoke(some).Map(DelegateCache<TResult>.Some);
+					return bind.Invoke(some).Map(static _ => Option.Some(_));
 
 				return Result.Success<Option<TResult>, TFailure>(Option.None<TResult>());
 			}
@@ -140,7 +140,7 @@ namespace Functional
 				throw new ArgumentNullException(nameof(bind));
 
 			return result.TryGetValue(out var success, out _) && !success.TryGetValue(out _)
-				? bind().Map(DelegateCache<TSuccess>.Some)
+				? bind().Map(static _ => Option.Some(_))
 				: result;
 		}
 
