@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class BatchIterator<T> : IAsyncEnumerator<IReadOnlyList<T>>
+	internal class BatchAsyncIterator<T> : IAsyncEnumerator<IReadOnlyList<T>>
 	{
 		public IReadOnlyList<T> Current { get; private set; }
 
@@ -15,7 +15,7 @@ namespace Functional
 		private bool _ended;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public BatchIterator(IAsyncEnumerator<T> enumerator, int batchSize)
+		public BatchAsyncIterator(IAsyncEnumerator<T> enumerator, int batchSize)
 		{
 			_enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
 			_batchSize = batchSize;

@@ -5,22 +5,20 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ZipIterator<TFirst, TSecond, TResult> : IAsyncEnumerator<TResult>
+	internal class ConcatAsyncIterator<TSource> : IAsyncEnumerator<TSource>
 	{
-		private readonly IAsyncEnumerator<TFirst> _enumeratorOne;
-		private readonly IAsyncEnumerator<TSecond> _enumeratorTwo;
-		private readonly Func<TFirst, TSecond, TResult> _resultSelector;
+		private readonly IAsyncEnumerator<TSource> _enumeratorOne;
+		private readonly IAsyncEnumerator<TSource> _enumeratorTwo;
 
-		private bool _complete;
+		private int _state = 0;
 
-		public TResult Current { get; private set; }
+		public TSource Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public ZipIterator(IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
+		public ConcatAsyncIterator(IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 		{
 			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetAsyncEnumerator();
 			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetAsyncEnumerator();
-			_resultSelector = resultSelector ?? throw new ArgumentNullException(nameof(resultSelector));
 		}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -32,16 +30,27 @@ namespace Functional
 
 		public async ValueTask<bool> MoveNextAsync()
 		{
-			if (_complete)
-				return false;
-
-			if (await _enumeratorOne.MoveNextAsync() && await _enumeratorTwo.MoveNextAsync())
+			if (_state == 0)
 			{
-				Current = _resultSelector.Invoke(_enumeratorOne.Current, _enumeratorTwo.Current);
-				return true;
+				if (await _enumeratorOne.MoveNextAsync())
+				{
+					Current = _enumeratorOne.Current;
+					return true;
+				}
+				else
+					_state = 1;
 			}
-			else
-				_complete = true;
+
+			if (_state == 1)
+			{
+				if (await _enumeratorTwo.MoveNextAsync())
+				{
+					Current = _enumeratorTwo.Current;
+					return true;
+				}
+				else
+					_state = 2;
+			}
 
 			return false;
 		}

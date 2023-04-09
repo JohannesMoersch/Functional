@@ -9,16 +9,16 @@ namespace Functional
 	public static partial class OptionExtensions
 	{
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> map)
+		public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> selector)
 			where TValue : notnull
 			where TResult : notnull
-			=> option.Map(map);
+			=> option.Map(selector);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> map)
+		public static Task<Option<TResult>> Select<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> selector)
 			where TValue : notnull
 			where TResult : notnull
-			=> option.Map(map);
+			=> option.Map(selector);
 	}
 
 	[EditorBrowsable(EditorBrowsableState.Never)]

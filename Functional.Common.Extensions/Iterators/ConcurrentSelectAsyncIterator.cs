@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ConcurrentSelectIterator<TSource, TResult> : IAsyncEnumerator<TResult>
+	internal class ConcurrentSelectAsyncIterator<TSource, TResult> : IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<TSource, int, Task<TResult>> _selector;
@@ -19,7 +19,7 @@ namespace Functional
 		public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public ConcurrentSelectIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
+		public ConcurrentSelectAsyncIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, Task<TResult>> selector, int maxConcurrency)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_selector = selector ?? throw new ArgumentNullException(nameof(selector));

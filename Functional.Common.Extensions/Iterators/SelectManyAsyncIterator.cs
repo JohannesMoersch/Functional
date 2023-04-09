@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class SelectManyIteratorAsync<TSource, TCollection, TResult> : IAsyncEnumerator<TResult>
+	internal class SelectManyAsyncIterator<TSource, TCollection, TResult> : IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<TSource, int, IAsyncEnumerable<TCollection>> _collectionSelector;
-		private readonly Func<TSource, TCollection, Task<TResult>> _resultSelector;
+		private readonly Func<TSource, TCollection, TResult> _resultSelector;
 		private int _count;
 		private IAsyncEnumerator<TCollection>? _subEnumerator;
 
 		public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public SelectManyIteratorAsync(IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
+		public SelectManyAsyncIterator(IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_collectionSelector = collectionSelector ?? throw new ArgumentNullException(nameof(collectionSelector));
@@ -39,10 +39,13 @@ namespace Functional
 				if (!await _enumerator.MoveNextAsync())
 					return false;
 
+				if (_subEnumerator != null)
+					await _subEnumerator.DisposeAsync();
+
 				_subEnumerator = _collectionSelector.Invoke(_enumerator.Current, _count++).GetAsyncEnumerator();
 			}
 
-			Current = await _resultSelector.Invoke(_enumerator.Current, _subEnumerator.Current);
+			Current = _resultSelector.Invoke(_enumerator.Current, _subEnumerator.Current);
 
 			return true;
 		}

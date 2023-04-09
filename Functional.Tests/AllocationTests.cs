@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Functional.Tests.IL;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Xunit;
 
 namespace Functional.Tests
@@ -21,10 +22,55 @@ namespace Functional.Tests
 		};
 
 		[Fact]
+		public void ContainsBox()
+		{
+			var members = SearchForMembers(Assemblies, FilterForBox);
+
+			if (members.Any())
+				throw new Exception($"The following members contain the box OpCode:{String.Join("", FormatMembers(members))}");
+		}
+
+		[Fact]
+		public void ContainsNewArr()
+		{
+			var members = SearchForMembers(Assemblies, methodBody => methodBody.Instructions.Any(i => i.OpCode == OpCodes.Newarr));
+
+			if (members.Any())
+				throw new Exception($"The following members contain the newarr OpCode:{String.Join("", FormatMembers(members))}");
+		}
+
+		[Fact]
 		public void ContainsNewObj()
 		{
-			foreach (var assembly in Assemblies)
-				SearchMethodsInAssembly(assembly, "contain the newobj OpCode", FilterForNewObject);
+			var members = SearchForMembers(Assemblies, FilterForNewObject);
+
+			if (members.Any())
+				throw new Exception($"The following members contain the newobj OpCode:{String.Join("", FormatMembers(members))}");
+		}
+
+		private string FormatMembers(IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<ParsedMethodBody> members)> types)> members)
+		{
+			var builder = new StringBuilder();
+
+			foreach (var assembly in members)
+			{
+				builder.Append($"\t");
+				builder.AppendLine(assembly.assembly.FullName.Split(',')[0]);
+
+				foreach (var type in assembly.types)
+				{
+					builder.Append($"\t\t");
+					builder.AppendLine(type.type.Name);
+
+					foreach (var member in type.members)
+					{
+						builder.Append($"\t\t\t");
+						builder.AppendLine(member.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())})", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())})"));
+					}
+				}
+			}
+
+			return builder.ToString();
 		}
 
 		private static bool FilterForNewObject(ParsedMethodBody methodBody)
@@ -58,20 +104,6 @@ namespace Functional.Tests
 				&& field.Attributes.HasFlag(FieldAttributes.Static)
 				&& field.DeclaringType.Name.StartsWith("<>");
 
-		[Fact]
-		public void ContainsNewArr()
-		{
-			foreach (var assembly in Assemblies)
-				SearchMethodsInAssembly(assembly, "contain the newarr OpCode", methodBody => methodBody.Instructions.Any(i => i.OpCode == OpCodes.Newarr));
-		}
-
-		[Fact]
-		public void ContainsBox()
-		{
-			foreach (var assembly in Assemblies)
-				SearchMethodsInAssembly(assembly, "contain the box OpCode", FilterForBox);
-		}
-
 		private static bool FilterForBox(ParsedMethodBody methodBody)
 		{
 			for (var i = 0; i < methodBody.Instructions.Count; ++i)
@@ -100,19 +132,21 @@ namespace Functional.Tests
 			return false;
 		}
 
-		private static void SearchMethodsInAssembly(Assembly assembly, string message, Func<ParsedMethodBody, bool> methodFilter)
-		{
-			var members = GetMethodBodiesInAssembly(assembly)
-				.Where(b => b.Parent.Match(c => !ContainsAllowAllocations(c.GetCustomAttributes()), m => !ContainsAllowAllocations(m.GetCustomAttributes())))
-				.Where(b => !ContainsAllowAllocations(b.Parent.Match(c => c.ReflectedType, m => m.ReflectedType).GetCustomAttributes()))
-				.Where(methodFilter)
-				.Select(b => (name: b.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())})", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())})"), className: b.Parent.Match(c => c.ReflectedType.FullName, m => m.ReflectedType.FullName)))
-				.Select(b => $"{Environment.NewLine}\t{b.name} in {b.className}")
-				.ToArray();
-
-			if (members.Any())
-				throw new Exception($"The following members {message}:{String.Join("", members)}");
-		}
+		private static IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<ParsedMethodBody> members)> types)> SearchForMembers(IEnumerable<Assembly> assemblies, Func<ParsedMethodBody, bool> methodFilter)
+			=>
+			from assembly in assemblies
+			let types =
+				from type in GetTypesInAssembly(assembly)
+				let members =
+					from member in GetMethodBodiesFromType(type)
+					where member.Parent.Match(c => !ContainsAllowAllocations(c.GetCustomAttributes()), m => !ContainsAllowAllocations(m.GetCustomAttributes()))
+					where !ContainsAllowAllocations(member.Parent.Match(c => c.ReflectedType, m => m.ReflectedType).GetCustomAttributes())
+					where methodFilter.Invoke(member)
+					select member
+				where members.Any()
+				select (type, members)
+			where types.Any()
+			select (assembly, types);
 
 		private static string GetFormattedParameters(ParameterInfo[] parameters)
 			=> String.Join(", ", parameters.Select(p => p.ParameterType.Name));
@@ -120,11 +154,10 @@ namespace Functional.Tests
 		private static bool ContainsAllowAllocations(IEnumerable<Attribute> attributes)
 			=> attributes.Any(att => att.GetType().FullName == "Functional.AllowAllocationsAttribute");
 
-		private static IEnumerable<ParsedMethodBody> GetMethodBodiesInAssembly(Assembly assembly)
+		private static IEnumerable<Type> GetTypesInAssembly(Assembly assembly)
 			=> assembly
 				.GetTypes()
-				.Where(t => t.FullName != "System.Runtime.CompilerServices.NullableAttribute")
-				.SelectMany(GetMethodBodiesFromType);
+				.Where(t => t.FullName != "System.Runtime.CompilerServices.NullableAttribute");
 
 		private static IEnumerable<ParsedMethodBody> GetMethodBodiesFromType(Type type)
 			=> Enumerable

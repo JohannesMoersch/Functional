@@ -17,8 +17,7 @@ namespace Functional
 		{
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
-
-			if (result.TryGetValue(out var success, out var _) && !failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
+			if (result.TryGetValue(out var success, out _) && !failurePredicate.Invoke(success).TryGetValue(out _, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return result;
@@ -34,7 +33,7 @@ namespace Functional
 
 			var value = await result;
 
-			if (value.TryGetValue(out var success, out var _) && !failurePredicate.Invoke(success).TryGetValue(out var __, out var f))
+			if (value.TryGetValue(out var success, out _) && !failurePredicate.Invoke(success).TryGetValue(out _, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return value;
@@ -48,7 +47,7 @@ namespace Functional
 			if (failurePredicate == null)
 				throw new ArgumentNullException(nameof(failurePredicate));
 
-			if (result.TryGetValue(out var success, out var _) && !(await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
+			if (result.TryGetValue(out var success, out _) && !(await failurePredicate.Invoke(success)).TryGetValue(out _, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return result;
@@ -64,10 +63,106 @@ namespace Functional
 
 			var value = await result;
 
-			if (value.TryGetValue(out var success, out var _) && !(await failurePredicate.Invoke(success)).TryGetValue(out var __, out var f))
+			if (value.TryGetValue(out var success, out _) && !(await failurePredicate.Invoke(success)).TryGetValue(out _, out var f))
 				return Result.Failure<TSuccess, TFailure>(f);
 
 			return value;
 		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IEnumerable<TSuccess> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Select(success => failurePredicate
+					.Invoke(success)
+					.Map(_ => success)
+				)
+				.AsResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IEnumerable<TSuccess> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.SelectAsync(success => failurePredicate
+					.Invoke(success)
+					.Map(_ => success)
+				)
+				.AsAsyncResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Select(success => failurePredicate
+					.Invoke(success)
+					.Map(_ => success)
+				)
+				.AsAsyncResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncEnumerable<TSuccess> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.SelectAsync(success => failurePredicate
+					.Invoke(success)
+					.Map(_ => success)
+				)
+				.AsAsyncResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Select(value => value
+					.Bind(success => failurePredicate
+						.Invoke(success)
+						.Map(_ => success)
+					)
+				)
+				.AsResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.SelectAsync(value => value
+					.BindAsync(success => failurePredicate
+						.Invoke(success)
+						.Map(_ => success)
+					)
+				)
+				.AsAsyncResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Select(value => value
+					.Bind(success => failurePredicate
+						.Invoke(success)
+						.Map(_ => success)
+					)
+				)
+				.AsAsyncResultEnumerable();
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static IAsyncResultEnumerable<TSuccess, TFailure> Where<TSuccess, TFailure>(this IAsyncResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, Task<Result<Unit, TFailure>>> failurePredicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.SelectAsync(value => value
+					.BindAsync(success => failurePredicate
+						.Invoke(success)
+						.Map(_ => success)
+					)
+				)
+				.AsAsyncResultEnumerable();
 	}
 }

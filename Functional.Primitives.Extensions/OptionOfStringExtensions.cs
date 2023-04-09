@@ -11,19 +11,19 @@ namespace Functional
 
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Option<string> WhereNonEmpty(this Option<string> option)
+		public static Option<string> WhereNotEmpty(this Option<string> option)
 			=> option.Where(_whereNonEmptyFunc);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Option<string> WhereNonWhiteSpace(this Option<string> option)
+		public static Option<string> WhereNotWhiteSpace(this Option<string> option)
 			=> option.Where(_whereNonWhiteSpaceFunc);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Option<string>> WhereNonEmpty(this Task<Option<string>> option)
-			=> (await option).WhereNonEmpty();
+		public static async Task<Option<string>> WhereNotEmpty(this Task<Option<string>> option)
+			=> (await option).WhereNotEmpty();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static async Task<Option<string>> WhereNonWhiteSpace(this Task<Option<string>> option)
-			=> (await option).WhereNonWhiteSpace();
+		public static async Task<Option<string>> WhereNotWhiteSpace(this Task<Option<string>> option)
+			=> (await option).WhereNotWhiteSpace();
 	}
 }

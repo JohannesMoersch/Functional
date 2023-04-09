@@ -71,7 +71,7 @@ namespace Functional
 
 		public static IAsyncEnumerable<TResult> SelectManyAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TResult>>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, _) => selector(o).AsAsyncEnumerable(), (_, o) => o));
+				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TResult, TResult>(source, (o, _) => selector(o).AsAsyncEnumerable(), (_, o) => o));
 
 		public static IAsyncEnumerable<TResult> SelectManyAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TResult>>> selector)
 			=> source.AsAsyncEnumerable().SelectManyAsync(selector);
@@ -81,7 +81,7 @@ namespace Functional
 
 		public static IAsyncEnumerable<TResult> SelectManyAsync<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<IEnumerable<TResult>>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, i) => selector(o, i).AsAsyncEnumerable(), (_, o) => o));
+				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TResult, TResult>(source, (o, i) => selector(o, i).AsAsyncEnumerable(), (_, o) => o));
 
 		public static IAsyncEnumerable<TResult> SelectManyAsync<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, Task<IEnumerable<TResult>>> selector)
 			=> source.AsAsyncEnumerable().SelectManyAsync(selector);
@@ -135,15 +135,53 @@ namespace Functional
 			=> source.AsAsyncEnumerable().WhereAsync(predicate);
 
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
-			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
+			=> AsyncIteratorEnumerable.Create(() => new ZipTaskAsyncIterator<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
 
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this Task<IEnumerable<TFirst>> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
-			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
+			=> AsyncIteratorEnumerable.Create(() => new ZipTaskAsyncIterator<TFirst, TSecond, TResult>(first.AsAsyncEnumerable(), second, resultSelector));
 
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
-			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
+			=> AsyncIteratorEnumerable.Create(() => new ZipTaskAsyncIterator<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
 
 		public static IAsyncEnumerable<TResult> ZipAsync<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, Task<IEnumerable<TSecond>> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
-			=> AsyncIteratorEnumerable.Create(() => new ZipIteratorAsync<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
+			=> AsyncIteratorEnumerable.Create(() => new ZipTaskAsyncIterator<TFirst, TSecond, TResult>(first, second.AsAsyncEnumerable(), resultSelector));
+
+		public static async Task ApplyAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in source)
+				await action.Invoke(item);
+		}
+
+		public static async Task ApplyAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var index = 0;
+			foreach (var item in source)
+				await action.Invoke(item, index++);
+		}
+
+		public static async Task ApplyAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			foreach (var item in await source)
+				await action.Invoke(item);
+		}
+
+		public static async Task ApplyAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task> action)
+		{
+			if (action == null)
+				throw new ArgumentNullException(nameof(action));
+
+			var index = 0;
+			foreach (var item in await source)
+				await action.Invoke(item, index++);
+		}
 	}
 }

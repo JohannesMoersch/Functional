@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class ZipIteratorAsync<TFirst, TSecond, TResult> : IAsyncEnumerator<TResult>
+	internal class ZipTaskAsyncIterator<TFirst, TSecond, TResult> : IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TFirst> _enumeratorOne;
 		private readonly IAsyncEnumerator<TSecond> _enumeratorTwo;
@@ -16,7 +16,7 @@ namespace Functional
 		public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public ZipIteratorAsync(IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
+		public ZipTaskAsyncIterator(IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, Task<TResult>> resultSelector)
 		{
 			_enumeratorOne = (first ?? throw new ArgumentNullException(nameof(first))).GetAsyncEnumerator();
 			_enumeratorTwo = (second ?? throw new ArgumentNullException(nameof(second))).GetAsyncEnumerator();

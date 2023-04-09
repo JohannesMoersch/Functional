@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class AppendIterator<TSource> : IAsyncEnumerator<TSource>
+	internal class DefaultIfEmptyAsyncIterator<TSource> : IAsyncEnumerator<TSource>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
-		private readonly TSource _element;
+		private readonly TSource _defaultValue;
 
-		private int _state = 0;
+		private int _state;
 
 		public TSource Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public AppendIterator(IAsyncEnumerable<TSource> source, TSource element)
+		public DefaultIfEmptyAsyncIterator(IAsyncEnumerable<TSource> source, TSource defaultValue)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
-			_element = element;
+			_defaultValue = defaultValue;
 		}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -27,25 +27,29 @@ namespace Functional
 
 		public async ValueTask<bool> MoveNextAsync()
 		{
-			if (_state == 0)
+			switch (_state)
 			{
-				if (await _enumerator.MoveNextAsync())
-				{
-					Current = _enumerator.Current;
+				case 0:
+					if (await _enumerator.MoveNextAsync())
+					{
+						_state = 1;
+						Current = _enumerator.Current;
+					}
+					else
+					{
+						_state = 2;
+						Current = _defaultValue;
+					}
 					return true;
-				}
-				else
-					_state = 1;
+				case 1:
+					if (await _enumerator.MoveNextAsync())
+					{
+						Current = _enumerator.Current;
+						return true;
+					}
+					_state = 2;
+					break;
 			}
-
-			if (_state == 1)
-			{
-				_state = 2;
-
-				Current = _element;
-				return true;
-			}
-
 			return false;
 		}
 	}

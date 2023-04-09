@@ -73,22 +73,22 @@ namespace Functional
 		}
 
 		public static IAsyncEnumerable<TSource> Append<TSource>(this IAsyncEnumerable<TSource> source, TSource element)
-			=> AsyncIteratorEnumerable.Create(() => new AppendIterator<TSource>(source, element));
+			=> AsyncIteratorEnumerable.Create(() => new AppendAsyncIterator<TSource>(source, element));
 
 		public static IAsyncEnumerable<TSource> AppendAsync<TSource>(this IAsyncEnumerable<TSource> source, Task<TSource> element)
-			=> AsyncIteratorEnumerable.Create(() => new AppendTaskIterator<TSource>(source, element));
+			=> AsyncIteratorEnumerable.Create(() => new AppendTaskAsyncIterator<TSource>(source, element));
 
 		public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
-			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
+			=> AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<object, TResult>(source, data => (BasicIteratorContinuationType.Take, (TResult)data.current)));
 
 		public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
-			=> AsyncIteratorEnumerable.Create(() => new ConcatIterator<TSource>(first, second));
+			=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first, second));
 		
 		public static IAsyncEnumerable<TSource?> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source)
-			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource?>(source, default));
+			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyAsyncIterator<TSource?>(source, default));
 
 		public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source, TSource defaultValue)
-			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyIterator<TSource>(source, defaultValue));
+			=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyAsyncIterator<TSource>(source, defaultValue));
 
 		public static async Task<TSource> ElementAt<TSource>(this IAsyncEnumerable<TSource> source, int index)
 		{
@@ -149,23 +149,23 @@ namespace Functional
 			=> source.Where(predicate).FirstOrDefault();
 
 		public static IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
-			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<object, TResult>(source, data => data.current is TResult result ? (BasicIteratorContinuationType.Take, result) : (BasicIteratorContinuationType.Skip, default)));
+			=> AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<object, TResult>(source, data => data.current is TResult result ? (BasicIteratorContinuationType.Take, result) : (BasicIteratorContinuationType.Skip, default)));
 			
 		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current))));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current))));
 
 		public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, TResult> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current, data.index))));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current, data.index))));
 
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, (o, _) => selector(o), (_, o) => o));
+				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TResult, TResult>(source, (o, _) => selector(o), (_, o) => o));
 
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, IAsyncEnumerable<TResult>> selector)
 			=> selector == null ? throw new ArgumentNullException(nameof(selector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyIterator<TSource, TResult, TResult>(source, selector, (_, o) => o));
+				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TResult, TResult>(source, selector, (_, o) => o));
 
 		public static async Task<TSource> Single<TSource>(this IAsyncEnumerable<TSource> source)
 		{
@@ -210,7 +210,7 @@ namespace Functional
 			=> source.Where(predicate).SingleOrDefault();
 			
 		public static IAsyncEnumerable<TSource> Skip<TSource>(this IAsyncEnumerable<TSource> source, int count)
-			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => data.index >= count ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
+			=> AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => data.index >= count ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
 
 		public static IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 		{
@@ -218,7 +218,7 @@ namespace Functional
 				throw new ArgumentNullException(nameof(predicate));
 
 			bool skip = true;
-			return AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => (skip ? (skip = predicate.Invoke(data.current)) : false) ? (BasicIteratorContinuationType.Skip, default) : (BasicIteratorContinuationType.Take, data.current)));
+			return AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => (skip ? (skip = predicate.Invoke(data.current)) : false) ? (BasicIteratorContinuationType.Skip, default) : (BasicIteratorContinuationType.Take, data.current)));
 		}
 
 		public static IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
@@ -227,30 +227,30 @@ namespace Functional
 				throw new ArgumentNullException(nameof(predicate));
 
 			bool skip = true;
-			return AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => (skip ? (skip = predicate.Invoke(data.current, data.index)) : false) ? (BasicIteratorContinuationType.Skip, default) : (BasicIteratorContinuationType.Take, data.current)));
+			return AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => (skip ? (skip = predicate.Invoke(data.current, data.index)) : false) ? (BasicIteratorContinuationType.Skip, default) : (BasicIteratorContinuationType.Take, data.current)));
 		}
 
 		public static IAsyncEnumerable<TSource> Take<TSource>(this IAsyncEnumerable<TSource> source, int count)
-			=> AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => data.index < count ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
+			=> AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => data.index < count ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
 		
 		public static IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => predicate.Invoke(data.current) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => predicate.Invoke(data.current) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
 
 		public static IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
 			=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => predicate.Invoke(data.current, data.index) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => predicate.Invoke(data.current, data.index) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Stop, default)));
 		
 		public static IAsyncEnumerable<TSource> Where<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
 			=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => predicate.Invoke(data.current, data.index) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => predicate.Invoke(data.current, data.index) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
 
 		public static IAsyncEnumerable<TSource> Where<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 			=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-				: AsyncIteratorEnumerable.Create(() => new BasicIterator<TSource, TSource>(source, data => predicate.Invoke(data.current) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
+				: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TSource>(source, data => predicate.Invoke(data.current) ? (BasicIteratorContinuationType.Take, data.current) : (BasicIteratorContinuationType.Skip, default)));
 
 		public static IAsyncEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IAsyncEnumerable<TFirst> first, IAsyncEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-			=> AsyncIteratorEnumerable.Create(() => new ZipIterator<TFirst, TSecond, TResult>(first, second, resultSelector));
+			=> AsyncIteratorEnumerable.Create(() => new ZipAsyncIterator<TFirst, TSecond, TResult>(first, second, resultSelector));
 
 		public static IAsyncEnumerable<TSource> Do<TSource>(this IAsyncEnumerable<TSource> source, Action<TSource> action)
 		{
@@ -305,7 +305,7 @@ namespace Functional
 		}
 
 		public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
-			=> AsyncIteratorEnumerable.Create(() => new BatchIterator<TSource>(source.GetAsyncEnumerator(), batchSize));
+			=> AsyncIteratorEnumerable.Create(() => new BatchAsyncIterator<TSource>(source.GetAsyncEnumerator(), batchSize));
 
 		public static IAsyncEnumerable<TSource> PickInto<TSource>(this IAsyncEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, bool> predicate)
 		{

@@ -5,51 +5,51 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class DefaultIfEmptyIterator<TSource> : IAsyncEnumerator<TSource>
+	internal class AppendTaskAsyncIterator<TSource> : IAsyncEnumerator<TSource>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
-		private readonly TSource _defaultValue;
+		private readonly Task<TSource> _element;
 
-		private int _state;
+		private int _state = 0;
 
 		public TSource Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public DefaultIfEmptyIterator(IAsyncEnumerable<TSource> source, TSource defaultValue)
+		public AppendTaskAsyncIterator(IAsyncEnumerable<TSource> source, Task<TSource> element)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
-			_defaultValue = defaultValue;
+			_element = element;
 		}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-		public ValueTask DisposeAsync()
-			=> _enumerator.DisposeAsync();
+		public async ValueTask DisposeAsync()
+		{
+			await _element;
+
+			await _enumerator.DisposeAsync();
+		}
 
 		public async ValueTask<bool> MoveNextAsync()
 		{
-			switch (_state)
+			if (_state == 0)
 			{
-				case 0:
-					if (await _enumerator.MoveNextAsync())
-					{
-						_state = 1;
-						Current = _enumerator.Current;
-					}
-					else
-					{
-						_state = 2;
-						Current = _defaultValue;
-					}
+				if (await _enumerator.MoveNextAsync())
+				{
+					Current = _enumerator.Current;
 					return true;
-				case 1:
-					if (await _enumerator.MoveNextAsync())
-					{
-						Current = _enumerator.Current;
-						return true;
-					}
-					_state = 2;
-					break;
+				}
+				else
+					_state = 1;
 			}
+
+			if (_state == 1)
+			{
+				_state = 2;
+
+				Current = await _element;
+				return true;
+			}
+
 			return false;
 		}
 	}

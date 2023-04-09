@@ -15,13 +15,13 @@ namespace Functional.Tests.Options
 			[InlineData("")]
 			public void ReturnsNoneForEmptyString(string value)
 				=> Option.FromNullable(value)
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertNone();
 
 			[Theory, AutoData]
 			public void ReturnsSomeForNonEmptyString(string value)
 				=> Option.FromNullable(value)
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
 					.Be(value);
@@ -35,13 +35,13 @@ namespace Functional.Tests.Options
 			[InlineData("\n")]
 			public void ReturnsNoneForWhiteSpaceString(string value)
 				=> Option.FromNullable(value)
-					.WhereNonWhiteSpace()
+					.WhereNotWhiteSpace()
 					.AssertNone();
 
 			[Theory, AutoData]
 			public void ReturnsSomeForNonWhiteSpaceString(string value)
 				=> Option.FromNullable(value)
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
 					.Be(value);
@@ -54,13 +54,13 @@ namespace Functional.Tests.Options
 			[InlineData("")]
 			public async Task ReturnsNoneForEmptyString(string value)
 				=> await Task.FromResult(Option.FromNullable(value))
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertNone();
 
 			[Theory, AutoData]
 			public async Task ReturnsSomeForNonEmptyString(string value)
 				=> await Task.FromResult(Option.FromNullable(value))
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
 					.Be(value);
@@ -74,13 +74,13 @@ namespace Functional.Tests.Options
 			[InlineData("\n")]
 			public async Task ReturnsNoneForWhiteSpaceString(string value)
 				=> await Task.FromResult(Option.FromNullable(value))
-					.WhereNonWhiteSpace()
+					.WhereNotWhiteSpace()
 					.AssertNone();
 
 			[Theory, AutoData]
 			public async Task ReturnsSomeForNonWhiteSpaceString(string value)
 				=> await Task.FromResult(Option.FromNullable(value))
-					.WhereNonEmpty()
+					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
 					.Be(value);

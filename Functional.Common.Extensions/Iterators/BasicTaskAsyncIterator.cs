@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	internal class BasicIteratorAsync<TSource, TResult> : IAsyncEnumerator<TResult>
+	internal class BasicTaskAsyncIterator<TSource, TResult> : IAsyncEnumerator<TResult>
 	{
 		private readonly IAsyncEnumerator<TSource> _enumerator;
 		private readonly Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult? current)>> _moveNext;
@@ -15,7 +15,7 @@ namespace Functional
 		public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public BasicIteratorAsync(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult? current)>> onNext)
+		public BasicTaskAsyncIterator(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), Task<(BasicIteratorContinuationType type, TResult? current)>> onNext)
 		{
 			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 			_moveNext = onNext ?? throw new ArgumentNullException(nameof(onNext));

@@ -466,12 +466,6 @@ namespace Functional
 		public static async Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TResult>> selector)
 			=> (await source).SelectMany(selector);
 
-		public static async Task<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> (await source).SelectMany(collectionSelector, resultSelector);
-
-		public static async Task<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-			=> (await source).SelectMany(collectionSelector, resultSelector);
-
 		public static async Task<bool> SequenceEqual<TSource>(this Task<IOrderedEnumerable<TSource>> first, IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
 			=> (await first).SequenceEqual(second, comparer);
 

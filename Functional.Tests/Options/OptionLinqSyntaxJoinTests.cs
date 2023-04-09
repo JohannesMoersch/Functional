@@ -17,9 +17,9 @@ namespace Functional.Tests.Options
 			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
 			{
 				new object[] { new[] { 0, 1 }, new[] { 4, 5, 6 }, new (int, int)?[] { (0, 4), (0, 6), (1, 5) } },
-				new object[] { new[] { 7, 8, 9 }, new[] { 4, 5, 6 }, new (int, int)?[0] },
-				new object[] { new int[0], new[] { 4, 5, 6 }, new (int, int)?[0] },
-				new object[] { new[] { 0, 1 }, new int[0], new (int, int)?[0] }
+				new object[] { new[] { 7, 8, 9 }, new[] { 4, 5, 6 }, Array.Empty<(int, int)?>() },
+				new object[] { Array.Empty<int>(), new[] { 4, 5, 6 }, Array.Empty<(int, int)?>() },
+				new object[] { new[] { 0, 1 }, Array.Empty<int>(), Array.Empty<(int, int)?>() }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
