@@ -87,10 +87,11 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
+			private Dictionary<TKey, List<TElement>>.Enumerator? _groupingEnumerator;
 
 			public Option<IGrouping<TKey, TElement>> Current { get; private set; }
 
+			[AllowAllocations]
 			object IEnumerator.Current => Current;
 
 			public OptionGroupByEnumerator(IEnumerator<Option<TSuccess>> successEnumerator, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
@@ -109,7 +110,7 @@ namespace Functional
 
 			public bool MoveNext()
 			{
-				if (_groupingEnumerator == null)
+				if (_groupingEnumerator is not Dictionary<TKey, List<TElement>>.Enumerator groupingEnumerator)
 				{
 					while (_successEnumerator.MoveNext())
 					{
@@ -142,17 +143,17 @@ namespace Functional
 							return true;
 					}
 
-					_groupingEnumerator = _groupings.GetEnumerator();
+					_groupingEnumerator = groupingEnumerator = _groupings.GetEnumerator();
 				}
 
-				while (_groupingEnumerator.MoveNext())
-				{
-					Current = Option.Some<IGrouping<TKey, TElement>>(new Grouping(_groupingEnumerator.Current.Key, _groupingEnumerator.Current.Value));
+				var moveNext = groupingEnumerator.MoveNext();
+				_groupingEnumerator = groupingEnumerator;
 
-					return true;
-				}
+				Current = moveNext
+					? Option.Some<IGrouping<TKey, TElement>>(new Grouping(_groupingEnumerator.Value.Current.Key, _groupingEnumerator.Value.Current.Value))
+					: default;
 
-				return false;
+				return moveNext;
 			}
 
 			public void Reset()
@@ -212,7 +213,7 @@ namespace Functional
 
 			private readonly Dictionary<TKey, List<TElement>> _groupings = new();
 
-			private IEnumerator<KeyValuePair<TKey, List<TElement>>>? _groupingEnumerator;
+			private Dictionary<TKey, List<TElement>>.Enumerator? _groupingEnumerator;
 
 			public Option<IGrouping<TKey, TElement>> Current { get; private set; }
 
@@ -232,7 +233,7 @@ namespace Functional
 
 			public async ValueTask<bool> MoveNextAsync()
 			{
-				if (_groupingEnumerator == null)
+				if (_groupingEnumerator is not Dictionary<TKey, List<TElement>>.Enumerator groupingEnumerator)
 				{
 					while (await _successEnumerator.MoveNextAsync())
 					{
@@ -265,17 +266,17 @@ namespace Functional
 							return true;
 					}
 
-					_groupingEnumerator = _groupings.GetEnumerator();
+					_groupingEnumerator = groupingEnumerator = _groupings.GetEnumerator();
 				}
 
-				while (_groupingEnumerator.MoveNext())
-				{
-					Current = Option.Some<IGrouping<TKey, TElement>>(new Grouping(_groupingEnumerator.Current.Key, _groupingEnumerator.Current.Value));
+				var moveNext = groupingEnumerator.MoveNext();
+				_groupingEnumerator = groupingEnumerator;
 
-					return true;
-				}
+				Current = moveNext
+					? Option.Some<IGrouping<TKey, TElement>>(new Grouping(_groupingEnumerator.Value.Current.Key, _groupingEnumerator.Value.Current.Value))
+					: default;
 
-				return false;
+				return moveNext;
 			}
 		}
 	}

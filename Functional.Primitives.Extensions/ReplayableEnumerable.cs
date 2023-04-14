@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Functional
 {
@@ -14,7 +15,7 @@ namespace Functional
 		public ReplayableEnumerableData(IEnumerator<T> enumerator)
 			=> _enumerator = enumerator;
 
-		public bool TryGetValue(int index, out T value)
+		public bool TryGetValue(int index, [MaybeNullWhen(false)] out T value)
 		{
 			if (index < _values.Count)
 			{
@@ -46,6 +47,7 @@ namespace Functional
 		public T Current { get; private set; }
 
 #pragma warning disable CS8603 // Possible null reference return.
+		[AllowAllocations]
 		object IEnumerator.Current => Current;
 #pragma warning restore CS8603 // Possible null reference return.
 

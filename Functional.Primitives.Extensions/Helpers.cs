@@ -7,7 +7,7 @@ using static Functional.PartialResult;
 
 namespace Functional
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = false)]
 	internal class AllowAllocationsAttribute : Attribute { }
 
 	public static class TryGetValueExtensions

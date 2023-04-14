@@ -13,6 +13,8 @@
 		/// <param name="result">The result.</param>
 		/// <returns></returns>
 		public static ResultTypeAssertions<TSuccess, TFailure> Should<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
+			where TSuccess : notnull
+			where TFailure : notnull
 		{
 			return new ResultTypeAssertions<TSuccess, TFailure>(result);
 		}
@@ -24,6 +26,7 @@
 		/// <param name="option">The option.</param>
 		/// <returns></returns>
 		public static OptionTypeAssertions<T> Should<T>(this Option<T> option)
+			where T : notnull
 		{
 			return new OptionTypeAssertions<T>(option);
 		}

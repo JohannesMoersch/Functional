@@ -17,39 +17,39 @@ namespace Functional.Tests.Results
 			public IEnumerator<object[]> GetEnumerator() => new List<object[]>() 
 			{
 				new object[] { new[] { 0, 1 }, new[] { 4, 5, 6 }, new (int, int)?[] { (0, 4), (0, 6), (1, 5) } },
-				new object[] { new[] { 7, 8, 9 }, new[] { 4, 5, 6 }, new (int, int)?[0] },
-				new object[] { new int[0], new[] { 4, 5, 6 }, new (int, int)?[0] },
-				new object[] { new[] { 0, 1 }, new int[0], new (int, int)?[0] }
+				new object[] { new[] { 7, 8, 9 }, new[] { 4, 5, 6 }, Array.Empty<(int, int)?>() },
+				new object[] { Array.Empty<int>(), new[] { 4, 5, 6 }, Array.Empty<(int, int)?>() },
+				new object[] { new[] { 0, 1 }, Array.Empty<int>(), Array.Empty<(int, int)?>() }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class ResultStandard : IEnumerable<object[]>
+		public class ResultStandard : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { null, new[] { 4, 5, 6 }, new (int, int)?[] { null } }
+				new object?[] { null, new[] { 4, 5, 6 }, new (int, int)?[] { null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class StandardResult : IEnumerable<object[]>
+		public class StandardResult : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { new[] { 0, 1 }, null, new (int, int)?[] { null } }
+				new object?[] { new[] { 0, 1 }, null, new (int, int)?[] { null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class ResultResult : IEnumerable<object[]>
+		public class ResultResult : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { null, null, new (int, int)?[] { null, null } }
+				new object?[] { null, null, new (int, int)?[] { null, null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -61,33 +61,33 @@ namespace Functional.Tests.Results
 
 		private static readonly Func<IEnumerable<int>, IAsyncEnumerable<int>> _asyncSource = values => values.AsAsyncEnumerable();
 
-		private static readonly Func<IEnumerable<int>, IResultEnumerable<int, string>> _resultSource = 
+		private static readonly Func<IEnumerable<int>?, IResultEnumerable<int, string>> _resultSource = 
 			values =>
-				from value in Result.Create(values != null, () => values, () => "Failure")
+				from value in Option.FromNullable(values).ToResult(() => "Failure")
 				from result in value
 				select result;
 
-		private static readonly Func<IEnumerable<int>, IAsyncResultEnumerable<int, string>> _asyncResultSource =
+		private static readonly Func<IEnumerable<int>?, IAsyncResultEnumerable<int, string>> _asyncResultSource =
 			values => 
-				from value in Result.CreateAsync(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"))
+				from value in Option.FromNullableAsync(Task.FromResult(values)).ToResult(() => "Failure")
 				from result in value
 				select result;
 
-		private static readonly Func<IEnumerable<int>, IEnumerable<int>> _join = values => values ?? Enumerable.Empty<int>();
+		private static readonly Func<IEnumerable<int>?, IEnumerable<int>> _join = values => values ?? Enumerable.Empty<int>();
 
-		private static readonly Func<IEnumerable<int>, Task<IEnumerable<int>>> _taskJoin = values => Task.FromResult(values ?? Enumerable.Empty<int>());
+		private static readonly Func<IEnumerable<int>?, Task<IEnumerable<int>>> _taskJoin = values => Task.FromResult(values ?? Enumerable.Empty<int>());
 
-		private static readonly Func<IEnumerable<int>, IAsyncEnumerable<int>> _asyncJoin = values => (values ?? Enumerable.Empty<int>()).AsAsyncEnumerable();
+		private static readonly Func<IEnumerable<int>?, IAsyncEnumerable<int>> _asyncJoin = values => (values ?? Enumerable.Empty<int>()).AsAsyncEnumerable();
 
-		private static readonly Func<IEnumerable<int>, Result<IEnumerable<int>, string>> _resultJoin = values => Result.Create(values != null, () => values, () => "Failure");
+		private static readonly Func<IEnumerable<int>?, Result<IEnumerable<int>, string>> _resultJoin = values => Option.FromNullable(values).ToResult(() => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Task<Result<IEnumerable<int>, string>>> _taskResultJoin = values => Result.CreateAsync(values != null, () => Task.FromResult(values), () => Task.FromResult("Failure"));
+		private static readonly Func<IEnumerable<int>?, Task<Result<IEnumerable<int>, string>>> _taskResultJoin = values => Option.FromNullableAsync(Task.FromResult(values)).ToResult(() => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Result<IAsyncEnumerable<int>, string>> _asyncResultJoin = values => Result.Create(values != null, () => values.AsAsyncEnumerable(), () => "Failure");
+		private static readonly Func<IEnumerable<int>?, Result<IAsyncEnumerable<int>, string>> _asyncResultJoin = values => Option.FromNullable(values?.AsAsyncEnumerable()).ToResult(() => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Result<int[], string>> _resultJoinArray = values => Result.Create(values != null, () => values.ToArray(), () => "Failure");
+		private static readonly Func<IEnumerable<int>?, Result<int[], string>> _resultJoinArray = values => Option.FromNullable(values?.ToArray()).ToResult(() => "Failure");
 
-		private static readonly Func<IEnumerable<int>, Task<Result<int[], string>>> _taskResultJoinArray = values => Result.CreateAsync(values != null, () => Task.FromResult(values.ToArray()), () => Task.FromResult("Failure"));
+		private static readonly Func<IEnumerable<int>?, Task<Result<int[], string>>> _taskResultJoinArray = values => Option.FromNullableAsync(Task.FromResult(values?.ToArray())).ToResult(() => "Failure");
 
 		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<(int, int)>> _output = values => values.OfType<(int, int)>();
 

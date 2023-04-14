@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -27,16 +28,16 @@ namespace Functional.Tests
 			var members = SearchForMembers(Assemblies, FilterForBox);
 
 			if (members.Any())
-				throw new Exception($"The following members contain the box OpCode:{String.Join("", FormatMembers(members))}");
+				throw new Exception($"The following members contain the box OpCode:{Environment.NewLine}{String.Join("", FormatMembers(members))}");
 		}
 
 		[Fact]
 		public void ContainsNewArr()
 		{
-			var members = SearchForMembers(Assemblies, methodBody => methodBody.Instructions.Any(i => i.OpCode == OpCodes.Newarr));
+			var members = SearchForMembers(Assemblies, FilterForNewArray);
 
 			if (members.Any())
-				throw new Exception($"The following members contain the newarr OpCode:{String.Join("", FormatMembers(members))}");
+				throw new Exception($"The following members contain the newarr OpCode:{Environment.NewLine}{String.Join("", FormatMembers(members))}");
 		}
 
 		[Fact]
@@ -45,27 +46,27 @@ namespace Functional.Tests
 			var members = SearchForMembers(Assemblies, FilterForNewObject);
 
 			if (members.Any())
-				throw new Exception($"The following members contain the newobj OpCode:{String.Join("", FormatMembers(members))}");
+				throw new Exception($"The following members contain the newobj OpCode:{Environment.NewLine}{String.Join("", FormatMembers(members))}");
 		}
 
-		private string FormatMembers(IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<ParsedMethodBody> members)> types)> members)
+		private string FormatMembers(IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type operandType)> members)> types)> members)
 		{
 			var builder = new StringBuilder();
 
 			foreach (var assembly in members)
 			{
-				builder.Append($"\t");
-				builder.AppendLine(assembly.assembly.FullName.Split(',')[0]);
+				builder.Append($"      ");
+				builder.AppendLine(assembly.assembly.FullName?.Split(',')[0] ?? "Unknown Assembly");
 
 				foreach (var type in assembly.types)
 				{
-					builder.Append($"\t\t");
-					builder.AppendLine(type.type.Name);
+					builder.Append($"            ");
+					builder.AppendLine(type.type.FullName);
 
-					foreach (var member in type.members)
+					foreach (var (parsedMethodBody, operandType) in type.members)
 					{
-						builder.Append($"\t\t\t");
-						builder.AppendLine(member.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())})", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())})"));
+						builder.Append($"                  ");
+						builder.AppendLine(parsedMethodBody.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())}) -> {operandType.Name}", p => $"{p.Name} -> {operandType.Name}", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())}) -> {operandType.Name}"));
 					}
 				}
 			}
@@ -73,38 +74,56 @@ namespace Functional.Tests
 			return builder.ToString();
 		}
 
-		private static bool FilterForNewObject(ParsedMethodBody methodBody)
+		private static Option<Type> FilterForNewObject(ParsedMethodBody methodBody)
 		{
-			var isAsyncMethod = methodBody.Parent.Match(c => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
+			var isAsyncMethod = methodBody.Parent.Match(c => false, p => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
 
 			for (var i = isAsyncMethod ? 1 : 0; i < methodBody.Instructions.Count; ++i)
 			{
 				var instruction = methodBody.Instructions[i];
 
-				if (instruction.OpCode != OpCodes.Newobj || !instruction.Operand.OfType<ConstructorInfo>().TryGetValue(out var constructor))
+				if (instruction.OpCode != OpCodes.Newobj)
 					continue;
 
-				if (constructor.DeclaringType.IsValueType || constructor.DeclaringType.IsAssignableTo(typeof(Exception)))
+				if (!instruction.Operand.OfType<ConstructorInfo>().TryGetValue(out var constructor) || constructor.DeclaringType is not Type declaringType)
+					continue;
+
+				if (declaringType.IsValueType || declaringType.IsAssignableTo(typeof(Exception)))
 					continue;
 
 				if (i < methodBody.Instructions.Count - 2 && IsStaticDelegateInstantiation(constructor, methodBody.Instructions[i + 1], methodBody.Instructions[i + 2]))
 					continue;
 
-				return true;
+				return declaringType;
 			}
 
-			return false;
+			return Option.None();
+		}
+
+		private static Option<Type> FilterForNewArray(ParsedMethodBody methodBody)
+		{
+			foreach (var instruction in methodBody.Instructions)
+			{
+				if (instruction.OpCode != OpCodes.Newarr)
+					continue;
+
+				return instruction.Operand.OfType<Type>();
+			}
+
+			return Option.None();
 		}
 
 		private static bool IsStaticDelegateInstantiation(ConstructorInfo constructor, Instruction two, Instruction three)
-			=> constructor.DeclaringType.IsAssignableTo(typeof(Delegate))
+			=> constructor.DeclaringType is Type declaringType
+				&& declaringType.IsAssignableTo(typeof(Delegate))
 				&& two.OpCode == OpCodes.Dup
 				&& three.OpCode == OpCodes.Stsfld
 				&& three.Operand.OfType<FieldInfo>().TryGetValue(out var field)
 				&& field.Attributes.HasFlag(FieldAttributes.Static)
-				&& field.DeclaringType.Name.StartsWith("<>");
+				&& field.DeclaringType is Type fieldDeclaringType
+				&& fieldDeclaringType.Name.StartsWith("<>");
 
-		private static bool FilterForBox(ParsedMethodBody methodBody)
+		private static Option<Type> FilterForBox(ParsedMethodBody methodBody)
 		{
 			for (var i = 0; i < methodBody.Instructions.Count; ++i)
 			{
@@ -125,24 +144,29 @@ namespace Functional.Tests
 						if (i < methodBody.Instructions.Count - 2 && nextOpCode == OpCodes.Ldnull && methodBody.Instructions[i + 2].OpCode == OpCodes.Ceq)
 							continue;
 					}
-					return true;
+
+					return instruction.Operand.OfType<Type>();
 				}
 			}
-
-			return false;
+			
+			return Option.None();
 		}
 
-		private static IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<ParsedMethodBody> members)> types)> SearchForMembers(IEnumerable<Assembly> assemblies, Func<ParsedMethodBody, bool> methodFilter)
+		private static IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type operandType)> members)> types)> SearchForMembers(IEnumerable<Assembly> assemblies, Func<ParsedMethodBody, Option<Type>> methodFilter)
 			=>
 			from assembly in assemblies
 			let types =
 				from type in GetTypesInAssembly(assembly)
+				where !ContainsAllowAllocations(type.GetCustomAttributes<Attribute>())
 				let members =
-					from member in GetMethodBodiesFromType(type)
-					where member.Parent.Match(c => !ContainsAllowAllocations(c.GetCustomAttributes()), m => !ContainsAllowAllocations(m.GetCustomAttributes()))
-					where !ContainsAllowAllocations(member.Parent.Match(c => c.ReflectedType, m => m.ReflectedType).GetCustomAttributes())
-					where methodFilter.Invoke(member)
-					select member
+					(
+						from member in GetMemberBodiesFromType(type)
+						let memberAttributes = member.Parent.Match(c => c.GetCustomAttributes(), p => p.GetCustomAttributes(), m => m.GetCustomAttributes())
+						where !ContainsAllowAllocations(memberAttributes)
+						from operandType in methodFilter.Invoke(member)
+						select (member, operandType)
+					)
+					.WhereSome()
 				where members.Any()
 				select (type, members)
 			where types.Any()
@@ -159,10 +183,34 @@ namespace Functional.Tests
 				.GetTypes()
 				.Where(t => t.FullName != "System.Runtime.CompilerServices.NullableAttribute");
 
-		private static IEnumerable<ParsedMethodBody> GetMethodBodiesFromType(Type type)
+		private static IEnumerable<ParsedMethodBody> GetMemberBodiesFromType(Type type)
 			=> Enumerable
 				.Empty<ParsedMethodBody>()
-				.Concat(type.GetRuntimeMethods().Select(m => m.GetParsedMethodBody()).WhereSome())
-				.Concat(type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Select(c => c.GetParsedMethodBody()));
+				.Concat(GetConstructorBodiesFromType(type))
+				.Concat(GetMethodBodiesFromType(type))
+				.Concat(GetPropertyBodiesFromType(type));
+
+		private static IEnumerable<ParsedMethodBody> GetConstructorBodiesFromType(Type type)
+			=> type
+				.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.Select(constructor => constructor.GetParsedMethodBody());
+
+		private static IEnumerable<ParsedMethodBody> GetMethodBodiesFromType(Type type)
+			=>
+			(
+				from method in type.GetRuntimeMethods()
+				where !type
+					.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
+					.SelectMany(p => new[] { p.GetMethod, p.SetMethod })
+					.Contains(method)
+				from parsedMethod in method.GetParsedMethodBody()
+				select parsedMethod
+			)
+			.WhereSome();
+
+		private static IEnumerable<ParsedMethodBody> GetPropertyBodiesFromType(Type type)
+			=> type
+				.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)
+				.SelectMany(property => property.GetParsedMethodBody());
 	}
 }

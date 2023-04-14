@@ -12,7 +12,7 @@ namespace Functional
 			where TKey : notnull
 			where TValue : notnull
 		{
-			if (source.TryGetValue(key, out var value) && value != null)
+			if (source.TryGetValue(key, out var value))
 				return Option.Some(value);
 
 			return Option.None<TValue>();
@@ -22,25 +22,27 @@ namespace Functional
 			where TKey : notnull
 			where TValue : notnull
 		{
-			if (source.TryGetValue(key, out var value) && value != null)
+			if (source.TryGetValue(key, out var value))
 				return Option.Some(value);
 
 			return Option.None<TValue>();
 		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key)
+			where TKey : notnull
 			where TValue : notnull
 		{
-			if (source.TryGetValue(key, out var value) && value != null)
+			if (source.TryGetValue(key, out var value))
 				return Option.Some(value);
 
 			return Option.None<TValue>();
 		}
 
 		public static Option<TValue> TryGetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key)
+			where TKey : notnull
 			where TValue : notnull
 		{
-			if (source.TryGetValue(key, out var value) && value != null)
+			if (source.TryGetValue(key, out var value))
 				return Option.Some(value);
 
 			return Option.None<TValue>();
@@ -50,18 +52,8 @@ namespace Functional
 			where TKey : notnull
 			where TValue : notnull
 		{
-			if (source.TryRemove(key, out var value) && value != null)
+			if (source.TryRemove(key, out var value))
 				return Option.Some(value);
-
-			return Option.None<TValue>();
-		}
-
-		public static Option<TValue> TryRemove<TKey, TValue>(this ConcurrentDictionary<TKey, TValue?> source, TKey key)
-			where TKey : notnull
-			where TValue : struct
-		{
-			if (source.TryRemove(key, out var value) && value is TValue v)
-				return Option.Some(v);
 
 			return Option.None<TValue>();
 		}

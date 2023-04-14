@@ -10,6 +10,7 @@ namespace Functional.Tests.Utilities.Assertions
 	/// </summary>
 	/// <typeparam name="T">The contained type.</typeparam>
 	public class OptionTypeAssertions<T>
+		where T : notnull
 	{
 		private readonly Option<T> _subject;
 
@@ -48,7 +49,9 @@ namespace Functional.Tests.Utilities.Assertions
 			if (additionalAssertionAction == null) throw new ArgumentNullException(nameof(additionalAssertionAction));
 
 			HaveValue(because, becauseArgs);
-			additionalAssertionAction(_subject.ValueOrDefault());
+
+			if (_subject.TryGetValue(out var some))
+				additionalAssertionAction(some);
 		}
 
 		/// <summary>

@@ -10,6 +10,7 @@ namespace Functional
 	public static class SerializationUtility
 	{
 		public static Stream Serialize<T>(T obj)
+			where T : notnull
 		{
 			var formatter = new BinaryFormatter();
 			var stream = new MemoryStream();
@@ -22,6 +23,7 @@ namespace Functional
 		}
 
 		public static T Deserialize<T>(Stream stream)
+			where T : notnull
 		{
 			var formatter = new BinaryFormatter();
 
@@ -29,6 +31,7 @@ namespace Functional
 		}
 
 		public static T CloneViaSerialization<T>(T obj)
+			where T : notnull
 		{
 			using (var stream = Serialize(obj))
 				return Deserialize<T>(stream);

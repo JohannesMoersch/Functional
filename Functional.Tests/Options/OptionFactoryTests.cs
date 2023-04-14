@@ -28,7 +28,7 @@ namespace Functional.Tests.Options
 		[Fact]
 		public void FromNullableClassIsNull()
 			=> Option
-				.FromNullable((string)null)
+				.FromNullable((string?)null)
 				.AssertNone();
 
 		[Fact]
@@ -48,7 +48,7 @@ namespace Functional.Tests.Options
 		[Fact]
 		public Task FromNullableAsyncClassHasValue()
 			=> Option
-				.FromNullableAsync(Helpers.DelayedTask("abc"))
+				.FromNullableAsync(Helpers.DelayedTask((string?)"abc"))
 				.AssertSome()
 				.Should()
 				.Be("abc");
@@ -56,7 +56,7 @@ namespace Functional.Tests.Options
 		[Fact]
 		public Task FromNullableAsyncClassIsNull()
 			=> Option
-				.FromNullableAsync(Helpers.DelayedTask((string)null))
+				.FromNullableAsync(Helpers.DelayedTask((string?)null))
 				.AssertNone();
 
 		[Fact]

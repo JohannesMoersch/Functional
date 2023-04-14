@@ -11,6 +11,8 @@ namespace Functional.Tests.Utilities.Assertions
 	/// <typeparam name="TSuccess">The success value type.</typeparam>
 	/// <typeparam name="TFailure">The failure value type.</typeparam>
 	public class ResultTypeAssertions<TSuccess, TFailure>
+		where TSuccess : notnull
+		where TFailure : notnull
 	{
 		private readonly Result<TSuccess, TFailure> _subject;
 
@@ -47,7 +49,9 @@ namespace Functional.Tests.Utilities.Assertions
 			if (additionalAssertionAction == null) throw new ArgumentNullException(nameof(additionalAssertionAction));
 
 			BeSuccessful(because, becauseArgs);
-			additionalAssertionAction(_subject.Success().ValueOrDefault());
+
+			if (_subject.TryGetValue(out var success, out _))
+				additionalAssertionAction(success);
 		}
 
 		/// <summary>
@@ -102,7 +106,9 @@ namespace Functional.Tests.Utilities.Assertions
 			if (additionalAssertionAction == null) throw new ArgumentNullException(nameof(additionalAssertionAction));
 
 			BeFaulted(because, becauseArgs);
-			additionalAssertionAction(_subject.Failure().ValueOrDefault());
+
+			if (!_subject.TryGetValue(out _, out var failure))
+				additionalAssertionAction(failure);
 		}
 
 		/// <summary>

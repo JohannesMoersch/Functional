@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using static System.Reflection.Metadata.Ecma335.MethodBodyStreamEncoder;
 
 namespace Functional.Tests.IL
 {
@@ -25,26 +26,50 @@ namespace Functional.Tests.IL
 					constructor,
 					GetInstructionsFromILByteArray
 					(
-						constructor.GetMethodBody().GetILAsByteArray(),
+						constructor.GetMethodBody()?.GetILAsByteArray() ?? throw new Exception($"Missing IL in constructor for type {constructor.DeclaringType?.FullName}"),
 						constructor.Module,
-						constructor.ReflectedType.GetGenericArguments(),
+						constructor.DeclaringType?.GetGenericArguments() ?? throw new Exception($"Missing declaring type in constructor for type."),
 						Type.EmptyTypes
 					).ToArray()
 				);
 
+		public static IEnumerable<ParsedMethodBody> GetParsedMethodBody(this PropertyInfo property)
+			=>
+			(
+				from method in new[] { (accessorType: ParsedMethodBody.ParentInfo.Property.AccessorType.Get, method: property.GetMethod), (accessorType: ParsedMethodBody.ParentInfo.Property.AccessorType.Set, method: property.SetMethod) }
+				where method.method != null
+				from methodBody in Option.FromNullable(method.method.GetMethodBody())
+				let instructions = GetInstructionsFromILByteArray
+				(
+					methodBody.GetILAsByteArray() ?? throw new Exception($"Missing IL in constructor for type {method.method.DeclaringType?.FullName}"),
+					method.method.Module,
+					method.method.DeclaringType?.GetGenericArguments() ?? throw new Exception($"Missing declaring type in constructor for type."),
+					method.method.GetGenericArguments()
+				)
+				select ParsedMethodBody.Create(property, method.accessorType, instructions.ToArray())
+			)
+			.WhereSome();
+
 		public static Option<ParsedMethodBody> GetParsedMethodBody(this MethodInfo method)
 			=> Option
 				.FromNullable(method.GetMethodBody())
-				.Map(methodBody => GetInstructionsFromILByteArray(methodBody.GetILAsByteArray(), method.Module, method.ReflectedType.GetGenericArguments(), method.GetGenericArguments()))
+				.Map(methodBody => 
+					GetInstructionsFromILByteArray
+					(
+						methodBody.GetILAsByteArray() ?? throw new Exception($"Missing IL in constructor for type {method.DeclaringType?.FullName}"), 
+						method.Module, 
+						method.DeclaringType?.GetGenericArguments() ?? throw new Exception($"Missing declaring type in constructor for type."), 
+						method.GetGenericArguments()
+					)
+				)
 				.Map(instructions => ParsedMethodBody.Create(method, instructions.ToArray()));
 
 		private static IEnumerable<Instruction> GetInstructionsFromILByteArray(byte[] bytes, Module module, Type[] typeGenerics, Type[] methodGenerics)
 		{
-			using (var stream = new MemoryStream(bytes))
-			{
-				while (stream.Position < stream.Length)
-					yield return ReadInstruction(stream, module, typeGenerics, methodGenerics);
-			}
+			using var stream = new MemoryStream(bytes);
+			
+			while (stream.Position < stream.Length)
+				yield return ReadInstruction(stream, module, typeGenerics, methodGenerics);
 		}
 
 		private static Instruction ReadInstruction(Stream bytes, Module module, Type[] typeGenerics, Type[] methodGenerics)
@@ -78,15 +103,15 @@ namespace Functional.Tests.IL
 					break;
 				case OperandType.InlineField:
 					operandSize = 0;
-					operand = Option.Some<object>(module.ResolveField(ReadInt32(bytes), typeGenerics, methodGenerics));
+					operand = Option.FromNullable<object>(module.ResolveField(ReadInt32(bytes), typeGenerics, methodGenerics));
 					break;
 				case OperandType.InlineType:
 					operandSize = 0;
-					operand = Option.Some<object>(module.ResolveType(ReadInt32(bytes), typeGenerics, methodGenerics));
+					operand = module.ResolveType(ReadInt32(bytes), typeGenerics, methodGenerics);
 					break;
 				case OperandType.InlineMethod:
 					operandSize = 0;
-					operand = Option.Some<object>(module.ResolveMember(ReadInt32(bytes), typeGenerics, methodGenerics));
+					operand = Option.FromNullable<object>(module.ResolveMember(ReadInt32(bytes), typeGenerics, methodGenerics));
 					break;
 				case OperandType.InlineVar:
 					operandSize = 2;

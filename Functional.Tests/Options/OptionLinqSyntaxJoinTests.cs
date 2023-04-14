@@ -25,31 +25,31 @@ namespace Functional.Tests.Options
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class OptionStandard : IEnumerable<object[]>
+		public class OptionStandard : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { null, new[] { 4, 5, 6 }, new (int, int)?[] { null } }
+				new object?[] { null, new[] { 4, 5, 6 }, new (int, int)?[] { null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class StandardOption : IEnumerable<object[]>
+		public class StandardOption : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { new[] { 0, 1 }, null, new (int, int)?[] { null } }
+				new object?[] { new[] { 0, 1 }, null, new (int, int)?[] { null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
-		public class OptionOption : IEnumerable<object[]>
+		public class OptionOption : IEnumerable<object?[]>
 		{
-			public IEnumerator<object[]> GetEnumerator() => new List<object[]>()
+			public IEnumerator<object?[]> GetEnumerator() => new List<object?[]>()
 			{
-				new object[] { null, null, new (int, int)?[] { null, null } }
+				new object?[] { null, null, new (int, int)?[] { null, null } }
 			}.GetEnumerator();
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -61,33 +61,33 @@ namespace Functional.Tests.Options
 
 		private static readonly Func<IEnumerable<int>, IAsyncEnumerable<int>> _asyncSource = values => values.AsAsyncEnumerable();
 
-		private static readonly Func<IEnumerable<int>, IOptionEnumerable<int>> _resultSource =
+		private static readonly Func<IEnumerable<int>?, IOptionEnumerable<int>> _resultSource =
 			values =>
-				from value in Option.Create(values != null, () => values)
+				from value in Option.FromNullable(values)
 				from result in value
 				select result;
 
-		private static readonly Func<IEnumerable<int>, IAsyncOptionEnumerable<int>> _asyncOptionSource =
+		private static readonly Func<IEnumerable<int>?, IAsyncOptionEnumerable<int>> _asyncOptionSource =
 			values =>
-				from value in Option.CreateAsync(values != null, () => Task.FromResult(values))
+				from value in Option.FromNullableAsync(Task.FromResult(values))
 				from result in value
 				select result;
 
-		private static readonly Func<IEnumerable<int>, IEnumerable<int>> _join = values => values ?? Enumerable.Empty<int>();
+		private static readonly Func<IEnumerable<int>?, IEnumerable<int>> _join = values => values ?? Enumerable.Empty<int>();
 
-		private static readonly Func<IEnumerable<int>, Task<IEnumerable<int>>> _taskJoin = values => Task.FromResult(values ?? Enumerable.Empty<int>());
+		private static readonly Func<IEnumerable<int>?, Task<IEnumerable<int>>> _taskJoin = values => Task.FromResult(values ?? Enumerable.Empty<int>());
 
-		private static readonly Func<IEnumerable<int>, IAsyncEnumerable<int>> _asyncJoin = values => (values ?? Enumerable.Empty<int>()).AsAsyncEnumerable();
+		private static readonly Func<IEnumerable<int>?, IAsyncEnumerable<int>> _asyncJoin = values => (values ?? Enumerable.Empty<int>()).AsAsyncEnumerable();
 
-		private static readonly Func<IEnumerable<int>, Option<IEnumerable<int>>> _resultJoin = values => Option.Create(values != null, () => values);
+		private static readonly Func<IEnumerable<int>?, Option<IEnumerable<int>>> _resultJoin = values => Option.FromNullable(values);
 
-		private static readonly Func<IEnumerable<int>, Task<Option<IEnumerable<int>>>> _taskOptionJoin = values => Option.CreateAsync(values != null, () => Task.FromResult(values));
+		private static readonly Func<IEnumerable<int>?, Task<Option<IEnumerable<int>>>> _taskOptionJoin = values => Option.FromNullableAsync(Task.FromResult(values));
 
-		private static readonly Func<IEnumerable<int>, Option<IAsyncEnumerable<int>>> _asyncOptionJoin = values => Option.Create(values != null, () => values.AsAsyncEnumerable());
+		private static readonly Func<IEnumerable<int>?, Option<IAsyncEnumerable<int>>> _asyncOptionJoin = values => Option.FromNullable(values?.AsAsyncEnumerable());
 
-		private static readonly Func<IEnumerable<int>, Option<int[]>> _resultJoinArray = values => Option.Create(values != null, () => values.ToArray());
+		private static readonly Func<IEnumerable<int>?, Option<int[]>> _resultJoinArray = values => Option.FromNullable(values?.ToArray());
 
-		private static readonly Func<IEnumerable<int>, Task<Option<int[]>>> _taskOptionJoinArray = values => Option.CreateAsync(values != null, () => Task.FromResult(values.ToArray()));
+		private static readonly Func<IEnumerable<int>?, Task<Option<int[]>>> _taskOptionJoinArray = values => Option.FromNullableAsync(Task.FromResult(values?.ToArray()));
 
 		private static readonly Func<IEnumerable<(int, int)?>, IEnumerable<(int, int)>> _output = values => values.OfType<(int, int)>();
 

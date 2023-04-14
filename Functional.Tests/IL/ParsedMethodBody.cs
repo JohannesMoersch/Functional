@@ -11,17 +11,25 @@ namespace Functional.Tests.IL
 		{
 			public record Constructor(ConstructorInfo ConstructorInfo) : ParentInfo
 			{
-				public override TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<MethodInfo, TValue> onMethod)
+				public override TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<PropertyInfo, TValue> onProperty, Func<MethodInfo, TValue> onMethod)
 					=> onConstructor.Invoke(ConstructorInfo);
-			};
+			}
+
+			public record Property(PropertyInfo PropertyInfo, Property.AccessorType accessorType) : ParentInfo
+			{
+				public enum AccessorType { Get, Set }
+
+				public override TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<PropertyInfo, TValue> onProperty, Func<MethodInfo, TValue> onMethod)
+					=> onProperty.Invoke(PropertyInfo);
+			}
 
 			public record Method(MethodInfo MethodInfo) : ParentInfo
 			{
-				public override TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<MethodInfo, TValue> onMethod)
+				public override TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<PropertyInfo, TValue> onProperty, Func<MethodInfo, TValue> onMethod)
 					=> onMethod.Invoke(MethodInfo);
 			}
 
-			public abstract TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<MethodInfo, TValue> onMethod);
+			public abstract TValue Match<TValue>(Func<ConstructorInfo, TValue> onConstructor, Func<PropertyInfo, TValue> onProperty, Func<MethodInfo, TValue> onMethod);
 		}
 		public ParentInfo Parent { get; }
 
@@ -35,6 +43,9 @@ namespace Functional.Tests.IL
 
 		public static ParsedMethodBody Create(ConstructorInfo constructor, Instruction[] instructions)
 			=> new ParsedMethodBody(new ParentInfo.Constructor(constructor), instructions);
+
+		public static ParsedMethodBody Create(PropertyInfo property, ParentInfo.Property.AccessorType accessorType, Instruction[] instructions)
+			=> new ParsedMethodBody(new ParentInfo.Property(property, accessorType), instructions);
 
 		public static ParsedMethodBody Create(MethodInfo method, Instruction[] instructions)
 			=> new ParsedMethodBody(new ParentInfo.Method(method), instructions);

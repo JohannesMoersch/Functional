@@ -11,7 +11,7 @@ namespace Functional
 	{
 		public static PartialResult.Success<TSuccess> Success<TSuccess>(TSuccess success)
 			where TSuccess : notnull
-			=> new PartialResult.Success<TSuccess>(success);
+			=> new(success);
 
 		public static Result<TSuccess, TFailure> Success<TSuccess, TFailure>(TSuccess success)
 			where TSuccess : notnull
@@ -32,7 +32,7 @@ namespace Functional
 
 		public static PartialResult.Failure<TFailure> Failure<TFailure>(TFailure failure)
 			where TFailure : notnull
-			=> new PartialResult.Failure<TFailure>(failure);
+			=> new(failure);
 
 		public static Result<TSuccess, TFailure> Failure<TSuccess, TFailure>(TFailure failure)
 			where TSuccess : notnull
