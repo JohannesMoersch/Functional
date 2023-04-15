@@ -16,6 +16,17 @@ namespace Functional.Tests
 {
 	public class AllocationTests
 	{
+		private record AllowAllocations(bool AllowBox, bool AllowNewArr, Type[] AllowNewObjTypes)
+		{
+			public AllowAllocations Merge(AllowAllocations allowAllocations)
+				=> new AllowAllocations
+				(
+					AllowBox | allowAllocations.AllowBox, 
+					AllowNewArr | allowAllocations.AllowNewArr, 
+					AllowNewObjTypes.Concat(allowAllocations.AllowNewObjTypes).ToArray()
+				);
+		}
+
 		private static Assembly[] Assemblies => new[]
 		{
 			typeof(Option).Assembly,
@@ -49,7 +60,7 @@ namespace Functional.Tests
 				throw new Exception($"The following members contain the newobj OpCode:{Environment.NewLine}{String.Join("", FormatMembers(members))}");
 		}
 
-		private string FormatMembers(IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type operandType)> members)> types)> members)
+		private string FormatMembers(IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type[] operandTypes)> members)> types)> members)
 		{
 			var builder = new StringBuilder();
 
@@ -63,10 +74,12 @@ namespace Functional.Tests
 					builder.Append($"            ");
 					builder.AppendLine(type.type.FullName);
 
-					foreach (var (parsedMethodBody, operandType) in type.members)
+					foreach (var (parsedMethodBody, operandTypes) in type.members)
 					{
+						var typeString = String.Join(", ", operandTypes.Select(t => t.Name));
+
 						builder.Append($"                  ");
-						builder.AppendLine(parsedMethodBody.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())}) -> {operandType.Name}", p => $"{p.Name} -> {operandType.Name}", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())}) -> {operandType.Name}"));
+						builder.AppendLine(parsedMethodBody.Parent.Match(c => $"{c.Name}({GetFormattedParameters(c.GetParameters())}) -> {typeString}", p => $"{p.Name} -> {typeString}", m => $"{m.Name}({GetFormattedParameters(m.GetParameters())}) -> {typeString}"));
 					}
 				}
 			}
@@ -74,7 +87,7 @@ namespace Functional.Tests
 			return builder.ToString();
 		}
 
-		private static Option<Type> FilterForNewObject(ParsedMethodBody methodBody)
+		private static IEnumerable<Type> FilterForNewObject(ParsedMethodBody methodBody, AllowAllocations allowAllocations)
 		{
 			var isAsyncMethod = methodBody.Parent.Match(c => false, p => false, m => m.GetCustomAttribute<AsyncStateMachineAttribute>() != null);
 
@@ -94,23 +107,38 @@ namespace Functional.Tests
 				if (i < methodBody.Instructions.Count - 2 && IsStaticDelegateInstantiation(constructor, methodBody.Instructions[i + 1], methodBody.Instructions[i + 2]))
 					continue;
 
-				return declaringType;
-			}
+				var types = new List<Type>(declaringType.GetInterfaces());
+				var next = declaringType;
+				
+				while (next != null)
+				{
+					types.Add(next);
+					next = next.BaseType;
+				}
 
-			return Option.None();
+				foreach (var type in types.Where(i => i.IsConstructedGenericType).ToArray())
+					types.Add(type.GetGenericTypeDefinition());
+
+				if (allowAllocations.AllowNewObjTypes.Intersect(types).Any())
+					continue;
+
+				yield return declaringType;
+			}
 		}
 
-		private static Option<Type> FilterForNewArray(ParsedMethodBody methodBody)
+		private static IEnumerable<Type> FilterForNewArray(ParsedMethodBody methodBody, AllowAllocations allowAllocations)
 		{
+			if (allowAllocations.AllowNewArr)
+				yield break;
+
 			foreach (var instruction in methodBody.Instructions)
 			{
 				if (instruction.OpCode != OpCodes.Newarr)
 					continue;
 
-				return instruction.Operand.OfType<Type>();
+				if (instruction.Operand.OfType<Type>().TryGetValue(out var type))
+					yield return type;
 			}
-
-			return Option.None();
 		}
 
 		private static bool IsStaticDelegateInstantiation(ConstructorInfo constructor, Instruction two, Instruction three)
@@ -123,8 +151,11 @@ namespace Functional.Tests
 				&& field.DeclaringType is Type fieldDeclaringType
 				&& fieldDeclaringType.Name.StartsWith("<>");
 
-		private static Option<Type> FilterForBox(ParsedMethodBody methodBody)
+		private static IEnumerable<Type> FilterForBox(ParsedMethodBody methodBody, AllowAllocations allowAllocations)
 		{
+			if (allowAllocations.AllowBox)
+				yield break;
+
 			for (var i = 0; i < methodBody.Instructions.Count; ++i)
 			{
 				var instruction = methodBody.Instructions[i];
@@ -145,26 +176,27 @@ namespace Functional.Tests
 							continue;
 					}
 
-					return instruction.Operand.OfType<Type>();
+					if (instruction.Operand.OfType<Type>().TryGetValue(out var type))
+						yield return type;
 				}
 			}
-			
-			return Option.None();
 		}
 
-		private static IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type operandType)> members)> types)> SearchForMembers(IEnumerable<Assembly> assemblies, Func<ParsedMethodBody, Option<Type>> methodFilter)
+		private static IEnumerable<(Assembly assembly, IEnumerable<(Type type, IEnumerable<(ParsedMethodBody parsedMethodBody, Type[] operandTypes)> members)> types)> SearchForMembers(IEnumerable<Assembly> assemblies, Func<ParsedMethodBody, AllowAllocations, IEnumerable<Type>> methodFilter)
 			=>
 			from assembly in assemblies
 			let types =
 				from type in GetTypesInAssembly(assembly)
-				where !ContainsAllowAllocations(type.GetCustomAttributes<Attribute>())
+				where !type.IsAssignableTo(typeof(Exception))
+				let typeAllowAllocations = GetAllowAllocations(type.GetCustomAttributes<Attribute>())
 				let members =
 					(
 						from member in GetMemberBodiesFromType(type)
 						let memberAttributes = member.Parent.Match(c => c.GetCustomAttributes(), p => p.GetCustomAttributes(), m => m.GetCustomAttributes())
-						where !ContainsAllowAllocations(memberAttributes)
-						from operandType in methodFilter.Invoke(member)
-						select (member, operandType)
+						let memberAllowAllocations = GetAllowAllocations(memberAttributes)
+						let operandTypes = methodFilter.Invoke(member, typeAllowAllocations.Merge(memberAllowAllocations)).ToArray()
+						from _ in Option.Create(operandTypes.Any(), Unit.Value)
+						select (member, operandTypes)
 					)
 					.WhereSome()
 				where members.Any()
@@ -175,8 +207,17 @@ namespace Functional.Tests
 		private static string GetFormattedParameters(ParameterInfo[] parameters)
 			=> String.Join(", ", parameters.Select(p => p.ParameterType.Name));
 
-		private static bool ContainsAllowAllocations(IEnumerable<Attribute> attributes)
-			=> attributes.Any(att => att.GetType().FullName == "Functional.AllowAllocationsAttribute");
+		private static AllowAllocations GetAllowAllocations(IEnumerable<Attribute> attributes)
+			=>
+			(
+				from att in attributes.TryFirst(att => att.GetType().FullName == "Functional.AllowAllocationsAttribute")
+				let type = att.GetType()
+				let allowBox = (bool?)type.GetField("AllowBox")?.GetValue(att) ?? false
+				let allowNewArr = (bool?)type.GetField("AllowNewArr")?.GetValue(att) ?? false
+				let allowNewObjTypes = (Type[]?)type.GetField("AllowNewObjTypes")?.GetValue(att) ?? Type.EmptyTypes
+				select new AllowAllocations(allowBox, allowNewArr, allowNewObjTypes)
+			)
+			.ValueOrDefault(new AllowAllocations(false, false, Type.EmptyTypes));			
 
 		private static IEnumerable<Type> GetTypesInAssembly(Assembly assembly)
 			=> assembly

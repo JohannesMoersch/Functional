@@ -47,7 +47,7 @@ namespace Functional
 		public T Current { get; private set; }
 
 #pragma warning disable CS8603 // Possible null reference return.
-		[AllowAllocations]
+		[AllowAllocations(allowBox: true)]
 		object IEnumerator.Current => Current;
 #pragma warning restore CS8603 // Possible null reference return.
 

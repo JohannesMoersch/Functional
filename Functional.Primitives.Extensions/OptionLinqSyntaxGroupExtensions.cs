@@ -91,7 +91,7 @@ namespace Functional
 
 			public Option<IGrouping<TKey, TElement>> Current { get; private set; }
 
-			[AllowAllocations]
+			[AllowAllocations(allowBox: true)]
 			object IEnumerator.Current => Current;
 
 			public OptionGroupByEnumerator(IEnumerator<Option<TSuccess>> successEnumerator, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)

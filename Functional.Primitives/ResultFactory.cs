@@ -333,7 +333,7 @@ namespace Functional
 			where TFailure : notnull
 			=> isSuccess ? Success<Unit, TFailure>(Functional.Unit.Value) : Result.Failure<Unit, TFailure>(failureFactory.Invoke());
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -355,7 +355,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -384,7 +384,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -418,7 +418,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -457,7 +457,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -501,7 +501,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -550,7 +550,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,
@@ -604,7 +604,7 @@ namespace Functional
 			return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8), TFailure[]>(errorCollection.ToArray());
 		}
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 		public static Result<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]> Zip<TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9, TFailure>
 		(
 			Result<TSuccess1, TFailure> r1,

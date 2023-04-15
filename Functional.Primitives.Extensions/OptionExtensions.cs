@@ -187,7 +187,7 @@ namespace Functional
 			where TValue : notnull
 			=> option.Do(applyWhenSome, applyWhenNone);
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewArr: true)]
 		public static IEnumerable<T> ToEnumerable<T>(this Option<T> option)
 			where T : notnull
 			=> option.TryGetValue(out var value) ? new[] { value } : Enumerable.Empty<T>();
@@ -196,7 +196,7 @@ namespace Functional
 			where T : notnull
 			=> (await option).ToEnumerable();
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewArr: true)]
 		public static T[] ToArray<T>(this Option<T> option)
 			where T : notnull
 			=> option.TryGetValue(out var value) ? new [] { value } : Array.Empty<T>();

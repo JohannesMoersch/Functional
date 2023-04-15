@@ -79,7 +79,7 @@ namespace Functional
 
 			public Option<(TOuter outer, IEnumerable<TInner> inner)> Current { get; private set; }
 
-			[AllowAllocations]
+			[AllowAllocations(allowBox: true)]
 			object IEnumerator.Current => Current;
 
 			private ILookup<TKey, TInner>? _lookup;

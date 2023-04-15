@@ -44,7 +44,7 @@ namespace Functional
 		}
 #pragma warning restore CS8600, CS8601, CS8618 // Converting null literal or possible null value to non-nullable type. Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-		[AllowAllocations]
+		[AllowAllocations(allowBox: true)]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			var isSuccess = IsSuccess();
@@ -82,7 +82,7 @@ namespace Functional
 		public override bool Equals(object? obj)
 			=> obj is Result<TSuccess, TFailure> result && Equals(result);
 
-		[AllowAllocations]
+		[AllowAllocations(allowNewObjTypes: typeof(string))]
 		public override string ToString()
 			=> IsSuccess() ? $"Success:{_success}" : $"Failure:{_failure}";
 

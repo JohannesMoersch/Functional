@@ -97,7 +97,7 @@ namespace Functional
 
 			public Result<IGrouping<TKey, TElement>, TFailure> Current { get; private set; }
 
-			[AllowAllocations]
+			[AllowAllocations(allowBox: true)]
 			object IEnumerator.Current => Current;
 
 			public ResultGroupByEnumerator(IEnumerator<Result<TSuccess, TFailure>> successEnumerator, Func<TSuccess, TKey> keySelector, Func<TSuccess, TElement> elementSelector)
