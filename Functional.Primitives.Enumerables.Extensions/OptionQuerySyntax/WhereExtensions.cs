@@ -53,11 +53,11 @@ namespace Functional
 		public static IOptionEnumerable<TValue> Where<TValue>(this IOptionEnumerable<TValue> source, Func<TValue, Option<Unit>> failurePredicate)
 			where TValue : notnull
 			=> source
-				.Select((Func<Option<TValue>, Option<TValue>>)(value => value
-					.Bind((Func<TValue, Option<TValue>>)(success => (Option<TValue>)OptionExtensions.Map<Unit, TValue>(failurePredicate
-						.Invoke((TValue)success)
-, (Func<Unit, TValue>)(_ => (TValue)success)))
-					))
+				.Select(value => value
+					.Bind(success => failurePredicate
+						.Invoke(success)
+						.Map(_ => success)
+					)
 				)
 				.AsOptionEnumerable();
 
