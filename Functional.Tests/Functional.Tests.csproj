@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.Enumerables.Extensions\Functional.Primitives.Enumerables.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
   </ItemGroup>

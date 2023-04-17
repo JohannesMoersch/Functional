@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Primitives.Enumerables.Extensions", "Functional.Primitives.Enumerables.Extensions\Functional.Primitives.Enumerables.Extensions.csproj", "{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{01DF0B82-75DC-420D-A2A5-31025C930237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01DF0B82-75DC-420D-A2A5-31025C930237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01DF0B82-75DC-420D-A2A5-31025C930237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,14 +3,16 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Title>Functional.Common.Extensions</Title>
-    <Description>This package contains extension methods for .NET types.</Description>
+    <Title>Functional.Primitives.Enumerables.Extensions</Title>
+    <Description>This package contains extensions for Option and Result discriminated union types in enumerable types.</Description>
     <PackageTags>functional</PackageTags>
     <Nullable>enable</Nullable>
 	<RootNamespace>Functional</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Functional.Common.Extensions\Functional.Common.Extensions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives.Extensions\Functional.Primitives.Extensions.csproj" />
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+namespace Functional;
 
-namespace Functional
+public class ResultNotInitializedException : Exception
 {
-    public class ResultNotInitializedException : Exception
-    {
-    }
 }

@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace Functional
 {
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResultLinqSyntaxJoinExtensions
+	public static partial class ResultQuerySyntax
 	{
 		private static class ResultJoinEnumerable
 		{

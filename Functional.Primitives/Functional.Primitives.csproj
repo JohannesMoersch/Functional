@@ -7,6 +7,7 @@
     <Description>This package contains allocation free Option and Result discriminated union types and associated factory methods.</Description>
     <PackageTags>functional</PackageTags>
     <Nullable>enable</Nullable>
+	<RootNamespace>Functional</RootNamespace>
   </PropertyGroup>
 
 </Project>
