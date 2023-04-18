@@ -1,7 +1,7 @@
 ﻿namespace Functional;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static partial class OptionQuerySyntax
+public static partial class OptionQuerySyntaxExtensions
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static Option<TResult> Select<TValue, TResult>(this Option<TValue> option, Func<TValue, TResult> selector)

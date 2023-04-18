@@ -1,7 +1,6 @@
 ﻿namespace Functional;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public static partial class ResultOptionExtensions
+public static partial class ResultExtensions
 {
 	public static T Match<TSuccess, TFailure, T>(this Result<Option<TSuccess>, TFailure> result, Func<TSuccess, T> onSuccessSome, Func<T> onSuccessNone, Func<TFailure, T> onFailure)
 		where TSuccess : notnull

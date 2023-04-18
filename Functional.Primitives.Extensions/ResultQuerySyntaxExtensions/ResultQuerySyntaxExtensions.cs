@@ -1,7 +1,7 @@
 ﻿namespace Functional;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-public static partial class ResultQuerySyntax
+public static partial class ResultQuerySyntaxExtensions
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> selector)

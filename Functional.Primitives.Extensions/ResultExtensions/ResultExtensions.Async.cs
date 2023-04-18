@@ -1,8 +1,19 @@
 ﻿namespace Functional;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public static partial class ResultAsyncExtensions
+public static partial class ResultExtensions
 {
+	public static Task<TResult> MatchAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> success, Func<TFailure, Task<TResult>> failure)
+		where TSuccess : notnull
+		where TFailure : notnull
+		where TResult : notnull
+		=> result.Match(success, failure);
+
+	public static async Task<TResult> MatchAsync<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, Task<TResult>> success, Func<TFailure, Task<TResult>> failure)
+		where TSuccess : notnull
+		where TFailure : notnull
+		where TResult : notnull
+		=> await (await result).Match(success, failure);
+
 	public static async Task<Result<TResult, TFailure>> MapAsync<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> map)
 		where TSuccess : notnull
 		where TFailure : notnull

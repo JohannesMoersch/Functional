@@ -21,6 +21,10 @@ public static partial class OptionExtensions
 		return option.Match(DelegateCache<TValue>.True, DelegateCache<TValue>.False);
 	}
 
+	public static async Task<TResult> Match<TValue, TResult>(this Task<Option<TValue>> option, Func<TValue, TResult> some, Func<TResult> none)
+		where TValue : notnull
+		=> (await option).Match(some, none);
+
 	public static bool HasValue<TValue>(this Option<TValue> option)
 		where TValue : notnull
 		=> option.Match(static _ => true, static () => false);

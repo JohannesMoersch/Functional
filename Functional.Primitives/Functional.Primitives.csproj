@@ -10,4 +10,12 @@
 	<RootNamespace>Functional</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Result\Result.Factory.Zip.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Result\Result.Factory.Zip.cs" />
+  </ItemGroup>
+
 </Project>

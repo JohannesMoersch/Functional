@@ -28,6 +28,12 @@ public static partial class ResultExtensions
 		return result.Match(DelegateCache<TSuccess>.True, DelegateCache<TFailure>.False);
 	}
 
+	public static async Task<TResult> Match<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> success, Func<TFailure, TResult> failure)
+		where TSuccess : notnull
+		where TFailure : notnull
+		where TResult : notnull
+		=> (await result).Match(success, failure);
+
 	public static bool IsSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
 		where TSuccess : notnull
 		where TFailure : notnull

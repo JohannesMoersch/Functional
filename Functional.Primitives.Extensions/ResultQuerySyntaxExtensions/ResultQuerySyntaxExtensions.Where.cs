@@ -1,6 +1,6 @@
 ﻿namespace Functional;
 
-public static partial class ResultQuerySyntax
+public static partial class ResultQuerySyntaxExtensions
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static Result<TSuccess, TFailure> Where<TSuccess, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<Unit, TFailure>> failurePredicate)

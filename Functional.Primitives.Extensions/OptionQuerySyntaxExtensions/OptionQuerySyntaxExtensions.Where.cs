@@ -1,6 +1,6 @@
 ﻿namespace Functional;
 
-public static partial class OptionQuerySyntax
+public static partial class OptionQuerySyntaxExtensions
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static Option<TValue> Where<TValue>(this Option<TValue> option, Func<TValue, Option<Unit>> predicate)
