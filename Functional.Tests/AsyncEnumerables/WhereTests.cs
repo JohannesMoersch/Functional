@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class WhereTests
+	public class WhereTests
     {
 		[Fact]
 		public async Task WhereOdd()

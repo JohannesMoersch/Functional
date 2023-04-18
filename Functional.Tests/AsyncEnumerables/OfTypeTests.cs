@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class OfTypeTests
+	public class OfTypeTests
     {
 		[Fact]
 		public async Task OfTypeWrongType()

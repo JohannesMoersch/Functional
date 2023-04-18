@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class LinqSyntaxTests
+	public class LinqSyntaxTests
     {
 		[Fact]
 		public async Task FromAsyncAndAsync()

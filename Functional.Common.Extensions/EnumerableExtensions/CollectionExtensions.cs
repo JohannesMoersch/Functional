@@ -11,7 +11,7 @@ namespace Functional
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CollectionExtensions
-    {
+	{
 		public static async Task<IEnumerable> AsEnumerable(this Task<ICollection> collection)
 			=> await collection;
 

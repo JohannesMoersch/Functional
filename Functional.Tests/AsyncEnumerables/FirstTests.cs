@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class FirstTests
+	public class FirstTests
     {
 		[Fact]
 		public async Task FirstEmpty()

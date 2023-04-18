@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class SelectTests
+	public class SelectTests
     {
 		[Fact]
 		public async Task SelectIndex()

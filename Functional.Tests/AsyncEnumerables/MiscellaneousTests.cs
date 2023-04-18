@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class MiscellaneousTests
+	public class MiscellaneousTests
     {
 		[Fact]
 		public async Task SelectExecutedOnlyElementsEvaluatedByTake()

@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class TakeTests
+	public class TakeTests
     {
 		[Fact]
 		public async Task TakeNone()

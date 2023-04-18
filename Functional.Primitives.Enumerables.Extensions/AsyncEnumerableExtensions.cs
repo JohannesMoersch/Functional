@@ -1,169 +1,160 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace Functional;
 
-namespace Functional
+[EditorBrowsable(EditorBrowsableState.Never)]
+public static class AsyncEnumerableExtensions
 {
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class AsyncEnumerableExtensions
-    {
 #pragma warning disable CS8603 // Possible null reference return.
-		public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
-			where T : notnull
-			=> source
-				.Where(option => option.Match(_ => true, () => false))
-				.Select(option => option.Match(o => o, () => default));
+	public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
+		where T : notnull
+		=> source
+			.Where(option => option.Match(_ => true, () => false))
+			.Select(option => option.Match(o => o, () => default));
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
-		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
-			where TSuccess : notnull
-			where TFailure : notnull
+	public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+		where TSuccess : notnull
+		where TFailure : notnull
+	{
+		var successes = new TSuccess[4];
+
+		var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+
+		var index = 0;
+		while (await enumerator.MoveNextAsync())
 		{
-			var successes = new TSuccess[4];
+			var value = enumerator.Current;
 
-			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+			if (value.Match(_ => false, _ => true))
+				return Result.Failure<TSuccess[], TFailure>(value.Match(_ => default, failure => failure));
 
-			var index = 0;
-			while (await enumerator.MoveNextAsync())
-			{
-				var value = enumerator.Current;
-
-				if (value.Match(_ => false, _ => true))
-					return Result.Failure<TSuccess[], TFailure>(value.Match(_ => default, failure => failure));
-
-				if (index == successes.Length)
-				{
-					var old = successes;
-					successes = new TSuccess[old.Length * 2];
-					Array.Copy(old, successes, old.Length);
-				}
-				successes[index++] = value.Match(success => success, _ => default);
-			}
-
-			if (index != successes.Length)
+			if (index == successes.Length)
 			{
 				var old = successes;
-				successes = new TSuccess[index];
-				Array.Copy(old, successes, index);
+				successes = new TSuccess[old.Length * 2];
+				Array.Copy(old, successes, old.Length);
 			}
-
-			return Result.Success<TSuccess[], TFailure>(successes);
+			successes[index++] = value.Match(success => success, _ => default);
 		}
+
+		if (index != successes.Length)
+		{
+			var old = successes;
+			successes = new TSuccess[index];
+			Array.Copy(old, successes, index);
+		}
+
+		return Result.Success<TSuccess[], TFailure>(successes);
+	}
 #pragma warning restore CS8603 // Possible null reference return.
 
-		public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
-			where TSuccess : notnull
-			where TFailure : notnull
+	public static async Task<Result<TSuccess[], TFailure[]>> TakeAll<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+		where TSuccess : notnull
+		where TFailure : notnull
+	{
+		var successes = new TSuccess[4];
+
+		List<TFailure>? failures = null;
+
+		var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+
+		int index = 0;
+		while (await enumerator.MoveNextAsync())
 		{
-			var successes = new TSuccess[4];
-
-			List<TFailure>? failures = null;
-
-			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
-
-			int index = 0;
-			while (await enumerator.MoveNextAsync())
-			{
-				enumerator
-					.Current
-					.Match
-					(
-						success =>
+			enumerator
+				.Current
+				.Match
+				(
+					success =>
+					{
+						if (failures == null)
 						{
-							if (failures == null)
+							if (index == successes.Length)
 							{
-								if (index == successes.Length)
-								{
-									var old = successes;
-									successes = new TSuccess[old.Length * 2];
-									Array.Copy(old, successes, old.Length);
-								}
-								successes[index++] = success;
+								var old = successes;
+								successes = new TSuccess[old.Length * 2];
+								Array.Copy(old, successes, old.Length);
 							}
-							return false;
-						},
-						failure =>
-						{
-							failures ??= new List<TFailure>();
-							failures.Add(failure);
-							return false;
+							successes[index++] = success;
 						}
-					);
-			}
-
-			if (failures != null)
-				return Result.Failure<TSuccess[], TFailure[]>(failures.ToArray());
-
-			if (index != successes.Length)
-			{
-				var old = successes;
-				successes = new TSuccess[index];
-				Array.Copy(old, successes, index);
-			}
-
-			return Result.Success<TSuccess[], TFailure[]>(successes);
+						return false;
+					},
+					failure =>
+					{
+						failures ??= new List<TFailure>();
+						failures.Add(failure);
+						return false;
+					}
+				);
 		}
 
-		public static AsyncResultPartition<TSuccess, TFailure> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
-			where TSuccess : notnull
-			where TFailure : notnull
+		if (failures != null)
+			return Result.Failure<TSuccess[], TFailure[]>(failures.ToArray());
+
+		if (index != successes.Length)
 		{
-			var values = new ReplayableAsyncEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
-
-			return new AsyncResultPartition<TSuccess, TFailure>
-			(
-				values.Where(set => set.matches).Select(set => set.value.Match(success => success, failure => throw new InvalidOperationException("Expected success!"))),
-				values.Where(set => !set.matches).Select(set => set.value.Match(success => throw new InvalidOperationException("Expected failure!"), failure => failure))
-			);
+			var old = successes;
+			successes = new TSuccess[index];
+			Array.Copy(old, successes, index);
 		}
 
-		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
-			where T : notnull
-			=> (await source.Any()) ? Option.Some(await source.First()) : Option.None<T>();
+		return Result.Success<TSuccess[], TFailure[]>(successes);
+	}
 
-		public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
-			where T : notnull
-			=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
+	public static AsyncResultPartition<TSuccess, TFailure> Partition<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+		where TSuccess : notnull
+		where TFailure : notnull
+	{
+		var values = new ReplayableAsyncEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
+
+		return new AsyncResultPartition<TSuccess, TFailure>
+		(
+			values.Where(set => set.matches).Select(set => set.value.Match(success => success, failure => throw new InvalidOperationException("Expected success!"))),
+			values.Where(set => !set.matches).Select(set => set.value.Match(success => throw new InvalidOperationException("Expected failure!"), failure => failure))
+		);
+	}
+
+	public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
+		where T : notnull
+		=> (await source.Any()) ? Option.Some(await source.First()) : Option.None<T>();
+
+	public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
+		where T : notnull
+		=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
 
 #pragma warning disable CS8603 // Possible null reference return.
-		public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
-			where TValue : notnull
+	public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)
+		where TValue : notnull
+	{
+		var values = new TValue[4];
+
+		var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+
+		var index = 0;
+		while (await enumerator.MoveNextAsync())
 		{
-			var values = new TValue[4];
+			var value = enumerator.Current;
 
-			var enumerator = source.GetAsyncEnumerator(CancellationToken.None);
+			if (value.Match(_ => false, () => true))
+				return Option.None<TValue[]>();
 
-			var index = 0;
-			while (await enumerator.MoveNextAsync())
-			{
-				var value = enumerator.Current;
-
-				if (value.Match(_ => false, () => true))
-					return Option.None<TValue[]>();
-
-				if (index == values.Length)
-				{
-					var old = values;
-					values = new TValue[old.Length * 2];
-					Array.Copy(old, values, old.Length);
-				}
-				values[index++] = value.Match(success => success, () => default);
-			}
-
-			if (index != values.Length)
+			if (index == values.Length)
 			{
 				var old = values;
-				values = new TValue[index];
-				Array.Copy(old, values, index);
+				values = new TValue[old.Length * 2];
+				Array.Copy(old, values, old.Length);
 			}
-
-			return Option.Some(values);
+			values[index++] = value.Match(success => success, () => default);
 		}
-#pragma warning restore CS8603 // Possible null reference return.
+
+		if (index != values.Length)
+		{
+			var old = values;
+			values = new TValue[index];
+			Array.Copy(old, values, index);
+		}
+
+		return Option.Some(values);
 	}
+#pragma warning restore CS8603 // Possible null reference return.
 }

@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-    public class SkipTests
+	public class SkipTests
     {
 		[Fact]
 		public async Task SkipNone()
