@@ -1,7 +1,6 @@
 ﻿namespace Functional;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public static class AsyncEnumerableExtensions
+public static partial class EnumerableExtensions
 {
 #pragma warning disable CS8603 // Possible null reference return.
 	public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source)
@@ -114,13 +113,77 @@ public static class AsyncEnumerableExtensions
 		);
 	}
 
-	public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
+	public static Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source)
 		where T : notnull
-		=> (await source.Any()) ? Option.Some(await source.First()) : Option.None<T>();
+		=> source.TryFirst(static _ => true);
 
 	public static async Task<Option<T>> TryFirst<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 		where T : notnull
-		=> (await source.Any(predicate)) ? Option.Some(await source.First(predicate)) : Option.None<T>();
+	{
+		if (source is null) throw new ArgumentNullException(nameof(source));
+		if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+		await foreach (var element in source)
+		{
+			if (predicate.Invoke(element))
+				return Option.Some(element);
+		}
+
+		return Option.None<T>();
+	}
+
+	public static async Task<Option<T>> TryFirstAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task<bool>> predicate)
+		where T : notnull
+	{
+		if (source is null) throw new ArgumentNullException(nameof(source));
+		if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+		await foreach (var element in source)
+		{
+			if (await predicate.Invoke(element))
+				return Option.Some(element);
+		}
+
+		return Option.None<T>();
+	}
+
+	public static Task<Option<T>> TryLast<T>(this IAsyncEnumerable<T> source)
+		where T : notnull
+		=> source.TryLast(static _ => true);
+
+	public static async Task<Option<T>> TryLast<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
+		where T : notnull
+	{
+		if (source is null) throw new ArgumentNullException(nameof(source));
+		if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+		var result = Option.None<T>();
+
+		await foreach (var element in source)
+		{
+			if (predicate.Invoke(element))
+				result = Option.Some(element);
+		}
+
+		return result;
+	}
+
+	public static async Task<Option<T>> TryLastAsync<T>(this IAsyncEnumerable<T> source, Func<T, Task<bool>> predicate)
+		where T : notnull
+	{
+		if (source is null) throw new ArgumentNullException(nameof(source));
+		if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+		var result = Option.None<T>();
+
+		await foreach (var element in source)
+		{
+			if (await predicate.Invoke(element))
+				result = Option.Some(element);
+		}
+
+		return result;
+	}
 
 #pragma warning disable CS8603 // Possible null reference return.
 	public static async Task<Option<TValue[]>> TakeUntilNone<TValue>(this IAsyncEnumerable<Option<TValue>> source)

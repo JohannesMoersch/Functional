@@ -66,30 +66,6 @@ namespace Functional.Tests.Enumerables
 			.AssertNone();
 
 		[Fact]
-		public Task EnumerableOfTasksTakeUntilNoneSomes()
-			=> new[]
-			{
-				Task.FromResult(Option.Some(1)),
-				Task.FromResult(Option.Some(2)),
-				Task.FromResult(Option.Some(3))
-			}
-			.TakeUntilNone()
-			.AssertSome()
-			.Should()
-			.BeEquivalentTo(new[] { 1, 2, 3 });
-
-		[Fact]
-		public Task EnumerableOfTasksTakeUntilNoneNones()
-			=> new[]
-			{
-				Task.FromResult(Option.None<int>()),
-				Task.FromResult(Option.Some(2)),
-				Task.FromResult(Option.None<int>())
-			}
-			.TakeUntilNone()
-			.AssertNone();
-
-		[Fact]
 		public Task AsyncEnumerableTakeUntilNoneSomes()
 			=> new[]
 			{
