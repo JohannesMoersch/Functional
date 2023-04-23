@@ -1,22 +1,7 @@
 ﻿namespace Functional;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public static partial class ResultQuerySyntaxExtensions
 {
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static Result<TResult, TFailure> Select<TSuccess, TFailure, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> selector)
-		where TSuccess : notnull
-		where TFailure : notnull
-		where TResult : notnull
-		=> result.Map(selector);
-
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static Task<Result<TResult, TFailure>> Select<TSuccess, TFailure, TResult>(this Task<Result<TSuccess, TFailure>> result, Func<TSuccess, TResult> selector)
-		where TSuccess : notnull
-		where TFailure : notnull
-		where TResult : notnull
-		=> result.Map(selector);
-
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static Result<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Result<TSuccess, TFailure> result, Func<TSuccess, Result<TBind, TFailure>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
