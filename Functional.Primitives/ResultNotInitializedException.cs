@@ -1,5 +1,4 @@
-﻿using System;
-namespace Functional;
+﻿namespace Functional;
 
 public class ResultNotInitializedException : Exception
 {

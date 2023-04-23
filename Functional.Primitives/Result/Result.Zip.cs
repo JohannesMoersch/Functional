@@ -1,7 +1,17 @@
-﻿namespace Functional;
+namespace Functional;
 
 public static partial class Result
 {
+	private static TSuccess SuccessUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
+		where TSuccess : notnull
+		where TFailure : notnull
+	=> source.Match(static _ => _, static _ => throw new InvalidOperationException("Not a successful result!"));
+
+	private static TFailure FailureUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
+		where TSuccess : notnull
+		where TFailure : notnull
+		=> source.Match(static _ => throw new InvalidOperationException("Not a faulted result!"), static _ => _);
+
 	[AllowAllocations(allowNewObjTypes: typeof(List<>))]
 	public static Result<(TSuccess1, TSuccess2), TFailure[]> Zip<TSuccess1, TSuccess2, TFailure>
 	(
@@ -331,14 +341,4 @@ public static partial class Result
 
 		return Failure<(TSuccess1, TSuccess2, TSuccess3, TSuccess4, TSuccess5, TSuccess6, TSuccess7, TSuccess8, TSuccess9), TFailure[]>(errorCollection.ToArray());
 	}
-
-	private static TSuccess SuccessUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
-		where TSuccess : notnull
-		where TFailure : notnull
-		=> source.Match(static _ => _, static _ => throw new InvalidOperationException("Not a successful result!"));
-
-	private static TFailure FailureUnsafe<TSuccess, TFailure>(this Result<TSuccess, TFailure> source)
-		where TSuccess : notnull
-		where TFailure : notnull
-		=> source.Match(static _ => throw new InvalidOperationException("Not a faulted result!"), static _ => _);
 }
