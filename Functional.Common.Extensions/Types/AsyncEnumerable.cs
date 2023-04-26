@@ -26,8 +26,11 @@ namespace Functional
 		public static IAsyncEnumerable<T> Create<T>(Task<IEnumerable<T>> source)
 			=> new AsyncEnumerable<T>(() => source);
 
+		public static IAsyncEnumerable<T> Create<T>(Task<IOrderedEnumerable<T>> source)
+			=> new AsyncEnumerable<T>(() => source.AsEnumerable());
+
 		public static IAsyncEnumerable<T> Create<T>(Task<T[]> source)
-			=> new AsyncEnumerable<T>(async () => (await source).AsEnumerable());
+			=> new AsyncEnumerable<T>(() => source.AsEnumerable());
 
 		public static IAsyncEnumerable<T> Create<T>(IEnumerable<Task<T>> source)
 			=> new AsyncTaskEnumerable<T>(() => source);
@@ -40,6 +43,9 @@ namespace Functional
 
 		public static IAsyncEnumerable<T> Create<T>(Func<Task<IEnumerable<T>>> source)
 			=> new AsyncEnumerable<T>(source);
+
+		public static IAsyncEnumerable<T> Create<T>(Func<Task<IOrderedEnumerable<T>>> source)
+			=> new AsyncEnumerable<T>(() => source.Invoke().AsEnumerable());
 
 		public static IAsyncEnumerable<T> Repeat<T>(T element, int count)
 			=> Create(Enumerable.Repeat(element, count));

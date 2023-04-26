@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EnumerableExtensions\" />
+  </ItemGroup>
+
 </Project>
