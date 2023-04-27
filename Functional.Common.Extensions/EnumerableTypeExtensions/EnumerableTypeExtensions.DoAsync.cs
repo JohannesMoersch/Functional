@@ -54,6 +54,12 @@ public static partial class EnumerableTypeExtensions
 			});
 	}
 
+	public static IAsyncEnumerable<TSource> DoAsync<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, Task> action)
+		=> source.AsEnumerable().DoAsync(action);
+
+	public static IAsyncEnumerable<TSource> DoAsync<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, Task> action)
+		=> source.AsEnumerable().DoAsync(action);
+
 	public static IAsyncEnumerable<TSource> DoAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task> action)
 	{
 		if (action == null)

@@ -44,6 +44,25 @@ public static partial class EnumerableTypeExtensions
 			await action.Invoke(item, index++);
 	}
 
+	public static async Task ApplyAsync<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, Task> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+
+		foreach (var item in await source)
+			await action.Invoke(item);
+	}
+
+	public static async Task ApplyAsync<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, Task> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+
+		var index = 0;
+		foreach (var item in await source)
+			await action.Invoke(item, index++);
+	}
+
 	public static async Task ApplyAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task> action)
 	{
 		if (action == null)

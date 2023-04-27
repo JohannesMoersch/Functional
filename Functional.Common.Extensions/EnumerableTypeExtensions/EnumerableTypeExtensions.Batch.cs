@@ -15,6 +15,13 @@ public static partial class EnumerableTypeExtensions
 		return IteratorEnumerable.Create(() => new BatchIterator<TSource>(input.GetEnumerator(), batchSize));
 	}
 
+	public static async Task<IEnumerable<IReadOnlyList<TSource>>> Batch<TSource>(this Task<IOrderedEnumerable<TSource>> source, int batchSize)
+	{
+		var input = await source;
+
+		return IteratorEnumerable.Create(() => new BatchIterator<TSource>(input.GetEnumerator(), batchSize));
+	}
+
 	public static IAsyncEnumerable<IReadOnlyList<TSource>> Batch<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
 		=> AsyncIteratorEnumerable.Create(() => new BatchAsyncIterator<TSource>(source.GetAsyncEnumerator(), batchSize));
 }
