@@ -24,22 +24,24 @@ namespace Functional.Tests.AsyncEnumerables
 		}
 
 		[Fact]
-		public async Task MultipleEnumerationShouldBeEquivalent()
+		public async Task MultipleEnumerationShouldDiffer()
 		{
 			int invokeCount = 0;
 
 			var sut =  AsyncEnumerable.Create(() => Task.FromResult(new[] { ++invokeCount }).AsEnumerable());
 
-			(await sut.AsEnumerable()).Should().BeEquivalentTo(await sut.AsEnumerable());
+			(await sut.AsEnumerable()).Should().BeEquivalentTo(new[] { 1 });
+			(await sut.AsEnumerable()).Should().BeEquivalentTo(new[] { 2 });
+			(await sut.AsEnumerable()).Should().BeEquivalentTo(new[] { 3 });
 		}
 
 		[Fact]
 		public async Task EnumerationOfArrayOfTasksIsSuccessful()
 			=> (
-					await
-					AsyncEnumerable
-					.Create(new[] { Task.FromResult(1), Task.FromResult(2), Task.FromResult(3) })
-					.AsEnumerable()
+					await AsyncEnumerable
+						.Create(new[] { Task.FromResult(1), Task.FromResult(2), Task.FromResult(3) })
+						.SelectAsync()
+						.AsEnumerable()
 				)
 				.Should()
 				.BeEquivalentTo(new[] { 1, 2, 3 });

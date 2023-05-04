@@ -73,7 +73,7 @@ namespace Functional.Tests.Enumerables
 				Task.FromResult(Option.Some(2)),
 				Task.FromResult(Option.Some(3))
 			}
-			.AsAsyncEnumerable()
+			.SelectAsync()
 			.TakeUntilNone()
 			.AssertSome()
 			.Should()
@@ -87,7 +87,7 @@ namespace Functional.Tests.Enumerables
 				Task.FromResult(Option.Some(2)),
 				Task.FromResult(Option.None<int>())
 			}
-			.AsAsyncEnumerable()
+			.SelectAsync()
 			.TakeUntilNone()
 			.AssertNone();
 	}

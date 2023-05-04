@@ -12,13 +12,13 @@ public static partial class EnumerableTypeExtensions
 		=> AsyncEnumerable.Create(source);
 
 	public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this Task<IOrderedEnumerable<TSource>> source)
-		=> AsyncEnumerable.Create(source);
+		=> AsyncEnumerable.Create(source.AsEnumerable());
 
 	public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this Task<TSource[]> source)
-		=> AsyncEnumerable.Create(source);
+		=> AsyncEnumerable.Create(source.AsEnumerable());
 
-	public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this IEnumerable<Task<TSource>> source)
-		=> AsyncEnumerable.Create(source);
+	public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this IAsyncEnumerable<TSource> source)
+		=> source;
 
 	public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(this Task<IAsyncEnumerable<TSource>> source)
 		=> AsyncEnumerable.Create(source);

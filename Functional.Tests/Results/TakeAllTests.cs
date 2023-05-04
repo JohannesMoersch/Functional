@@ -80,7 +80,7 @@ namespace Functional.Tests.Results
 				Task.FromResult(Result.Success<int, string>(2)),
 				Task.FromResult(Result.Success<int, string>(3))
 			}
-			.AsAsyncEnumerable()
+			.SelectAsync()
 			.TakeAll()
 			.AssertSuccess()
 			.Should()
@@ -94,7 +94,7 @@ namespace Functional.Tests.Results
 				Task.FromResult(Result.Success<int, string>(2)),
 				Task.FromResult(Result.Failure<int, string>("c"))
 			}
-			.AsAsyncEnumerable()
+			.SelectAsync()
 			.TakeAll()
 			.AssertFailure()
 			.Should()
