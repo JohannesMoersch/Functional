@@ -11,6 +11,11 @@ public static partial class EnumerableTypeExtensions
 	public static async Task<IEnumerable<TSource>> Append<TSource>(this Task<IOrderedEnumerable<TSource>> source, TSource element)
 		=> (await source).Append(element);
 
-	public static IAsyncEnumerable<TSource> Append<TSource>(this IAsyncEnumerable<TSource> source, TSource element)
-		=> AsyncIteratorEnumerable.Create((source, element), static (o, t) => new AppendAsyncIterator<TSource>(o.source, o.element, t));
+	public static async IAsyncEnumerable<TSource> Append<TSource>(this IAsyncEnumerable<TSource> source, TSource element)
+	{
+		await foreach (var item in source)
+			yield return item;
+
+		yield return element;
+	}
 }
