@@ -2,23 +2,46 @@
 
 public static class AsyncEnumerable
 {
-	public static IAsyncEnumerable<T> Create<T>(IEnumerable<T> source)
-		=> new EnumerableToAsyncEnumerable<T>(source);
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+	public static async IAsyncEnumerable<T> Create<T>(IEnumerable<T> source)
+	{
+		foreach (var item in source)
+			yield return item;
+	}
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-	public static IAsyncEnumerable<T> Create<T>(Task<IEnumerable<T>> source)
-		=> new TaskEnumerableToAsyncEnumerable<T>(source);
+	public static async IAsyncEnumerable<T> Create<T>(Task<IEnumerable<T>> source)
+	{
+		foreach (var item in await source)
+			yield return item;
+	}
 
-	public static IAsyncEnumerable<T> Create<T>(Task<IAsyncEnumerable<T>> source)
-		=> new TaskAsyncEnumerableToAsyncEnumerable<T>(source);
+	public static async IAsyncEnumerable<T> Create<T>(Task<IOrderedEnumerable<T>> source)
+	{
+		foreach (var item in await source)
+			yield return item;
+	}
+
+	public static async IAsyncEnumerable<T> Create<T>(Task<IAsyncEnumerable<T>> source)
+	{
+		await foreach (var item in await source)
+			yield return item;
+	}
 
 	public static IAsyncEnumerable<T> Create<T>(Func<IEnumerable<T>> source)
-		=> new FuncAsyncEnumerableToAsyncEnumerable<Func<IEnumerable<T>>, T>(source, o => new EnumerableToAsyncEnumerable<T>(o.Invoke()));
+		=> FuncAsyncEnumerableToAsyncEnumerable.Create(source, o => Create(o.Invoke()));
 
 	public static IAsyncEnumerable<T> Create<T>(Func<Task<IEnumerable<T>>> source)
-		=> new FuncAsyncEnumerableToAsyncEnumerable<Func<Task<IEnumerable<T>>>, T>(source, o => new TaskEnumerableToAsyncEnumerable<T>(o.Invoke()));
+		=> FuncAsyncEnumerableToAsyncEnumerable.Create(source, o => Create(o.Invoke()));
+
+	public static IAsyncEnumerable<T> Create<T>(Func<Task<IOrderedEnumerable<T>>> source)
+		=> FuncAsyncEnumerableToAsyncEnumerable.Create(source, o => Create(o.Invoke()));
+
+	public static IAsyncEnumerable<T> Create<T>(Func<IAsyncEnumerable<T>> source)
+	=> FuncAsyncEnumerableToAsyncEnumerable.Create(source, o => o.Invoke());
 
 	public static IAsyncEnumerable<T> Create<T>(Func<Task<IAsyncEnumerable<T>>> source)
-		=> new FuncAsyncEnumerableToAsyncEnumerable<Func<Task<IAsyncEnumerable<T>>>, T>(source, o => new TaskAsyncEnumerableToAsyncEnumerable<T>(o.Invoke()));
+		=> FuncAsyncEnumerableToAsyncEnumerable.Create(source, o => Create(o.Invoke()));
 
 	public static IAsyncEnumerable<T> Repeat<T>(T element, int count)
 		=> Create(Enumerable.Repeat(element, count));

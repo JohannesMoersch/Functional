@@ -1,5 +1,11 @@
 ﻿namespace Functional;
 
+internal static class FuncAsyncEnumerableToAsyncEnumerable
+{
+	public static IAsyncEnumerable<TSource> Create<TValue, TSource>(TValue value, Func<TValue, IAsyncEnumerable<TSource>> sourceFactory)
+		=> new FuncAsyncEnumerableToAsyncEnumerable<TValue, TSource>(value, sourceFactory);
+}
+
 internal class FuncAsyncEnumerableToAsyncEnumerable<TValue, TSource> : IAsyncEnumerable<TSource>
 {
 	private readonly TValue _value;
