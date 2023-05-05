@@ -1,61 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Functional;
 
-namespace Functional
+internal class BatchAsyncIterator<T> : IAsyncEnumerator<IReadOnlyList<T>>
 {
-	internal class BatchAsyncIterator<T> : IAsyncEnumerator<IReadOnlyList<T>>
-	{
-		public IReadOnlyList<T> Current { get; private set; }
+	public IReadOnlyList<T> Current { get; private set; }
 
-		private readonly IAsyncEnumerator<T> _enumerator;
-		private readonly int _batchSize;
+	private readonly IAsyncEnumerator<T> _enumerator;
+	private readonly int _batchSize;
+	private readonly CancellationToken _cancellationToken;
 
-		private bool _ended;
+	private bool _ended;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public BatchAsyncIterator(IAsyncEnumerator<T> enumerator, int batchSize)
-		{
-			_enumerator = enumerator ?? throw new ArgumentNullException(nameof(enumerator));
-			_batchSize = batchSize;
-
-			if (_batchSize <= 0)
-				throw new ArgumentOutOfRangeException(nameof(batchSize), "Value must be greater than zero.");
-		}
+	public BatchAsyncIterator(IAsyncEnumerable<T> enumerator, int batchSize, CancellationToken cancellationToken)
+	{
+		_enumerator = (enumerator ?? throw new ArgumentNullException(nameof(enumerator))).GetAsyncEnumerator();
+		_batchSize = batchSize;
+		_cancellationToken = cancellationToken;
+		if (_batchSize <= 0)
+			throw new ArgumentOutOfRangeException(nameof(batchSize), "Value must be greater than zero.");
+	}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-		public ValueTask DisposeAsync()
-			=> _enumerator.DisposeAsync();
+	public ValueTask DisposeAsync()
+		=> _enumerator.DisposeAsync();
 
-		public async ValueTask<bool> MoveNextAsync()
+	public async ValueTask<bool> MoveNextAsync()
+	{
+		_cancellationToken.ThrowIfCancellationRequested();
+
+		if (_ended)
+			return false;
+
+		var batch = new T[_batchSize];
+		int count = 0;
+		while (count < _batchSize && await _enumerator.MoveNextAsync())
 		{
-			if (_ended)
-				return false;
+			_cancellationToken.ThrowIfCancellationRequested();
 
-			var batch = new T[_batchSize];
-			int count = 0;
-			while (count < _batchSize && await _enumerator.MoveNextAsync())
-				batch[count++] = _enumerator.Current;
+			batch[count++] = _enumerator.Current;
+		}
 
-			if (count > 0)
+		_cancellationToken.ThrowIfCancellationRequested();
+
+		if (count > 0)
+		{
+			if (count < _batchSize)
 			{
-				if (count < _batchSize)
-				{
-					var temp = new T[count];
-					Array.Copy(batch, temp, count);
-					batch = temp;
-				}
-
-				Current = batch;
-				return true;
+				var temp = new T[count];
+				Array.Copy(batch, temp, count);
+				batch = temp;
 			}
 
-			_ended = true;
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-			Current = default;
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-			return false;
+			Current = batch;
+			return true;
 		}
+
+		_ended = true;
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		Current = default;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+		return false;
 	}
 }

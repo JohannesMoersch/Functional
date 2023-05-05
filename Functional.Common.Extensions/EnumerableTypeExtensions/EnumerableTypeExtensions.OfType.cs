@@ -13,5 +13,5 @@ public static partial class EnumerableTypeExtensions
 		=> (await source).OfType<TResult>();
 
 	public static IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
-		=> AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<object, TResult>(source, data => data.current is TResult result ? (BasicIteratorContinuationType.Take, result) : (BasicIteratorContinuationType.Skip, default)));
+		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => s is TResult result ? (BasicIteratorContinuationType.Take, result) : (BasicIteratorContinuationType.Skip, default), t));
 }

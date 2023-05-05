@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace Functional;
 
-namespace Functional
+internal static class AsyncIteratorEnumerable
 {
-	internal class AsyncIteratorEnumerable<T> : IAsyncEnumerable<T>
-    {
-		private readonly Func<IAsyncEnumerator<T>> _iteratorFactory;
+	public static IAsyncEnumerable<TSource> Create<TValue, TSource>(TValue value, Func<TValue, CancellationToken, IAsyncEnumerator<TSource>> enumeratorFactory)
+		=> new AsyncIteratorEnumerable<TValue, TSource>(value, enumeratorFactory);
+}
 
-		public AsyncIteratorEnumerable(Func<IAsyncEnumerator<T>> iteratorFactory)
-			=> _iteratorFactory = iteratorFactory;
+internal class AsyncIteratorEnumerable<TValue, TSource> : IAsyncEnumerable<TSource>
+{
+	private readonly TValue _value;
+	private readonly Func<TValue, CancellationToken, IAsyncEnumerator<TSource>> _iteratorFactory;
 
-		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-			=> _iteratorFactory.Invoke();
-	}
-
-	internal static class AsyncIteratorEnumerable
+	public AsyncIteratorEnumerable(TValue value, Func<TValue, CancellationToken, IAsyncEnumerator<TSource>> iteratorFactory)
 	{
-		public static IAsyncEnumerable<T> Create<T>(Func<IAsyncEnumerator<T>> enumeratorFactory)
-			=> new AsyncIteratorEnumerable<T>(enumeratorFactory);
+		_value = value;
+		_iteratorFactory = iteratorFactory;
 	}
+
+	public IAsyncEnumerator<TSource> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+		=> _iteratorFactory.Invoke(_value, cancellationToken);
 }

@@ -1,28 +1,26 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+namespace Functional;
 
-namespace Functional
+internal static class IteratorEnumerable
 {
-	internal class IteratorEnumerable<T> : IEnumerable<T>
+	public static IEnumerable<TSource> Create<TValue, TSource>(TValue value, Func<TValue, IEnumerator<TSource>> enumeratorFactory)
+		=> new IteratorEnumerable<TValue, TSource>(value, enumeratorFactory);
+}
+
+internal class IteratorEnumerable<TValue, TSource> : IEnumerable<TSource>
+{
+	private readonly TValue _value;
+	private readonly Func<TValue, IEnumerator<TSource>> _iteratorFactory;
+
+	public IteratorEnumerable(TValue value, Func<TValue, IEnumerator<TSource>> iteratorFactory)
 	{
-		private readonly Func<IEnumerator<T>> _iteratorFactory;
-
-		public IteratorEnumerable(Func<IEnumerator<T>> iteratorFactory)
-			=> _iteratorFactory = iteratorFactory;
-
-		public IEnumerator<T> GetEnumerator()
-			=> _iteratorFactory.Invoke();
-
-		IEnumerator IEnumerable.GetEnumerator()
-			=> _iteratorFactory.Invoke();
+		_value = value;
+		_iteratorFactory = iteratorFactory;
 	}
 
-	internal static class IteratorEnumerable
-	{
-		public static IEnumerable<T> Create<T>(Func<IEnumerator<T>> enumeratorFactory)
-			=> new IteratorEnumerable<T>(enumeratorFactory);
-	}
+	public IEnumerator<TSource> GetEnumerator()
+		=> _iteratorFactory.Invoke(_value);
+
+	IEnumerator IEnumerable.GetEnumerator()
+		=> GetEnumerator();
 }

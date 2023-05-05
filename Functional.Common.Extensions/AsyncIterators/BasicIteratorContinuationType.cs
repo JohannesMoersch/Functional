@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Functional;
 
-namespace Functional
+internal enum BasicIteratorContinuationType : byte
 {
-    internal enum BasicIteratorContinuationType
-    {
-		Take,
-		Skip,
-		Stop
-    }
+	Start,
+	Take,
+	Skip,
+	Stop
 }

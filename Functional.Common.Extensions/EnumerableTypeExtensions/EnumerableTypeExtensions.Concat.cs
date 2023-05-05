@@ -12,7 +12,7 @@ public static partial class EnumerableTypeExtensions
 		=> first.Concat(await second);
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first.AsAsyncEnumerable(), second));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first.AsAsyncEnumerable(), o.second, t));
 
 	public static async Task<IEnumerable<TSource>> Concat<TSource>(this Task<IEnumerable<TSource>> first, IEnumerable<TSource> second)
 		=> (await first).Concat(second);
@@ -24,7 +24,7 @@ public static partial class EnumerableTypeExtensions
 		=> (await first).Concat(await second);
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this Task<IEnumerable<TSource>> first, IAsyncEnumerable<TSource> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first.AsAsyncEnumerable(), second));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first.AsAsyncEnumerable(), o.second, t));
 
 	public static async Task<IEnumerable<TSource>> Concat<TSource>(this Task<IOrderedEnumerable<TSource>> first, IEnumerable<TSource> second)
 		=> (await first).Concat(second);
@@ -36,17 +36,17 @@ public static partial class EnumerableTypeExtensions
 		=> (await first).Concat(await second);
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this Task<IOrderedEnumerable<TSource>> first, IAsyncEnumerable<TSource> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first.AsAsyncEnumerable(), second));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first.AsAsyncEnumerable(), o.second, t));
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first, second.AsAsyncEnumerable()));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first, o.second.AsAsyncEnumerable(), t));
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, Task<IEnumerable<TSource>> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first, second.AsAsyncEnumerable()));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first, o.second.AsAsyncEnumerable(), t));
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first, second.AsAsyncEnumerable()));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first, o.second.AsAsyncEnumerable(), t));
 
 	public static IAsyncEnumerable<TSource> Concat<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
-		=> AsyncIteratorEnumerable.Create(() => new ConcatAsyncIterator<TSource>(first, second));
+		=> AsyncIteratorEnumerable.Create((first, second), static (o, t) => new ConcatAsyncIterator<TSource>(o.first, o.second, t));
 }

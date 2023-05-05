@@ -1,50 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Functional;
 
-namespace Functional
+internal static class BasicAsyncIterator
 {
-	internal class BasicAsyncIterator<TSource, TResult> : IAsyncEnumerator<TResult>
+	public enum State : byte
 	{
-		private readonly IAsyncEnumerator<TSource> _enumerator;
-		private readonly Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult? current)> _moveNext;
+		Pending,
+		Started,
+		Stopped
+	}
 
-		private int _count;
+	public enum ContinuationType : byte
+	{
+		Start,
+		Take,
+		Skip,
+		Stop
+	}
 
-		public TResult Current { get; private set; }
+	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+		=> new BasicAsyncIterator<TSource, TResult, TContext>(source, context, State.Started, onNext, cancellationToken);
+
+	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, State initialState, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+		=> new BasicAsyncIterator<TSource, TResult, TContext>(source, context, initialState, onNext, cancellationToken);
+}
+
+internal class BasicAsyncIterator<TSource, TResult, TContext> : IAsyncEnumerator<TResult>
+{
+	private readonly IAsyncEnumerator<TSource> _enumerator;
+	private readonly TContext _context;
+	private readonly Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> _moveNext;
+	private readonly CancellationToken _cancellationToken;
+
+	private int _count;
+	private BasicAsyncIterator.State _state;
+
+	public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public BasicAsyncIterator(IAsyncEnumerable<TSource> source, Func<(TSource current, int index), (BasicIteratorContinuationType type, TResult? current)> onNext)
-		{
-			_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
-			_moveNext = onNext ?? throw new ArgumentNullException(nameof(onNext));
-		}
+	public BasicAsyncIterator(IAsyncEnumerable<TSource> source, TContext context, BasicAsyncIterator.State initialState, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+	{
+		_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
+		_context = context;
+		_state = initialState;
+		_moveNext = onNext ?? throw new ArgumentNullException(nameof(onNext));
+		_cancellationToken = cancellationToken;
+	}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-		public ValueTask DisposeAsync()
-			=> _enumerator.DisposeAsync();
+	public ValueTask DisposeAsync()
+		=> _enumerator.DisposeAsync();
 
-		public async ValueTask<bool> MoveNextAsync()
+	public async ValueTask<bool> MoveNextAsync()
+	{
+		_cancellationToken.ThrowIfCancellationRequested();
+
+		if (_state == BasicAsyncIterator.State.Stopped)
+			return false;
+
+		while (await _enumerator.MoveNextAsync())
 		{
-			while (await _enumerator.MoveNextAsync())
-			{
-				var (type, current) = _moveNext.Invoke((_enumerator.Current, _count++));
+			_cancellationToken.ThrowIfCancellationRequested();
+
+			var (type, current) = _moveNext.Invoke(_enumerator.Current, _count++, _context);
 
 #pragma warning disable CS8601 // Possible null reference assignment.
-				switch (type)
-				{
-					case BasicIteratorContinuationType.Take:
+			switch (type)
+			{
+				case BasicIteratorContinuationType.Start:
+					_state = BasicAsyncIterator.State.Started;
+					Current = current;
+					return true;
+				case BasicIteratorContinuationType.Take:
+					if (_state == BasicAsyncIterator.State.Started)
+					{
 						Current = current;
 						return true;
-					case BasicIteratorContinuationType.Skip:
-						continue;
-				}
-#pragma warning restore CS8601 // Possible null reference assignment.
-				break;
+					}
+					continue;
+				case BasicIteratorContinuationType.Skip:
+					continue;
+				case BasicIteratorContinuationType.Stop:
+					_state = BasicAsyncIterator.State.Stopped;
+					Current = default;
+					return false;
 			}
-
-			return false;
+#pragma warning restore CS8601 // Possible null reference assignment.
+			break;
 		}
+		
+		_cancellationToken.ThrowIfCancellationRequested();
+
+		return false;
 	}
 }

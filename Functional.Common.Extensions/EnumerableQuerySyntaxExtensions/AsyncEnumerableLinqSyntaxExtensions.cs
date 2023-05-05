@@ -30,96 +30,96 @@ namespace Functional
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source.AsAsyncEnumerable(), (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<IEnumerable<TCollection>>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o).AsAsyncEnumerable(), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static IAsyncEnumerable<TResult> SelectMany<TSource, TCollection, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, Task<TResult>> resultSelector)
 			=> collectionSelector == null ? throw new ArgumentNullException(nameof(collectionSelector))
 				: resultSelector == null ? throw new ArgumentNullException(nameof(resultSelector))
-				: AsyncIteratorEnumerable.Create(() => new SelectManyTaskAsyncIterator<TSource, TCollection, TResult>(source, (o, _) => collectionSelector.Invoke(o), resultSelector));
+				: AsyncIteratorEnumerable.Create((source, collectionSelector, resultSelector), static (o, t) => SelectManyTaskAsyncIterator.Create(o.source.AsAsyncEnumerable(), o, static (s, _, context) => context.collectionSelector.Invoke(s).AsAsyncEnumerable(), static (s, c, context) => context.resultSelector.Invoke(s, c), t));
 	}
 }

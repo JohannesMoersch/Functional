@@ -12,5 +12,5 @@ public static partial class EnumerableTypeExtensions
 		=> (await source).Append(element);
 
 	public static IAsyncEnumerable<TSource> Append<TSource>(this IAsyncEnumerable<TSource> source, TSource element)
-		=> AsyncIteratorEnumerable.Create(() => new AppendAsyncIterator<TSource>(source, element));
+		=> AsyncIteratorEnumerable.Create((source, element), static (o, t) => new AppendAsyncIterator<TSource>(o.source, o.element, t));
 }

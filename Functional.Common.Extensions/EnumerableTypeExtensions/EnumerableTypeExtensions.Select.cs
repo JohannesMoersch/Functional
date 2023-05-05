@@ -20,9 +20,9 @@ public static partial class EnumerableTypeExtensions
 
 	public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> selector)
 		=> selector == null ? throw new ArgumentNullException(nameof(selector))
-			: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current))));
+			: AsyncIteratorEnumerable.Create((source, selector), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, _, context) => (BasicIteratorContinuationType.Take, context.selector.Invoke(s)), t));
 
 	public static IAsyncEnumerable<TResult> Select<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, int, TResult> selector)
 		=> selector == null ? throw new ArgumentNullException(nameof(selector))
-			: AsyncIteratorEnumerable.Create(() => new BasicAsyncIterator<TSource, TResult>(source, data => (BasicIteratorContinuationType.Take, selector.Invoke(data.current, data.index))));
+			: AsyncIteratorEnumerable.Create((source, selector), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => (BasicIteratorContinuationType.Take, context.selector.Invoke(s, i)), t));
 }

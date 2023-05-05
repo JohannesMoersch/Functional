@@ -12,10 +12,10 @@ public static partial class EnumerableTypeExtensions
 		=> (await source).DefaultIfEmpty(defaultValue);
 
 	public static IAsyncEnumerable<TSource?> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source)
-		=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyAsyncIterator<TSource?>(source, default));
+		=> AsyncIteratorEnumerable.Create(source, static (o, t) => new DefaultIfEmptyAsyncIterator<TSource?>(o, default, t));
 
 	public static IAsyncEnumerable<TSource> DefaultIfEmpty<TSource>(this IAsyncEnumerable<TSource> source, TSource defaultValue)
-		=> AsyncIteratorEnumerable.Create(() => new DefaultIfEmptyAsyncIterator<TSource>(source, defaultValue));
+		=> AsyncIteratorEnumerable.Create((source, defaultValue), static (o, t) => new DefaultIfEmptyAsyncIterator<TSource>(o.source, o.defaultValue, t));
 
 	public static async Task<IEnumerable<TSource?>> DefaultIfEmpty<TSource>(this Task<IOrderedEnumerable<TSource>> source)
 		=> (await source).DefaultIfEmpty();
