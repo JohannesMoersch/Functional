@@ -71,5 +71,61 @@ namespace Functional
 
 		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this Task<StringCollectionAssertions> source, IEnumerable<string> expectations)
 		   => (await source).BeEquivalentTo(expectations);
+
+		public static async Task<ObjectAssertions> Should<T>(this ValueTask<T> source)
+		=> (await source).Should();
+
+		public static async Task<AndConstraint<ObjectAssertions>> Be(this ValueTask<ObjectAssertions> source, object expected)
+			=> (await source).Be(expected);
+
+		public static async Task<AndConstraint<ObjectAssertions>> BeOfType<T>(this ValueTask<ObjectAssertions> source)
+			=> (await source).BeOfType<T>();
+
+		public static async Task<AndConstraint<ObjectAssertions>> BeNull(this ValueTask<ObjectAssertions> source)
+		=> (await source).BeNull();
+
+		public static async Task<StringAssertions> Should(this ValueTask<string> source)
+			=> (await source).Should();
+
+		public static async Task<AndConstraint<StringAssertions>> Be(this ValueTask<StringAssertions> source, string expected)
+			=> (await source).Be(expected);
+
+		public static async Task<BooleanAssertions> Should(this ValueTask<bool> source)
+			=> (await source).Should();
+
+		public static async Task<AndConstraint<BooleanAssertions>> BeTrue(this ValueTask<BooleanAssertions> source)
+			=> (await source).BeTrue();
+
+		public static async Task<AndConstraint<BooleanAssertions>> BeFalse(this ValueTask<BooleanAssertions> source)
+			=> (await source).BeFalse();
+
+		public static async Task<GenericCollectionAssertions<T>> Should<T>(this ValueTask<IEnumerable<T>> source)
+			=> (await source).Should();
+
+		public static async Task<GenericCollectionAssertions<T>> Should<T>(this ValueTask<T[]> source)
+		   => (await source).Should();
+
+		public static async Task<GenericCollectionAssertions<T>> Should<T>(this ValueTask<List<T>> source)
+		   => (await source).Should();
+
+		public static async Task<AndConstraint<GenericCollectionAssertions<T>>> BeEquivalentTo<T>(this ValueTask<GenericCollectionAssertions<T>> source, params T[] expectations)
+		   => (await source).BeEquivalentTo(expectations);
+
+		public static async Task<AndConstraint<GenericCollectionAssertions<T>>> BeEquivalentTo<T>(this ValueTask<GenericCollectionAssertions<T>> source, IEnumerable<T> expectations)
+		   => (await source).BeEquivalentTo(expectations);
+
+		public static async Task<StringCollectionAssertions> Should<T>(this ValueTask<IEnumerable<string>> source)
+		   => (await source).Should();
+
+		public static async Task<StringCollectionAssertions> Should<T>(this ValueTask<string[]> source)
+		   => (await source).Should();
+		public static async Task<StringCollectionAssertions> Should<T>(this ValueTask<List<string>> source)
+		   => (await source).Should();
+
+		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, params string[] expectations)
+		   => (await source).BeEquivalentTo(expectations);
+
+		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, IEnumerable<string> expectations)
+		   => (await source).BeEquivalentTo(expectations);
 	}
 }
