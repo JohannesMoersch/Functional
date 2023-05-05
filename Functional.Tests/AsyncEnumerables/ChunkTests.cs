@@ -6,23 +6,23 @@ using Xunit;
 
 namespace Functional.Tests.AsyncEnumerables
 {
-	public class BatchTests
+	public class ChunkTests
 	{
 		[Fact]
-		public Task FullBatchesCorrectly()
+		public Task FullChunksCorrectly()
 			=> Task
 				.FromResult(new[] { 1, 2, 3, 4, 5, 6 })
 				.AsAsyncEnumerable()
-				.Batch(2)
+				.Chunk(2)
 				.Should()
 				.BeEquivalentTo(new[] { new[] { 1, 2 }, new[] { 3, 4 }, new[] { 5, 6 } });
 
 		[Fact]
-		public Task PartialBatchesCorrectly()
+		public Task PartialChunksCorrectly()
 			=> Task
 				.FromResult(new[] { 1, 2, 3, 4, 5 })
 				.AsAsyncEnumerable()
-				.Batch(2)
+				.Chunk(2)
 				.Should()
 				.BeEquivalentTo(new[] { new[] { 1, 2 }, new[] { 3, 4 }, new[] { 5 } });
 	}
