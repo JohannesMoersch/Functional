@@ -20,9 +20,9 @@ public static partial class EnumerableTypeExtensions
 
 	public static IAsyncEnumerable<TSource> TakeWhileAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
 		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, static async (s, _, context) => await context.predicate.Invoke(s) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Stop, default), t));
+			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, static async (s, _, context) => await context.predicate.Invoke(s) ? (BasicTaskAsyncIterator.ContinuationType.Take, s) : (BasicTaskAsyncIterator.ContinuationType.Stop, default), t));
 
 	public static IAsyncEnumerable<TSource> TakeWhileAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<bool>> predicate)
 		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, static async (s, i, context) => await context.predicate.Invoke(s, i) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Stop, default), t));
+			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, static async (s, i, context) => await context.predicate.Invoke(s, i) ? (BasicTaskAsyncIterator.ContinuationType.Take, s) : (BasicTaskAsyncIterator.ContinuationType.Stop, default), t));
 }

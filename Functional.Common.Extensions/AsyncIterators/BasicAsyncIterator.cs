@@ -17,10 +17,10 @@ internal static class BasicAsyncIterator
 		Stop
 	}
 
-	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, Func<TSource, int, TContext, (ContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
 		=> new BasicAsyncIterator<TSource, TResult, TContext>(source, context, State.Started, onNext, cancellationToken);
 
-	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, State initialState, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+	public static IAsyncEnumerator<TResult> Create<TSource, TResult, TContext>(IAsyncEnumerable<TSource> source, TContext context, State initialState, Func<TSource, int, TContext, (ContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
 		=> new BasicAsyncIterator<TSource, TResult, TContext>(source, context, initialState, onNext, cancellationToken);
 }
 
@@ -28,7 +28,7 @@ internal class BasicAsyncIterator<TSource, TResult, TContext> : IAsyncEnumerator
 {
 	private readonly IAsyncEnumerator<TSource> _enumerator;
 	private readonly TContext _context;
-	private readonly Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> _moveNext;
+	private readonly Func<TSource, int, TContext, (BasicAsyncIterator.ContinuationType type, TResult? current)> _moveNext;
 	private readonly CancellationToken _cancellationToken;
 
 	private int _count;
@@ -37,7 +37,7 @@ internal class BasicAsyncIterator<TSource, TResult, TContext> : IAsyncEnumerator
 	public TResult Current { get; private set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	public BasicAsyncIterator(IAsyncEnumerable<TSource> source, TContext context, BasicAsyncIterator.State initialState, Func<TSource, int, TContext, (BasicIteratorContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
+	public BasicAsyncIterator(IAsyncEnumerable<TSource> source, TContext context, BasicAsyncIterator.State initialState, Func<TSource, int, TContext, (BasicAsyncIterator.ContinuationType type, TResult? current)> onNext, CancellationToken cancellationToken)
 	{
 		_enumerator = (source ?? throw new ArgumentNullException(nameof(source))).GetAsyncEnumerator();
 		_context = context;
@@ -66,20 +66,20 @@ internal class BasicAsyncIterator<TSource, TResult, TContext> : IAsyncEnumerator
 #pragma warning disable CS8601 // Possible null reference assignment.
 			switch (type)
 			{
-				case BasicIteratorContinuationType.Start:
+				case BasicAsyncIterator.ContinuationType.Start:
 					_state = BasicAsyncIterator.State.Started;
 					Current = current;
 					return true;
-				case BasicIteratorContinuationType.Take:
+				case BasicAsyncIterator.ContinuationType.Take:
 					if (_state == BasicAsyncIterator.State.Started)
 					{
 						Current = current;
 						return true;
 					}
 					continue;
-				case BasicIteratorContinuationType.Skip:
+				case BasicAsyncIterator.ContinuationType.Skip:
 					continue;
-				case BasicIteratorContinuationType.Stop:
+				case BasicAsyncIterator.ContinuationType.Stop:
 					_state = BasicAsyncIterator.State.Stopped;
 					Current = default;
 					return false;

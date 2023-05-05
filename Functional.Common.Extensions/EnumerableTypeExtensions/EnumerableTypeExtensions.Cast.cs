@@ -16,10 +16,10 @@ public static partial class EnumerableTypeExtensions
 		=> (await source).Cast<TResult>();
 
 	public static IAsyncEnumerable<TResult> Cast<TResult>(this IAsyncEnumerable<object> source)
-		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => (BasicIteratorContinuationType.Take, (TResult)s), t));
+		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => (BasicAsyncIterator.ContinuationType.Take, (TResult)s), t));
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 	public static IAsyncEnumerable<TResult> Cast<TSource, TResult>(this IAsyncEnumerable<TSource> source)
-		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => (BasicIteratorContinuationType.Take, (TResult)(object)s), t));
+		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => (BasicAsyncIterator.ContinuationType.Take, (TResult)(object)s), t));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 }

@@ -23,7 +23,7 @@ public static partial class EnumerableTypeExtensions
 		if (predicate == null)
 			throw new ArgumentNullException(nameof(predicate));
 
-		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, _, context) => context.predicate.Invoke(s) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Start, s), t));
+		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, _, context) => context.predicate.Invoke(s) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Start, s), t));
 	}
 
 	public static IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
@@ -31,6 +31,6 @@ public static partial class EnumerableTypeExtensions
 		if (predicate == null)
 			throw new ArgumentNullException(nameof(predicate));
 
-		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Start, s), t));
+		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Start, s), t));
 	}
 }

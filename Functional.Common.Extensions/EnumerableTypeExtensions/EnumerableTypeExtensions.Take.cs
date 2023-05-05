@@ -12,5 +12,5 @@ public static partial class EnumerableTypeExtensions
 		=> (await source).Take(count);
 
 	public static IAsyncEnumerable<TSource> Take<TSource>(this IAsyncEnumerable<TSource> source, int count)
-		=> AsyncIteratorEnumerable.Create((source, count), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => i < context.count ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Stop, default), t));
+		=> AsyncIteratorEnumerable.Create((source, count), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => i < context.count ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Stop, default), t));
 }

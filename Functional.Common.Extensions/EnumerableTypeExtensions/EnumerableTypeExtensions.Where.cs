@@ -20,9 +20,9 @@ public static partial class EnumerableTypeExtensions
 
 	public static IAsyncEnumerable<TSource> Where<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
 		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Skip, default), t));
+			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Skip, default), t));
 
 	public static IAsyncEnumerable<TSource> Where<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, _, context) => context.predicate.Invoke(s) ? (BasicIteratorContinuationType.Take, s) : (BasicIteratorContinuationType.Skip, default), t));
+			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, _, context) => context.predicate.Invoke(s) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Skip, default), t));
 }
