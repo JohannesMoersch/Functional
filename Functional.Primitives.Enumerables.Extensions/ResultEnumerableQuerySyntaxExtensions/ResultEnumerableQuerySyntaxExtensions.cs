@@ -406,21 +406,21 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TFailure : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
 		where TFailure : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IAsyncResultEnumerable<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(this Task<Result<TSuccess, TFailure>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
 		where TFailure : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncResultEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IResultEnumerable<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this IResultEnumerable<TSuccess, TFailure> source, Func<TSuccess, TResult> selector)

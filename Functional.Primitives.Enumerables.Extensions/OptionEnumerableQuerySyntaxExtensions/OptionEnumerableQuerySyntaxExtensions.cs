@@ -386,19 +386,19 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 	public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, IEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, Task<IEnumerable<TBind>>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IAsyncOptionEnumerable<TResult> SelectMany<TSuccess, TBind, TResult>(this Task<Option<TSuccess>> source, Func<TSuccess, IAsyncEnumerable<TBind>> bind, Func<TSuccess, TBind, TResult> resultSelector)
 		where TSuccess : notnull
 		where TResult : notnull
-		=> AsyncEnumerable.Repeat(source, 1).AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
+		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static IOptionEnumerable<TResult> Select<TSuccess, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, TResult> selector)
