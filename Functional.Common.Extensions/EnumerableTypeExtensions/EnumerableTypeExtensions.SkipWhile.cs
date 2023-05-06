@@ -18,19 +18,28 @@ public static partial class EnumerableTypeExtensions
 	public static async Task<IEnumerable<TSource>> SkipWhile<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, bool> predicate)
 		=> (await source).SkipWhile(predicate);
 
-	public static IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+	public static async IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
 	{
-		if (predicate == null)
-			throw new ArgumentNullException(nameof(predicate));
+		if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, _, context) => context.predicate.Invoke(s) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Start, s), t));
+		bool skipping = true;
+		await foreach (var item in source)
+		{
+			if (!skipping || !(skipping = predicate.Invoke(item)))
+				yield return item;
+		}
 	}
 
-	public static IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
+	public static async IAsyncEnumerable<TSource> SkipWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
 	{
-		if (predicate == null)
-			throw new ArgumentNullException(nameof(predicate));
+		if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-		return AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, BasicAsyncIterator.State.Pending, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Start, s), t));
+		bool skipping = true;
+		int index = 0;
+		await foreach (var item in source)
+		{
+			if (!skipping || !(skipping = predicate.Invoke(item, index++)))
+				yield return item;
+		}
 	}
 }

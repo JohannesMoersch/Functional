@@ -12,6 +12,12 @@ public static partial class EnumerableTypeExtensions
 	public static async Task<IEnumerable<TResult>> OfType<TSource, TResult>(this Task<IEnumerable<TSource>> source)
 		=> (await source).OfType<TResult>();
 
-	public static IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
-		=> AsyncIteratorEnumerable.Create(source, static (o, t) => BasicAsyncIterator.Create(o, false, static (s, _, _) => s is TResult result ? (BasicAsyncIterator.ContinuationType.Take, result) : (BasicAsyncIterator.ContinuationType.Skip, default), t));
+	public static async IAsyncEnumerable<TResult> OfType<TResult>(this IAsyncEnumerable<object> source)
+	{
+		await foreach (var item in source)
+		{
+			if (item is TResult result)
+				yield return result;
+		}
+	}
 }

@@ -18,11 +18,30 @@ public static partial class EnumerableTypeExtensions
 	public static async Task<IEnumerable<TSource>> TakeWhile<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, bool> predicate)
 		=> (await source).TakeWhile(predicate);
 
-	public static IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
-		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, _, context) => context.predicate.Invoke(s) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Stop, default), t));
+	public static async IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+	{
+		if (predicate == null) throw new ArgumentNullException(nameof(predicate));
 
-	public static IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
-		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicAsyncIterator.Create(o.source, o, static (s, i, context) => context.predicate.Invoke(s, i) ? (BasicAsyncIterator.ContinuationType.Take, s) : (BasicAsyncIterator.ContinuationType.Stop, default), t));
+		await foreach (var item in source)
+		{
+			if (!predicate.Invoke(item))
+				yield break;
+
+			yield return item;
+		}
+	}
+
+	public static async IAsyncEnumerable<TSource> TakeWhile<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, bool> predicate)
+	{
+		if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+		int index = 0;
+		await foreach (var item in source)
+		{
+			if (!predicate.Invoke(item, index++))
+				yield break;
+
+			yield return item;
+		}
+	}
 }
