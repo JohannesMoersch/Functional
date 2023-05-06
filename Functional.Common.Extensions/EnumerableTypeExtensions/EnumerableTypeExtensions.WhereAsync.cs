@@ -6,23 +6,34 @@ namespace Functional;
 
 public static partial class EnumerableTypeExtensions
 {
-	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, int, Task<bool>> predicate)
-		=> source.AsAsyncEnumerable().WhereAsync(predicate);
-
-	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task<bool>> predicate)
-		=> source.AsAsyncEnumerable().WhereAsync(predicate);
-
 	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
+		=> source.AsAsyncEnumerable().WhereAsync(predicate);
+
+	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, int, Task<bool>> predicate)
 		=> source.AsAsyncEnumerable().WhereAsync(predicate);
 
 	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 		=> source.AsAsyncEnumerable().WhereAsync(predicate);
 
-	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<bool>> predicate)
-		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, async static (s, i, context) => await context.predicate.Invoke(s, i) ? (BasicTaskAsyncIterator.ContinuationType.Take, s) : (BasicTaskAsyncIterator.ContinuationType.Skip, default), t));
+	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int, Task<bool>> predicate)
+		=> source.AsAsyncEnumerable().WhereAsync(predicate);
 
-	public static IAsyncEnumerable<TSource> WhereAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
-		=> predicate == null ? throw new ArgumentNullException(nameof(predicate))
-			: AsyncIteratorEnumerable.Create((source, predicate), static (o, t) => BasicTaskAsyncIterator.Create(o.source, o, async static (s, _, context) => await context.predicate.Invoke(s) ? (BasicTaskAsyncIterator.ContinuationType.Take, s) : (BasicTaskAsyncIterator.ContinuationType.Skip, default), t));
+	public static async IAsyncEnumerable<TSource> WhereAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
+	{
+		await foreach (var item in source)
+		{
+			if (await predicate.Invoke(item))
+				yield return item;
+		}
+	}
+
+	public static async IAsyncEnumerable<TSource> WhereAsync<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int, Task<bool>> predicate)
+	{
+		int index = 0;
+		await foreach (var item in source)
+		{
+			if (await predicate.Invoke(item, index++))
+				yield return item;
+		}
+	}
 }
