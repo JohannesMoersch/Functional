@@ -1,88 +1,123 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace Functional;
 
-namespace Functional
+internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
 {
-	internal class ReplayableAsyncEnumerableData<T> : IAsyncDisposable
+	private readonly IAsyncEnumerator<T> _enumerator;
+
+	private volatile int _count = 0;
+	private T[] _values = new T[4];
+	private int _accessCounter = 0;
+	private SemaphoreSlim? _semaphore;
+	private Exception? _exception;
+
+	public ReplayableAsyncEnumerable(IAsyncEnumerable<T> enumerable)
+		=> _enumerator = enumerable.GetAsyncEnumerator();
+
+	public async ValueTask<(bool isSet, T value)> TryGetValue(int index)
 	{
-		private readonly IAsyncEnumerator<T> _enumerator;
+		if (TryGetValueWithoutEnumeration(index, _count) is (bool, T) result)
+			return result;
 
-		private readonly List<T> _values = new List<T>();
+		if (Interlocked.Increment(ref _accessCounter) > 1)
+			await GetSemaphore().WaitAsync();
 
-		private bool _complete;
+		var localCount = _count;
 
-		public ReplayableAsyncEnumerableData(IAsyncEnumerator<T> enumerator)
-			=> _enumerator = enumerator;
-
-		public ValueTask DisposeAsync()
-			=> _enumerator.DisposeAsync();
-
-		public async Task<(bool hasValue, T? value)> TryGetValue(int index)
+		try
 		{
-			if (index < _values.Count)
-				return (true, _values[index]);
-
-			if (!_complete)
+			if (!IsComplete(localCount)) // Not Complete
 			{
-				if (await _enumerator.MoveNextAsync())
+				while (localCount <= index)
 				{
-					_values.Add(_enumerator.Current);
-					return (true, _enumerator.Current);
+					if (await MoveNext())
+					{
+						EnsureArrayHasCapacity(localCount);
+
+						_values[localCount] = _enumerator.Current;
+						++localCount;
+					}
+					else
+					{
+						localCount |= unchecked((int)0x80000000);
+						break;
+					}
 				}
-				else
-					_complete = true;
+
+				_count = localCount;
 			}
+		}
+		finally
+		{
+			if (Interlocked.Decrement(ref _accessCounter) > 0)
+				GetSemaphore().Release();
+		}
+
+		return TryGetValueWithoutEnumeration(index, localCount) ?? throw new Exception($"Unexpected failure occurred in {nameof(ReplayableAsyncEnumerable<T>)}.");
+	}
+
+	private (bool isSet, T value)? TryGetValueWithoutEnumeration(int index, int currentCount)
+	{
+		if (index < (currentCount & 0x7FFFFFFF))
+			return (true, _values[index]);
+
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+		if (IsComplete(currentCount))
+		{
+			if (_exception != null)
+				throw new AggregateException(_exception);
 
 			return (false, default);
 		}
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+
+		return null;
 	}
 
-	internal class ReplayableAsyncEnumerator<T> : IAsyncEnumerator<T>
+	private void EnsureArrayHasCapacity(int currentCount)
 	{
-		public T Current { get; private set; }
-
-		private readonly ReplayableAsyncEnumerableData<T> _data;
-
-		private int _index = 0;
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		public ReplayableAsyncEnumerator(ReplayableAsyncEnumerableData<T> data)
-			=> _data = data;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-		public ValueTask DisposeAsync()
-			=> _data.DisposeAsync();
-
-#pragma warning disable CS8601 // Possible null reference assignment.
-		public async ValueTask<bool> MoveNextAsync()
+		if (_values.Length == currentCount)
 		{
-			var value = await _data.TryGetValue(_index++);
-			if (_index >= 0 && value.hasValue)
-			{
-				Current = value.value;
-				return true;
-			}
+			var newCapacity = _values.Length * 2;
+			if (newCapacity > Array.MaxLength)
+				newCapacity = Array.MaxLength;
 
-			Current = default;
+			var newArray = new T[newCapacity];
+			Array.Copy(_values, newArray, _values.Length);
+			Volatile.Write(ref _values, newArray);
+		}
+	}
+
+	private async Task<bool> MoveNext()
+	{
+		try
+		{
+			return await _enumerator.MoveNextAsync();
+		}
+		catch (Exception ex)
+		{
+			_exception = ex;
 			return false;
 		}
-#pragma warning restore CS8601 // Possible null reference assignment.
-
-		public void Reset()
-			=> _index = 0;
 	}
 
-	internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
+	private SemaphoreSlim GetSemaphore()
 	{
-		private readonly ReplayableAsyncEnumerableData<T> _data;
+		if (_semaphore is SemaphoreSlim semaphore)
+			return semaphore;
 
-		public ReplayableAsyncEnumerable(IAsyncEnumerable<T> data)
-			=> _data = new ReplayableAsyncEnumerableData<T>(data.GetAsyncEnumerator());
+#pragma warning disable CS8603 // Possible null reference return.
+		return Interlocked.CompareExchange(ref _semaphore, null, new SemaphoreSlim(0));
+#pragma warning restore CS8603 // Possible null reference return.
+	}
 
-		public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-			=> new ReplayableAsyncEnumerator<T>(_data);
+	private static bool IsComplete(int count)
+		=> (count & 0x80000000) == 0x80000000;
+
+	public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+	{
+		int count = 0;
+		(bool isSet, T value) result;
+		while ((result = await TryGetValue(count++)).isSet)
+			yield return result.value;
 	}
 }

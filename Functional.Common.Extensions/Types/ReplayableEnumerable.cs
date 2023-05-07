@@ -1,6 +1,6 @@
 ﻿namespace Functional;
 
-internal class NewReplayableEnumerable<T> : IAsyncEnumerable<T>
+internal class ReplayableEnumerable<T> : IEnumerable<T>
 {
 	private readonly IEnumerator<T> _enumerator;
 
@@ -8,48 +8,95 @@ internal class NewReplayableEnumerable<T> : IAsyncEnumerable<T>
 	private T[] _values = new T[4];
 	private int _accessCounter = 0;
 	private SemaphoreSlim? _semaphore;
-	private bool _isComplete;
 	private Exception? _exception;
 
-	public NewReplayableEnumerable(IEnumerable<T> enumerable)
+	public ReplayableEnumerable(IEnumerable<T> enumerable)
 		=> _enumerator = enumerable.GetEnumerator();
 
-	public async ValueTask<(bool isSet, T value)> TryGetValue(int index)
+	public (bool isSet, T value) TryGetValue(int index)
 	{
-		if (index < _count)
-			return (true, _values[index]);
+		if (TryGetValueWithoutEnumeration(index, _count) is (bool, T) result)
+			return result;
 
 		if (Interlocked.Increment(ref _accessCounter) > 1)
-			await GetSemaphore().WaitAsync();
-		
+			GetSemaphore().Wait();
+
+		var localCount = _count;
+
 		try
 		{
-			while (_count < index)
+			if (!IsComplete(localCount)) // Not Complete
 			{
-				if (_enumerator.MoveNext())
+				while (localCount <= index)
 				{
-					if (_values.Length == _count)
+					if (MoveNext())
 					{
-						var newCapacity = _values.Length * 2;
-						if (newCapacity > Array.MaxLength)
-							newCapacity = Array.MaxLength;
-
-						var newArray = new T[newCapacity];
-						Array.Copy(_values, newArray, _values.Length);
-						Volatile.Write(ref _values, newArray);
+						EnsureArrayHasCapacity(localCount);
+							
+						_values[localCount] = _enumerator.Current;
+						++localCount;
 					}
-
-					_values[_count] = _enumerator.Current;
-					++_count;
+					else
+					{
+						localCount |= unchecked((int)0x80000000);
+						break;
+					}
 				}
-			}
 
-			// Handle complete, exception, and return
+				_count = localCount;
+			}
 		}
 		finally
 		{
 			if (Interlocked.Decrement(ref _accessCounter) > 0)
 				GetSemaphore().Release();
+		}
+
+		return TryGetValueWithoutEnumeration(index, localCount) ?? throw new Exception($"Unexpected failure occurred in {nameof(ReplayableEnumerable<T>)}.");
+	}
+
+	private (bool isSet, T value)? TryGetValueWithoutEnumeration(int index, int currentCount)
+	{
+		if (index < (currentCount & 0x7FFFFFFF))
+			return (true, _values[index]);
+
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+		if (IsComplete(currentCount))
+		{
+			if (_exception != null)
+				throw new AggregateException(_exception);
+
+			return (false, default);
+		}
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+
+		return null;
+	}
+
+	private void EnsureArrayHasCapacity(int currentCount)
+	{
+		if (_values.Length == currentCount)
+		{
+			var newCapacity = _values.Length * 2;
+			if (newCapacity > Array.MaxLength)
+				newCapacity = Array.MaxLength;
+
+			var newArray = new T[newCapacity];
+			Array.Copy(_values, newArray, _values.Length);
+			Volatile.Write(ref _values, newArray);
+		}
+	}
+
+	private bool MoveNext()
+	{
+		try
+		{
+			return _enumerator.MoveNext();
+		}
+		catch (Exception ex)
+		{
+			_exception = ex;
+			return false;
 		}
 	}
 
@@ -63,111 +110,17 @@ internal class NewReplayableEnumerable<T> : IAsyncEnumerable<T>
 #pragma warning restore CS8603 // Possible null reference return.
 	}
 
-	public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+	private static bool IsComplete(int count)
+		=> (count & 0x80000000) == 0x80000000;
+
+	public IEnumerator<T> GetEnumerator()
 	{
 		int count = 0;
 		(bool isSet, T value) result;
-		while ((result = await TryGetValue(count++)).isSet)
+		while ((result = TryGetValue(count++)).isSet)
 			yield return result.value;
 	}
-}
-
-internal class ReplayableEnumerableData<T>
-{
-	private readonly IEnumerator<T> _enumerator;
-
-	private readonly List<T> _values = new();
-
-	private bool _complete;
-	private Exception _exception;
-	private int _exceptionIndex;
-
-	public ReplayableEnumerableData(IEnumerator<T> enumerator)
-		=> _enumerator = enumerator;
-
-	public bool TryGetValue(int index, out T value)
-	{
-		if (index < _values.Count)
-		{
-			value = _values[index];
-			return true;
-		}
-
-		// FIX / REDESIGN THIS. DO PROPER ERROR HANDLING.
-		if (!_complete)
-		{
-			try
-			{
-				if (_enumerator.MoveNext())
-				{
-					value = _enumerator.Current;
-					_values.Add(value);
-					return true;
-				}
-				else
-					_complete = true;
-			}
-			catch (Exception ex)
-			{
-				_exception = ex;
-				_exceptionIndex = _va
-			}
-		}
-
-#pragma warning disable CS8601 // Possible null reference assignment.
-		value = default;
-#pragma warning restore CS8601 // Possible null reference assignment.
-		return false;
-	}
-}
-
-internal class ReplayableEnumerator<T> : IEnumerator<T>
-{
-	public T Current { get; private set; }
-
-#pragma warning disable CS8603 // Possible null reference return.
-	object IEnumerator.Current => Current;
-#pragma warning restore CS8603 // Possible null reference return.
-
-	private readonly ReplayableEnumerableData<T> _data;
-
-	private int _index = 0;
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-	public ReplayableEnumerator(ReplayableEnumerableData<T> data)
-		=> _data = data;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-	public void Dispose() { }
-
-	public bool MoveNext()
-	{
-		if (_index >= 0 && _data.TryGetValue(_index++, out var value))
-		{
-			Current = value;
-			return true;
-		}
-
-#pragma warning disable CS8601 // Possible null reference assignment.
-		Current = default;
-#pragma warning restore CS8601 // Possible null reference assignment.
-		return false;
-	}
-
-	public void Reset()
-		=> _index = 0;
-}
-
-internal class ReplayableEnumerable<T> : IEnumerable<T>
-{
-	private readonly ReplayableEnumerableData<T> _data;
-
-	public ReplayableEnumerable(IEnumerable<T> data)
-		=> _data = new ReplayableEnumerableData<T>(data.GetEnumerator());
-
-	public IEnumerator<T> GetEnumerator()
-		=> new ReplayableEnumerator<T>(_data);
 
 	IEnumerator IEnumerable.GetEnumerator()
-		=> new ReplayableEnumerator<T>(_data);
+		=> GetEnumerator();
 }
