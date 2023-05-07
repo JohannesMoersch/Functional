@@ -11,6 +11,14 @@ internal class TaskQueue<T> : IAsyncDisposable
 	public TaskQueue(int capacity) 
 		=> _tasks = new Queue<Task<T>>(capacity);
 
+	public async ValueTask DisposeAsync()
+	{
+		var exceptions = await DrainQueue().ToArray();
+
+		if (exceptions.Any())
+			throw new AggregateException($"One or more tasks threw an exception.", exceptions);
+	}
+
 	public void Enqueue(Task<T> task)
 	{
 		if (task is null) throw new ArgumentNullException(nameof(task));
@@ -50,13 +58,5 @@ internal class TaskQueue<T> : IAsyncDisposable
 			if (exception is not null)
 				yield return exception;
 		}
-	}
-
-	public async ValueTask DisposeAsync()
-	{
-		var exceptions = await DrainQueue().ToArray();
-
-		if (exceptions.Any())
-			throw new AggregateException($"One or more tasks threw an exception.", exceptions);
 	}
 }
