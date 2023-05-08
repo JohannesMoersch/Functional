@@ -2,9 +2,10 @@
 
 internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
 {
-	private readonly IAsyncEnumerator<T> _enumerator;
+	private IAsyncEnumerator<T> _enumerator;
 
-	private volatile int _count = 0;
+	private int _count = 0;
+
 	private T[] _values = new T[4];
 	private int _accessCounter = 0;
 	private SemaphoreSlim? _semaphore;
@@ -15,13 +16,13 @@ internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
 
 	public async ValueTask<(bool isSet, T value)> TryGetValue(int index)
 	{
-		if (TryGetValueWithoutEnumeration(index, _count) is (bool, T) result)
+		if (TryGetValueWithoutEnumeration(index, Volatile.Read(ref _count)) is (bool, T) result)
 			return result;
 
 		if (Interlocked.Increment(ref _accessCounter) > 1)
 			await GetSemaphore().WaitAsync();
 
-		var localCount = _count;
+		var localCount = Volatile.Read(ref _count);
 
 		try
 		{
@@ -43,7 +44,7 @@ internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
 					}
 				}
 
-				_count = localCount;
+				Volatile.Write(ref _count, localCount);
 			}
 		}
 		finally
@@ -91,7 +92,16 @@ internal class ReplayableAsyncEnumerable<T> : IAsyncEnumerable<T>
 	{
 		try
 		{
-			return await _enumerator.MoveNextAsync();
+			if (!await _enumerator.MoveNextAsync())
+			{
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+				await _enumerator.DisposeAsync();
+				_enumerator = null;
+				return false;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+			}
+
+			return true;
 		}
 		catch (Exception ex)
 		{

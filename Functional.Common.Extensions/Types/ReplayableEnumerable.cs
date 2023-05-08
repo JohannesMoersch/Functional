@@ -61,15 +61,15 @@ internal class ReplayableEnumerable<T> : IEnumerable<T>
 		if (index < (currentCount & 0x7FFFFFFF))
 			return (true, _values[index]);
 
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
 		if (IsComplete(currentCount))
 		{
 			if (_exception != null)
 				throw new AggregateException(_exception);
 
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
 			return (false, default);
-		}
 #pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+		}
 
 		return null;
 	}
@@ -115,9 +115,8 @@ internal class ReplayableEnumerable<T> : IEnumerable<T>
 		if (_semaphore is SemaphoreSlim semaphore)
 			return semaphore;
 
-#pragma warning disable CS8603 // Possible null reference return.
-		return Interlocked.CompareExchange(ref _semaphore, null, new SemaphoreSlim(0));
-#pragma warning restore CS8603 // Possible null reference return.
+		semaphore = new SemaphoreSlim(0);
+		return Interlocked.CompareExchange(ref _semaphore, semaphore, null) ?? semaphore;
 	}
 
 	private static bool IsComplete(int count)
