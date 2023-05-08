@@ -1,3 +1,5 @@
+using System;
+
 namespace Functional;
 
 public static partial class FunctionalEnumerableExtensions
@@ -6,7 +8,7 @@ public static partial class FunctionalEnumerableExtensions
 		where TSuccess : notnull
 		where TFailure : notnull
 	{
-		var values = new ReplayableEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
+		var values = source.Select(value => (matches: value.Match(_ => true, _ => false), value)).Cached();
 
 		return new ResultPartition<TSuccess, TFailure>
 		(
@@ -24,7 +26,7 @@ public static partial class FunctionalEnumerableExtensions
 		where TSuccess : notnull
 		where TFailure : notnull
 	{
-		var values = new ReplayableAsyncEnumerable<(bool matches, Result<TSuccess, TFailure> value)>(source.Select(value => (value.Match(_ => true, _ => false), value)));
+		var values = source.Select(value => (matches: value.Match(_ => true, _ => false), value)).Cached();
 
 		return new AsyncResultPartition<TSuccess, TFailure>
 		(
