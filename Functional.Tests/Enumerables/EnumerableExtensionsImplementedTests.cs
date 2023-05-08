@@ -23,7 +23,7 @@ namespace Functional.Tests.Enumerables
 				.Select(m => m.ToMethodSignature())
 				.ToHashSet();
 
-			var functionalExtensions = typeof(EnumerableTypeExtensions)
+			var functionalExtensions = typeof(EnumerableExtensions)
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Where(m => 
@@ -63,7 +63,7 @@ namespace Functional.Tests.Enumerables
 		[Fact]
 		public void AllEnumerableExtensionsHaveAllVariants()
 		{
-			var functionalExtensions = typeof(EnumerableTypeExtensions)
+			var functionalExtensions = typeof(EnumerableExtensions)
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
