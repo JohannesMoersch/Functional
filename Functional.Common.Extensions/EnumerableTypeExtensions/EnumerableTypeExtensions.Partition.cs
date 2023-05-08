@@ -12,7 +12,7 @@ public static partial class EnumerableTypeExtensions
 		if (predicate == null)
 			throw new ArgumentNullException(nameof(predicate));
 
-		var values = new ReplayableEnumerable<(bool matches, T value)>(source.Select(value => (predicate.Invoke(value), value)));
+		var values = source.Select(value => (matches: predicate.Invoke(value), value)).Cached();
 
 		return new Partition<T>
 		(
@@ -22,25 +22,17 @@ public static partial class EnumerableTypeExtensions
 	}
 
 	public static async Task<Partition<T>> Partition<T>(this Task<IEnumerable<T>> source, Func<T, bool> predicate)
-	{
-		if (predicate == null)
-			throw new ArgumentNullException(nameof(predicate));
+		=> (await source).Partition(predicate);
 
-		var values = new ReplayableEnumerable<(bool matches, T value)>((await source).Select(value => (predicate.Invoke(value), value)));
-
-		return new Partition<T>
-		(
-			values.Where(set => set.matches).Select(set => set.value),
-			values.Where(set => !set.matches).Select(set => set.value)
-		);
-	}
+	public static async Task<Partition<T>> Partition<T>(this Task<IOrderedEnumerable<T>> source, Func<T, bool> predicate)
+		=> (await source).Partition(predicate);
 
 	public static AsyncPartition<T> Partition<T>(this IAsyncEnumerable<T> source, Func<T, bool> predicate)
 	{
 		if (predicate == null)
 			throw new ArgumentNullException(nameof(predicate));
 
-		var values = new ReplayableAsyncEnumerable<(bool matches, T value)>(source.Select(value => (predicate.Invoke(value), value)));
+		var values = source.Select(value => (matches: predicate.Invoke(value), value)).Cached();
 
 		return new AsyncPartition<T>
 		(
