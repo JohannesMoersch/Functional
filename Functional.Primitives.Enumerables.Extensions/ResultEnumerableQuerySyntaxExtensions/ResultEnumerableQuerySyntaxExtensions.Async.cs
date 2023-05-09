@@ -8,11 +8,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -29,11 +26,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -50,11 +44,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -71,11 +62,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -92,11 +80,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(value => bind
@@ -112,11 +97,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(value => bind
@@ -132,11 +114,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -158,11 +137,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -185,11 +161,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -212,11 +185,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -238,11 +208,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -263,11 +230,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -289,11 +253,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -315,11 +276,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TFailure : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -341,11 +299,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(result => result
@@ -366,11 +321,8 @@ public static partial class ResultEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(result => result

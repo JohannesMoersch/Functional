@@ -1,6 +1,5 @@
 ﻿namespace Functional;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public static partial class OptionEnumerableQuerySyntaxExtensions
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
@@ -8,11 +7,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.Select(value => bind
@@ -27,11 +23,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -47,11 +40,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -67,11 +57,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -87,11 +74,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.Select(value => bind
@@ -106,11 +90,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(value => bind
@@ -125,11 +106,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -149,11 +127,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -175,11 +150,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -200,11 +172,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.Select(result => result
@@ -224,11 +193,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.AsAsyncEnumerable()
@@ -248,11 +214,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -272,11 +235,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -297,11 +257,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectMany(result => result
@@ -322,11 +279,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.Select(result => result
@@ -346,11 +300,8 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TBind : notnull
 		where TResult : notnull
 	{
-		if (bind == null)
-			throw new ArgumentNullException(nameof(bind));
-
-		if (resultSelector == null)
-			throw new ArgumentNullException(nameof(resultSelector));
+		if (bind == null) throw new ArgumentNullException(nameof(bind));
+		if (resultSelector == null) throw new ArgumentNullException(nameof(resultSelector));
 
 		return source
 			.SelectAsync(result => result
@@ -399,40 +350,4 @@ public static partial class OptionEnumerableQuerySyntaxExtensions
 		where TSuccess : notnull
 		where TResult : notnull
 		=> AsyncEnumerable.Repeat(source, 1).SelectAsync().AsAsyncOptionEnumerable().SelectMany(bind, resultSelector);
-
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static IOptionEnumerable<TResult> Select<TSuccess, TResult>(this IOptionEnumerable<TSuccess> source, Func<TSuccess, TResult> selector)
-		where TSuccess : notnull
-		where TResult : notnull
-	{
-		if (selector == null)
-			throw new ArgumentNullException(nameof(selector));
-
-		return source
-			.Select(result => result
-				.Match(
-					success => Option.Some(selector.Invoke(success)),
-					Option.None<TResult>
-				)
-			)
-			.AsOptionEnumerable();
-	}
-
-	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static IAsyncOptionEnumerable<TResult> Select<TSuccess, TResult>(this IAsyncOptionEnumerable<TSuccess> source, Func<TSuccess, TResult> selector)
-		where TSuccess : notnull
-		where TResult : notnull
-	{
-		if (selector == null)
-			throw new ArgumentNullException(nameof(selector));
-
-		return source
-			.Select(result => result
-				.Match(
-					success => Option.Some(selector.Invoke(success)),
-					Option.None<TResult>
-				)
-			)
-			.AsAsyncOptionEnumerable();
-	}
 }
