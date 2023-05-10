@@ -9,8 +9,9 @@ public record MethodSignature
 {
 	public record TypeSignature
 	{
-		public (Type? type, int? number) Type { get; }
-		public EquatableList<TypeSignature> GenericTypeArguments { get; }
+		public (Type? type, int? number) Type { get; init; }
+
+		public EquatableList<TypeSignature> GenericTypeArguments { get; init; }
 
 		public TypeSignature(Type type) : this((type, null), Array.Empty<TypeSignature>()) { }
 

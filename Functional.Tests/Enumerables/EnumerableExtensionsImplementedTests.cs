@@ -1,6 +1,7 @@
 ﻿using Functional.Tests.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -60,6 +61,8 @@ namespace Functional.Tests.Enumerables
 			}
 		}
 
+		private class EnumerablePlaceholder<T> { }
+
 		[Fact]
 		public void AllEnumerableExtensionsHaveAllVariants()
 		{
@@ -72,19 +75,63 @@ namespace Functional.Tests.Enumerables
 
 			var functionalExtensionTypes = functionalExtensions
 				.Where(m => GetEnumerableType(m.ParameterTypes[0]) != EnumerableType.NotAnEnumerable)
-				.Select(m => m with { ParameterTypes = new[] { GetInnerTypeFromEnumerable(m.ParameterTypes[0]) }.Concat(m.ParameterTypes.Skip(1)).ToEquatableList() })
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.AsEnumerable))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.Cast))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.GetEnumerator))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.OfType))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.ToLookup))
+				.Select(m => m with 
+					{ 
+						ParameterTypes = m
+							.ParameterTypes
+							.Select(type => Traverse
+								(
+									type, 
+									t => Option
+										.Create
+										(
+											GetEnumerableType(t) != EnumerableType.NotAnEnumerable,
+											() => new MethodSignature.TypeSignature(typeof(EnumerablePlaceholder<>), GetInnerTypeFromEnumerable(t))
+										)
+								)
+							)
+							.ToEquatableList() 
+					}
+				)
 				.Distinct()
 				.ToArray();
 
-			var expectedMethods = new[]
-				{
-					EnumerableType.IEnumerable,
-					EnumerableType.TaskIEnumerable,
-					EnumerableType.TaskIOrderedEnumerable,
-					EnumerableType.IAsyncEnumerable
-				}
-				.SelectMany(enumerableType => functionalExtensionTypes
-					.Select(m => m with { ParameterTypes = new[] { GetTypeAsEnumerable(enumerableType, m.ParameterTypes[0]) }.Concat(m.ParameterTypes.Skip(1)).ToEquatableList() })
+			var enumerableTypes = new[]
+			{
+				EnumerableType.IEnumerable,
+				EnumerableType.TaskIEnumerable,
+				EnumerableType.TaskIOrderedEnumerable,
+				EnumerableType.IAsyncEnumerable
+			};
+
+			var expectedMethods = functionalExtensionTypes
+				.SelectMany(m => m
+					.ParameterTypes
+					.Select(type => enumerableTypes
+						.Select(enumerableType => Traverse
+							(
+								type,
+								t => Option
+									.Create
+									(
+										t.Type.type == typeof(EnumerablePlaceholder<>),
+										() => GetTypeAsEnumerable(enumerableType, t.GenericTypeArguments[0])
+									)
+							)
+						)
+						.Distinct()
+					)
+					.Aggregate
+					(
+						new[] { Enumerable.Empty<MethodSignature.TypeSignature>() }.AsEnumerable(),
+						(current, next) => current.SelectMany(parameters => next.Select(t => parameters.Append(t)))
+					)
+					.Select(parameters => m with { ParameterTypes = parameters.ToEquatableList() })
 				)
 				.ToArray();
 
@@ -99,7 +146,7 @@ namespace Functional.Tests.Enumerables
 			var missingMethods = expectedMethods
 				.Except(functionalExtensions)
 				.Except(builtInExtensions)
-				.Select(m => m.ToString())
+				.Select(m => m.ToString().Substring(6))
 				.OrderBy(_ => _)
 				.ToArray();
 
@@ -170,5 +217,14 @@ namespace Functional.Tests.Enumerables
 				EnumerableType.TaskIOrderedEnumerable => new MethodSignature.TypeSignature(typeof(Task<>), new[] { new MethodSignature.TypeSignature(typeof(IOrderedEnumerable<>), new[] { innerType }) }),
 				_ => throw new Exception()
 			};
+
+		private MethodSignature.TypeSignature Traverse(MethodSignature.TypeSignature typeSignature, Func<MethodSignature.TypeSignature, Option<MethodSignature.TypeSignature>> modifier)
+			=> modifier
+				.Invoke(typeSignature)
+				.ValueOrDefault(() => typeSignature with
+					{
+						GenericTypeArguments = typeSignature.GenericTypeArguments.Select(t => Traverse(t, modifier)).ToEquatableList()
+					}
+				);
 	}
 }

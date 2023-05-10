@@ -7,6 +7,19 @@ namespace Functional;
 
 public static partial class EnumerableExtensions
 {
+	public static async Task<int> CountAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, Task<bool>> predicate)
+	{
+		int count = 0;
+
+		foreach (var item in source)
+		{
+			if (await predicate.Invoke(item))
+				++count;
+		}
+
+		return count;
+	}
+
 	public static async Task<int> CountAsync<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, Task<bool>> predicate)
 	{
 		int count = 0;
