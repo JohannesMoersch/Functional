@@ -20,6 +20,9 @@ public static partial class EnumerableExtensions
 		return partition.NonMatches;
 	}
 
+	public static IAsyncEnumerable<TSource> PickIntoAsync<TSource>(this Task<IOrderedEnumerable<TSource>> source, out IAsyncEnumerable<TSource> matches, Func<TSource, Task<bool>> predicate)
+		=> source.AsEnumerable().PickIntoAsync(out matches, predicate);
+
 	public static IAsyncEnumerable<TSource> PickIntoAsync<TSource>(this IAsyncEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, Task<bool>> predicate)
 	{
 		var partition = source.PartitionAsync(predicate);

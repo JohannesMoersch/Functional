@@ -17,4 +17,10 @@ public static partial class EnumerableExtensions
 
 	public static async Task<long> LongCount<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, bool> predicate)
 		=> (await source).LongCount(predicate);
+
+	public static async Task<long> LongCount<TSource>(this IAsyncEnumerable<TSource> source)
+		=> (await source.AsEnumerable()).LongCount();
+
+	public static async Task<long> LongCount<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		=> (await source.AsEnumerable()).LongCount(predicate);
 }

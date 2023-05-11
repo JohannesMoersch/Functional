@@ -17,4 +17,10 @@ public static partial class EnumerableExtensions
 
 	public static async Task<TSource?> LastOrDefault<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, bool> predicate)
 		=> (await source).LastOrDefault(predicate);
+
+	public static async Task<TSource?> LastOrDefault<TSource>(this IAsyncEnumerable<TSource> source)
+		=> (await source.AsEnumerable()).LastOrDefault();
+
+	public static async Task<TSource?> LastOrDefault<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, bool> predicate)
+		=> (await source.AsEnumerable()).LastOrDefault(predicate);
 }
