@@ -62,6 +62,9 @@ namespace Functional.Tests.Enumerables
 		}
 
 		private class EnumerablePlaceholder<T> { }
+		private class TaskEnumerablePlaceholder<T> { }
+
+		private record TypeSignature(MethodSignature.TypeSignature Type, TypeSignature? Parent, int? GenericArgumentIndexOnParent);
 
 		[Fact]
 		public void AllEnumerableExtensionsHaveAllVariants()
@@ -80,24 +83,26 @@ namespace Functional.Tests.Enumerables
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.GetEnumerator))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.OfType))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.ToLookup))
-				.Select(m => m with 
-					{ 
-						ParameterTypes = m
-							.ParameterTypes
-							.Select(type => Traverse
-								(
-									type, 
-									t => Option
-										.Create
-										(
-											GetEnumerableType(t) != EnumerableType.NotAnEnumerable,
-											() => new MethodSignature.TypeSignature(typeof(EnumerablePlaceholder<>), GetInnerTypeFromEnumerable(t))
-										)
-								)
-							)
-							.ToEquatableList() 
-					}
+				.Select(m => m
+					.ParameterTypes
+					.Select(type => Traverse
+						(
+							type, 
+							t => t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || t.GenericArgumentIndexOnParent == t.Parent.Type.GenericTypeArguments.Count - 1
+								? GetEnumerableType(t.Type) switch
+								{
+									EnumerableType.IEnumerable or EnumerableType.IOrderedEnumerable or EnumerableType.IAsyncEnumerable => new MethodSignature.TypeSignature(typeof(EnumerablePlaceholder<>), GetInnerTypeFromEnumerable(t.Type)),
+									EnumerableType.TaskIEnumerable or EnumerableType.TaskIOrderedEnumerable => new MethodSignature.TypeSignature(typeof(TaskEnumerablePlaceholder<>), GetInnerTypeFromEnumerable(t.Type)),
+									EnumerableType.NotAnEnumerable => t.Type,
+									_ => throw new Exception()
+								}
+								: t.Type
+						)
+					)
+					.TakeUntilNone()
+					.Map(parameters => m with { ParameterTypes = parameters.ToEquatableList() })
 				)
+				.WhereSome()
 				.Distinct()
 				.ToArray();
 
@@ -109,6 +114,18 @@ namespace Functional.Tests.Enumerables
 				EnumerableType.IAsyncEnumerable
 			};
 
+			var nonAsyncEnumerableTypes = new[]
+			{
+				EnumerableType.IEnumerable,
+				EnumerableType.IAsyncEnumerable
+			};
+
+			var asyncEnumerableTypes = new[]
+			{
+				EnumerableType.TaskIEnumerable,
+				EnumerableType.TaskIOrderedEnumerable
+			};
+
 			var expectedMethods = functionalExtensionTypes
 				.SelectMany(m => m
 					.ParameterTypes
@@ -116,14 +133,18 @@ namespace Functional.Tests.Enumerables
 						.Select(enumerableType => Traverse
 							(
 								type,
-								t => Option
-									.Create
-									(
-										t.Type.type == typeof(EnumerablePlaceholder<>),
-										() => GetTypeAsEnumerable(enumerableType, t.GenericTypeArguments[0])
-									)
+								t => t.Type.Type.type == typeof(EnumerablePlaceholder<>)
+									? t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || nonAsyncEnumerableTypes.Contains(enumerableType)
+										? GetTypeAsEnumerable(enumerableType, t.Type.GenericTypeArguments[0])
+										: Option.None()
+									: t.Type.Type.type == typeof(TaskEnumerablePlaceholder<>)
+										? t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || asyncEnumerableTypes.Contains(enumerableType)
+											? GetTypeAsEnumerable(enumerableType, t.Type.GenericTypeArguments[0])
+											: Option.None()
+										: t.Type
 							)
 						)
+						.WhereSome()
 						.Distinct()
 					)
 					.Aggregate
@@ -218,13 +239,18 @@ namespace Functional.Tests.Enumerables
 				_ => throw new Exception()
 			};
 
-		private MethodSignature.TypeSignature Traverse(MethodSignature.TypeSignature typeSignature, Func<MethodSignature.TypeSignature, Option<MethodSignature.TypeSignature>> modifier)
+		private Option<MethodSignature.TypeSignature> Traverse(MethodSignature.TypeSignature typeSignature, Func<TypeSignature, Option<MethodSignature.TypeSignature>> modifier)
+			=> Traverse(new TypeSignature(typeSignature, null, null), modifier);
+
+		private Option<MethodSignature.TypeSignature> Traverse(TypeSignature typeSignature, Func<TypeSignature, Option<MethodSignature.TypeSignature>> modifier)
 			=> modifier
 				.Invoke(typeSignature)
-				.ValueOrDefault(() => typeSignature with
-					{
-						GenericTypeArguments = typeSignature.GenericTypeArguments.Select(t => Traverse(t, modifier)).ToEquatableList()
-					}
+				.Bind(t => t == typeSignature.Type
+					? t.GenericTypeArguments
+						.Select((o, i) => Traverse(new TypeSignature(o, typeSignature, i), modifier))
+						.TakeUntilNone()
+						.Map(a => t with { GenericTypeArguments = a.ToEquatableList() })
+					: t
 				);
 	}
 }

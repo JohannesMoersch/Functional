@@ -137,4 +137,70 @@ public static partial class EnumerableExtensions
 
 	public static async Task<double> Min<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, double> selector)
 		=> (await source).Min(selector);
+
+	public static Task<float> Min(this IAsyncEnumerable<float> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<float?> Min(this IAsyncEnumerable<float?> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<long?> Min(this IAsyncEnumerable<long?> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<int?> Min(this IAsyncEnumerable<int?> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<double?> Min(this IAsyncEnumerable<double?> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<decimal?> Min(this IAsyncEnumerable<decimal?> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<long> Min(this IAsyncEnumerable<long> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<int> Min(this IAsyncEnumerable<int> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<double> Min(this IAsyncEnumerable<double> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<decimal> Min(this IAsyncEnumerable<decimal> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<TSource?> Min<TSource>(this IAsyncEnumerable<TSource> source)
+		=> source.AsEnumerable().Min();
+
+	public static Task<int> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<TResult?> Min<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, TResult> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<float> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, float> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<float?> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, float?> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<long?> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, long?> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<int?> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int?> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<double?> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, double?> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<decimal?> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, decimal?> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<long> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, long> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<decimal> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, decimal> selector)
+		=> source.AsEnumerable().Min(selector);
+
+	public static Task<double> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, double> selector)
+		=> source.AsEnumerable().Min(selector);
 }
