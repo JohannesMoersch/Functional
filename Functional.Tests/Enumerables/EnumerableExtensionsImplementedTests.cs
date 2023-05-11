@@ -38,7 +38,7 @@ namespace Functional.Tests.Enumerables
 					m.MethodName,
 					m.ReturnType.GenericTypeArguments.Count != 0 ? m.ReturnType.GenericTypeArguments[0] : new MethodSignature.TypeSignature((typeof(void), null)),
 					m.GenericTypeArguments,
-					new[] { m.ParameterTypes[0].GenericTypeArguments[0] }.Concat(m.ParameterTypes.Skip(1)).ToArray()
+					new[] { (m.ParameterTypes[0].TypeSignature.GenericTypeArguments[0], m.ParameterTypes[0].IsOut) }.Concat(m.ParameterTypes.Skip(1)).ToArray()
 				))
 				.ToHashSet();
 
@@ -77,7 +77,7 @@ namespace Functional.Tests.Enumerables
 				.ToArray();
 
 			var functionalExtensionTypes = functionalExtensions
-				.Where(m => GetEnumerableType(m.ParameterTypes[0]) != EnumerableType.NotAnEnumerable)
+				.Where(m => GetEnumerableType(m.ParameterTypes[0].TypeSignature) != EnumerableType.NotAnEnumerable)
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.AsEnumerable))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.Cast))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.GetEnumerator))
@@ -87,8 +87,8 @@ namespace Functional.Tests.Enumerables
 					.ParameterTypes
 					.Select(type => Traverse
 						(
-							type, 
-							t => t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || t.GenericArgumentIndexOnParent == t.Parent.Type.GenericTypeArguments.Count - 1
+							type.TypeSignature, 
+							t => !type.IsOut && (t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || t.GenericArgumentIndexOnParent == t.Parent.Type.GenericTypeArguments.Count - 1)
 								? GetEnumerableType(t.Type) switch
 								{
 									EnumerableType.IEnumerable or EnumerableType.IOrderedEnumerable or EnumerableType.IAsyncEnumerable => new MethodSignature.TypeSignature(typeof(EnumerablePlaceholder<>), GetInnerTypeFromEnumerable(t.Type)),
@@ -98,6 +98,7 @@ namespace Functional.Tests.Enumerables
 								}
 								: t.Type
 						)
+						.Map(t => (t, type.IsOut))
 					)
 					.TakeUntilNone()
 					.Map(parameters => m with { ParameterTypes = parameters.ToEquatableList() })
@@ -132,7 +133,7 @@ namespace Functional.Tests.Enumerables
 					.Select(type => enumerableTypes
 						.Select(enumerableType => Traverse
 							(
-								type,
+								type.TypeSignature,
 								t => t.Type.Type.type == typeof(EnumerablePlaceholder<>)
 									? t.Parent?.Type.Type.type?.FullName?.Split('`')[0] != "System.Func" || nonAsyncEnumerableTypes.Contains(enumerableType)
 										? GetTypeAsEnumerable(enumerableType, t.Type.GenericTypeArguments[0])
@@ -143,13 +144,14 @@ namespace Functional.Tests.Enumerables
 											: Option.None()
 										: t.Type
 							)
+							.Map(t => (t, type.IsOut))
 						)
 						.WhereSome()
 						.Distinct()
 					)
 					.Aggregate
 					(
-						new[] { Enumerable.Empty<MethodSignature.TypeSignature>() }.AsEnumerable(),
+						new[] { Enumerable.Empty<(MethodSignature.TypeSignature, bool)>() }.AsEnumerable(),
 						(current, next) => current.SelectMany(parameters => next.Select(t => parameters.Append(t)))
 					)
 					.Select(parameters => m with { ParameterTypes = parameters.ToEquatableList() })

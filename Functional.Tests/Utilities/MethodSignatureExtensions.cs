@@ -28,7 +28,7 @@ namespace Functional.Tests.Utilities
 				methodInfo.Name,
 				methodInfo.ReturnType.ToTypeSignature(typeMapping),
 				methodArguments.Select(t => t.ToTypeSignature(typeMapping)).ToArray(),
-				methodInfo.GetParameters().Select(p => p.ParameterType.ToTypeSignature(typeMapping)).ToArray()
+				methodInfo.GetParameters().Select(p => ((p.IsOut ? p.ParameterType.GetElementType() ?? p.ParameterType : p.ParameterType).ToTypeSignature(typeMapping), p.IsOut)).ToArray()
 			);
 		}
 
