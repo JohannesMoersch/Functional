@@ -2,12 +2,6 @@ namespace Functional;
 
 public static partial class EnumerableExtensions
 {
-	public static Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, IEnumerable<TResult>> selector)
-		=> source.AsEnumerable().SelectMany(selector);
-
-	public static Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TResult>> selector)
-		=> source.AsEnumerable().SelectMany(selector);
-
 	public static async IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 	{
 		if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -30,6 +24,12 @@ public static partial class EnumerableExtensions
 				yield return innerItem;
 		}
 	}
+
+	public static async Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IEnumerable<TResult>> selector)
+		=> (await source).SelectMany(selector);
+
+	public static async Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TResult>> selector)
+		=> (await source).SelectMany(selector);
 
 	public static async IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 	{
@@ -54,6 +54,18 @@ public static partial class EnumerableExtensions
 		}
 	}
 
+	public static Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, IEnumerable<TResult>> selector)
+		=> source.AsEnumerable().SelectMany(selector);
+
+	public static Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TResult>> selector)
+		=> source.AsEnumerable().SelectMany(selector);
+
+	public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
+		=> source.AsEnumerable().SelectMany(selector);
+
+	public static IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int, IAsyncEnumerable<TResult>> selector)
+		=> source.AsEnumerable().SelectMany(selector);
+
 	public static async IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IEnumerable<TResult>> selector)
 	{
 		if (selector is null) throw new ArgumentNullException(nameof(selector));
@@ -76,12 +88,6 @@ public static partial class EnumerableExtensions
 				yield return innerItem;
 		}
 	}
-
-	public static async Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, IEnumerable<TResult>> selector)
-		=> (await source).SelectMany(selector);
-
-	public static async Task<IEnumerable<TResult>> SelectMany<TSource, TResult>(this Task<IEnumerable<TSource>> source, Func<TSource, int, IEnumerable<TResult>> selector)
-		=> (await source).SelectMany(selector);
 
 	public static async IAsyncEnumerable<TResult> SelectMany<TSource, TResult>(this IAsyncEnumerable<TSource> source, Func<TSource, IAsyncEnumerable<TResult>> selector)
 	{

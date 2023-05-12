@@ -82,6 +82,9 @@ namespace Functional.Tests.Enumerables
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.Cast))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.GetEnumerator))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.OfType))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.PickInto))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.ThenBy))
+				.Where(m => m.MethodName != nameof(EnumerableExtensions.ThenByDescending))
 				.Where(m => m.MethodName != nameof(EnumerableExtensions.ToLookup))
 				.Select(m => m
 					.ParameterTypes

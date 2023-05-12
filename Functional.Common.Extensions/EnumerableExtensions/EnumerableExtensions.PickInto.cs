@@ -30,6 +30,9 @@ public static partial class EnumerableExtensions
 		return GetNonMatches(partition);
 	}
 
+	public static Task<IEnumerable<TSource>> PickInto<TSource>(this Task<IOrderedEnumerable<TSource>> source, out Task<IEnumerable<TSource>> matches, Func<TSource, bool> predicate)
+		=> source.AsEnumerable().PickInto(out matches, predicate);
+
 	public static IAsyncEnumerable<TSource> PickInto<TSource>(this IAsyncEnumerable<TSource> source, out IAsyncEnumerable<TSource> matches, Func<TSource, bool> predicate)
 	{
 		var partition = source.Partition(predicate);
