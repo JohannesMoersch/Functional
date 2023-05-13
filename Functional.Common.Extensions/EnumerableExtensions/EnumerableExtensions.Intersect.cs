@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Functional;
 
 public static partial class EnumerableExtensions
@@ -80,10 +75,10 @@ public static partial class EnumerableExtensions
 	{
 		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if ((set ??= second.ToHashSet(comparer)).Remove(element))
-				yield return element;
+			if ((set ??= second.ToHashSet(comparer)).Remove(item))
+				yield return item;
 		}
 	}
 
@@ -94,10 +89,10 @@ public static partial class EnumerableExtensions
 	{
 		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if ((set ??= await second.ToHashSet(comparer)).Remove(element))
-				yield return element;
+			if ((set ??= await second.ToHashSet(comparer)).Remove(item))
+				yield return item;
 		}
 	}
 
@@ -114,10 +109,10 @@ public static partial class EnumerableExtensions
 	{
 		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if ((set ??= await second.ToHashSet(comparer)).Remove(element))
-				yield return element;
+			if ((set ??= await second.ToHashSet(comparer)).Remove(item))
+				yield return item;
 		}
 	}
 }

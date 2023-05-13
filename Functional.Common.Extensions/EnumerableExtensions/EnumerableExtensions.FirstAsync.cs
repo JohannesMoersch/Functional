@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-
 namespace Functional;
 
 public static partial class EnumerableExtensions

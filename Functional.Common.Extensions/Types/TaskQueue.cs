@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Functional.Types;
+﻿namespace Functional;
 
 internal class TaskQueue<T> : IAsyncDisposable
 {
