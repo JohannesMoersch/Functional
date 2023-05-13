@@ -2,13 +2,13 @@ namespace Functional;
 
 public static partial class EnumerableExtensions
 {
-	public static async Task<IEnumerable<IReadOnlyList<TSource>>> Chunk<TSource>(this Task<IEnumerable<TSource>> source, int batchSize)
+	public static async Task<IEnumerable<TSource[]>> Chunk<TSource>(this Task<IEnumerable<TSource>> source, int batchSize)
 		=> (await source).Chunk(batchSize);
 
-	public static async Task<IEnumerable<IReadOnlyList<TSource>>> Chunk<TSource>(this Task<IOrderedEnumerable<TSource>> source, int batchSize)
+	public static async Task<IEnumerable<TSource[]>> Chunk<TSource>(this Task<IOrderedEnumerable<TSource>> source, int batchSize)
 		=> (await source).Chunk(batchSize);
 
-	public static async IAsyncEnumerable<IReadOnlyList<TSource>> Chunk<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
+	public static async IAsyncEnumerable<TSource[]> Chunk<TSource>(this IAsyncEnumerable<TSource> source, int batchSize)
 	{
 		var batch = Array.Empty<TSource>();
 		int count = 0;

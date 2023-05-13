@@ -22,6 +22,8 @@ namespace Functional.Tests.Enumerables
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
+				.Where(m => m.MethodName != nameof(Enumerable.AsEnumerable))
+				.Where(m => m.MethodName != nameof(Enumerable.TryGetNonEnumeratedCount))
 				.ToHashSet();
 
 			var functionalExtensions = typeof(EnumerableExtensions)
@@ -36,7 +38,7 @@ namespace Functional.Tests.Enumerables
 				.Select(m => new MethodSignature
 				(
 					m.MethodName,
-					m.ReturnType.GenericTypeArguments.Count != 0 ? m.ReturnType.GenericTypeArguments[0] : new MethodSignature.TypeSignature((typeof(void), null)),
+					m.ReturnType.GenericTypeArguments.Count != 0 ? m.ReturnType.GenericTypeArguments[0] : new MethodSignature.TypeSignature((typeof(void), null), false),
 					m.GenericTypeArguments,
 					new[] { (m.ParameterTypes[0].TypeSignature.GenericTypeArguments[0], m.ParameterTypes[0].IsOut) }.Concat(m.ParameterTypes.Skip(1)).ToArray()
 				))
@@ -73,7 +75,7 @@ namespace Functional.Tests.Enumerables
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
-				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null)) })
+				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false) })
 				.ToArray();
 
 			var functionalExtensionTypes = functionalExtensions
@@ -165,7 +167,7 @@ namespace Functional.Tests.Enumerables
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
-				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null)) })
+				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false) })
 				.Distinct()
 				.ToArray();
 

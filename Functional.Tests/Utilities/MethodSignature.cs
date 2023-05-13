@@ -11,17 +11,22 @@ public record MethodSignature
 	{
 		public (Type? type, int? number) Type { get; init; }
 
+		public bool IsArray { get; init; }
+
 		public EquatableList<TypeSignature> GenericTypeArguments { get; init; }
 
-		public TypeSignature(Type type) : this((type, null), Array.Empty<TypeSignature>()) { }
+		public TypeSignature(Type type, bool isArray) : this((type, null), isArray, Array.Empty<TypeSignature>()) { }
 
-		public TypeSignature(Type type, params TypeSignature[] genericTypeArguments) : this((type, null), genericTypeArguments) { }
+		public TypeSignature(Type type, params TypeSignature[] genericTypeArguments) : this((type, null), false, genericTypeArguments) { }
 
-		public TypeSignature((Type? type, int? number) type) : this(type, Array.Empty<TypeSignature>()) { }
+		public TypeSignature((Type? type, int? number) type, bool isArray) : this(type, isArray, Array.Empty<TypeSignature>()) { }
 
-		public TypeSignature((Type? type, int? number) type, IReadOnlyList<TypeSignature> genericTypeArguments)
+		public TypeSignature((Type? type, int? number) type, IReadOnlyList<TypeSignature> genericTypeArguments) : this(type, false, genericTypeArguments) { }
+
+		private TypeSignature((Type? type, int? number) type, bool isArray, IReadOnlyList<TypeSignature> genericTypeArguments)
 		{
 			Type = type;
+			IsArray = isArray;
 			GenericTypeArguments = genericTypeArguments.ToEquatableList();
 		}
 
@@ -29,8 +34,8 @@ public record MethodSignature
 			=> Type.type is Type type
 				? GenericTypeArguments.Any()
 					? $"{type.Name.Split('`')[0]}<{String.Join(", ", GenericTypeArguments)}>"
-					: type.Name
-				: $"T{Type.number}";
+					: $"{type.Name}{(IsArray ? "[]" : "")}"
+				: $"T{Type.number}{(IsArray ? "[]" : "")}";
 	}
 
 	public string MethodName { get; init; }

@@ -38,11 +38,18 @@ namespace Functional.Tests.Utilities
 					(type.GetGenericTypeDefinition(), null),
 					type.GetGenericArguments().Select(t => t.ToTypeSignature(typeMapping)).ToArray()
 				)
-				: new MethodSignature.TypeSignature(
-					typeMapping.TryGetValue(type, out var num)
-						? (null, num)
-						: (type, null),
-					Array.Empty<MethodSignature.TypeSignature>()
-				);
+				: type.IsArray
+					? new MethodSignature.TypeSignature(
+						typeMapping.TryGetValue(type.GetElementType() ?? type, out var num)
+							? (null, num)
+							: (type.GetElementType() ?? type, null),
+						true
+					)
+					: new MethodSignature.TypeSignature(
+						typeMapping.TryGetValue(type, out num)
+							? (null, num)
+							: (type, null),
+						false
+					);
 	}
 }
