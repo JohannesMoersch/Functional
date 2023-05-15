@@ -40,7 +40,7 @@ namespace Functional.Tests.Enumerables
 					m.MethodName,
 					m.ReturnType.GenericTypeArguments.Count != 0 ? m.ReturnType.GenericTypeArguments[0] : new MethodSignature.TypeSignature((typeof(void), null), false),
 					m.GenericTypeArguments,
-					new[] { (m.ParameterTypes[0].TypeSignature.GenericTypeArguments[0], m.ParameterTypes[0].IsOut) }.Concat(m.ParameterTypes.Skip(1)).ToArray()
+					new[] { (m.ParameterTypes[0].TypeSignature.GenericTypeArguments[0], m.ParameterTypes[0].IsOut, m.ParameterTypes[0].IsNullable) }.Concat(m.ParameterTypes.Skip(1)).ToArray()
 				))
 				.ToHashSet();
 
@@ -75,7 +75,11 @@ namespace Functional.Tests.Enumerables
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
-				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false) })
+				.Select(m => m with 
+					{
+						ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false) 
+					}
+				)
 				.ToArray();
 
 			var functionalExtensionTypes = functionalExtensions
@@ -103,7 +107,7 @@ namespace Functional.Tests.Enumerables
 								}
 								: t.Type
 						)
-						.Map(t => (t, type.IsOut))
+						.Map(t => (t, type.IsOut, type.IsNullable))
 					)
 					.TakeUntilNone()
 					.Map(parameters => m with { ParameterTypes = parameters.ToEquatableList() })
@@ -149,14 +153,14 @@ namespace Functional.Tests.Enumerables
 											: Option.None()
 										: t.Type
 							)
-							.Map(t => (t, type.IsOut))
+							.Map(t => (t, type.IsOut, type.IsNullable))
 						)
 						.WhereSome()
 						.Distinct()
 					)
 					.Aggregate
 					(
-						new[] { Enumerable.Empty<(MethodSignature.TypeSignature, bool)>() }.AsEnumerable(),
+						new[] { Enumerable.Empty<(MethodSignature.TypeSignature, bool, bool)>() }.AsEnumerable(),
 						(current, next) => current.SelectMany(parameters => next.Select(t => parameters.Append(t)))
 					)
 					.Select(parameters => m with { ParameterTypes = parameters.ToEquatableList() })
@@ -167,7 +171,11 @@ namespace Functional.Tests.Enumerables
 				.GetMethods(BindingFlags.Public | BindingFlags.Static)
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
-				.Select(m => m with { ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false) })
+				.Select(m => m with
+				{
+					ReturnType = new MethodSignature.TypeSignature((typeof(void), null), false)
+				}
+				)
 				.Distinct()
 				.ToArray();
 

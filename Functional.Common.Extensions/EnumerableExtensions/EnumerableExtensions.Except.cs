@@ -73,14 +73,12 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		var set = second.ToHashSet(comparer);
+		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if (set.Add(element))
-			{
-				yield return element;
-			}
+			if ((set ??= second.ToHashSet(comparer)).Add(item))
+				yield return item;
 		}
 	}
 
@@ -89,46 +87,32 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, Task<IEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
 	{
-		var set = await second.ToHashSet(comparer);
+		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if (set.Add(element))
-			{
-				yield return element;
-			}
+			if ((set ??= await second.ToHashSet(comparer)).Add(item))
+				yield return item;
 		}
 	}
 
 	public static IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second)
-		=> first.Except(second, null);
+		=> first.Except(second.AsEnumerable(), null);
 
-	public static async IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
-	{
-		var set = await second.ToHashSet(comparer);
-
-		await foreach (TSource element in first)
-		{
-			if (set.Add(element))
-			{
-				yield return element;
-			}
-		}
-	}
+	public static IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
+		=> first.Except(second.AsEnumerable(), comparer);
 
 	public static IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 		=> first.Except(second, null);
 
 	public static async IAsyncEnumerable<TSource> Except<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		var set = await second.ToHashSet(comparer);
+		HashSet<TSource>? set = null;
 
-		await foreach (TSource element in first)
+		await foreach (TSource item in first)
 		{
-			if (set.Add(element))
-			{
-				yield return element;
-			}
+			if ((set ??= await second.ToHashSet(comparer)).Add(item))
+				yield return item;
 		}
 	}
 }

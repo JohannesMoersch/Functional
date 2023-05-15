@@ -5,7 +5,13 @@ public static partial class EnumerableExtensions
 	public static async Task<TSource> ElementAt<TSource>(this Task<IEnumerable<TSource>> source, int index)
 		=> (await source).ElementAt(index);
 
+	public static async Task<TSource> ElementAt<TSource>(this Task<IEnumerable<TSource>> source, Index index)
+		=> (await source).ElementAt(index);
+
 	public static async Task<TSource> ElementAt<TSource>(this Task<IOrderedEnumerable<TSource>> source, int index)
+		=> (await source).ElementAt(index);
+
+	public static async Task<TSource> ElementAt<TSource>(this Task<IOrderedEnumerable<TSource>> source, Index index)
 		=> (await source).ElementAt(index);
 
 	public static async Task<TSource> ElementAt<TSource>(this IAsyncEnumerable<TSource> source, int index)
@@ -23,4 +29,9 @@ public static partial class EnumerableExtensions
 
 		return enumerator.Current;
 	}
+
+	public static Task<TSource> ElementAt<TSource>(this IAsyncEnumerable<TSource> source, Index index)
+		=> index.IsFromEnd
+			? source.AsEnumerable().ElementAt(index)
+			: source.ElementAt(index.Value);
 }

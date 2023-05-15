@@ -116,7 +116,7 @@ public static partial class EnumerableExtensions
 		=> first.Union(second.AsEnumerable(), null);
 
 	public static IAsyncEnumerable<TSource> Union<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
-		=> first.Union(second.AsEnumerable(), null);
+		=> first.Union(second.AsEnumerable(), comparer);
 
 	public static IAsyncEnumerable<TSource> Union<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 		=> first.Union(second, null);

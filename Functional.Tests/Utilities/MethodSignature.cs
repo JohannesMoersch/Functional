@@ -41,9 +41,9 @@ public record MethodSignature
 	public string MethodName { get; init; }
 	public TypeSignature ReturnType { get; init; }
 	public EquatableList<TypeSignature> GenericTypeArguments { get; init; }
-	public EquatableList<(TypeSignature TypeSignature, bool IsOut)> ParameterTypes { get; init; }
+	public EquatableList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)> ParameterTypes { get; init; }
 
-	public MethodSignature(string methodName, TypeSignature returnType, IReadOnlyList<TypeSignature> genericTypeArguments, IReadOnlyList<(TypeSignature TypeSignature, bool IsOut)> parameterTypes)
+	public MethodSignature(string methodName, TypeSignature returnType, IReadOnlyList<TypeSignature> genericTypeArguments, IReadOnlyList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)> parameterTypes)
 	{
 		MethodName = methodName;
 		ReturnType = returnType;
@@ -52,5 +52,5 @@ public record MethodSignature
 	}
 
 	public override string ToString()
-		=> $"\t{ReturnType} {MethodName}{(GenericTypeArguments.Any() ? $"<{String.Join(", ", GenericTypeArguments)}>" : "")}(this {String.Join(", ", ParameterTypes.Select(o => $"{(o.IsOut ? "out " : "")}{o.TypeSignature}"))})";
+		=> $"\t{ReturnType} {MethodName}{(GenericTypeArguments.Any() ? $"<{String.Join(", ", GenericTypeArguments)}>" : "")}(this {String.Join(", ", ParameterTypes.Select(o => $"{(o.IsOut ? "out " : "")}{o.TypeSignature}{(o.IsNullable ? "?" : "")}"))})";
 }

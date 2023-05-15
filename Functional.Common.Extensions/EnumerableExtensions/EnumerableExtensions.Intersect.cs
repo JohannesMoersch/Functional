@@ -100,7 +100,7 @@ public static partial class EnumerableExtensions
 		=> first.Intersect(second, null);
 
 	public static IAsyncEnumerable<TSource> Intersect<TSource>(this IAsyncEnumerable<TSource> first, Task<IOrderedEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
-		=> first.Intersect(second.AsEnumerable(), null);
+		=> first.Intersect(second.AsEnumerable(), comparer);
 
 	public static IAsyncEnumerable<TSource> Intersect<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second)
 		=> first.Intersect(second, null);

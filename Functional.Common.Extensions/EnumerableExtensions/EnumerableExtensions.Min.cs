@@ -35,6 +35,9 @@ public static partial class EnumerableExtensions
 	public static async Task<TSource?> Min<TSource>(this Task<IEnumerable<TSource>> source)
 		=> (await source).Min();
 
+	public static async Task<TSource?> Min<TSource>(this Task<IEnumerable<TSource>> source, IComparer<TSource>? comparer)
+		=> (await source).Min(comparer);
+
 	public static async Task<int> Min<TSource>(this Task<IEnumerable<TSource>> source, Func<TSource, int> selector)
 		=> (await source).Min(selector);
 
@@ -101,6 +104,9 @@ public static partial class EnumerableExtensions
 	public static async Task<TSource?> Min<TSource>(this Task<IOrderedEnumerable<TSource>> source)
 		=> (await source).Min();
 
+	public static async Task<TSource?> Min<TSource>(this Task<IOrderedEnumerable<TSource>> source, IComparer<TSource>? comparer)
+		=> (await source).Min(comparer);
+
 	public static async Task<int> Min<TSource>(this Task<IOrderedEnumerable<TSource>> source, Func<TSource, int> selector)
 		=> (await source).Min(selector);
 
@@ -166,6 +172,9 @@ public static partial class EnumerableExtensions
 
 	public static Task<TSource?> Min<TSource>(this IAsyncEnumerable<TSource> source)
 		=> source.AsEnumerable().Min();
+
+	public static Task<TSource?> Min<TSource>(this IAsyncEnumerable<TSource> source, IComparer<TSource>? comparer)
+		=> source.AsEnumerable().Min(comparer);
 
 	public static Task<int> Min<TSource>(this IAsyncEnumerable<TSource> source, Func<TSource, int> selector)
 		=> source.AsEnumerable().Min(selector);
