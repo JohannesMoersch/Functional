@@ -19,7 +19,7 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Union<TSource>(this IEnumerable<TSource> first, IAsyncEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		HashSet<TSource> set = new HashSet<TSource>(comparer);
+		var set = new HashSet<TSource>(comparer);
 
 		foreach (var item in first)
 			if (set.Add(item)) yield return item;
@@ -51,7 +51,7 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Union<TSource>(this Task<IEnumerable<TSource>> first, IAsyncEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		HashSet<TSource> set = new HashSet<TSource>(comparer);
+		var set = new HashSet<TSource>(comparer);
 
 		foreach (var item in await first)
 			if (set.Add(item)) yield return item;
@@ -89,7 +89,7 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Union<TSource>(this IAsyncEnumerable<TSource> first, IEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		HashSet<TSource> set = new HashSet<TSource>(comparer);
+		var set = new HashSet<TSource>(comparer);
 
 		await foreach (var item in first)
 			if (set.Add(item)) yield return item;
@@ -103,7 +103,7 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Union<TSource>(this IAsyncEnumerable<TSource> first, Task<IEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
 	{
-		HashSet<TSource> set = new HashSet<TSource>(comparer);
+		var set = new HashSet<TSource>(comparer);
 
 		await foreach (var item in first)
 			if (set.Add(item)) yield return item;
@@ -123,7 +123,7 @@ public static partial class EnumerableExtensions
 
 	public static async IAsyncEnumerable<TSource> Union<TSource>(this IAsyncEnumerable<TSource> first, IAsyncEnumerable<TSource> second, IEqualityComparer<TSource>? comparer)
 	{
-		HashSet<TSource> set = new HashSet<TSource>(comparer);
+		var set = new HashSet<TSource>(comparer);
 		
 		await foreach (var item in first)
 			if (set.Add(item)) yield return item;
