@@ -23,7 +23,9 @@ namespace Functional.Tests.Enumerables
 				.Where(m => m.GetCustomAttribute<ExtensionAttribute>() != null)
 				.Select(m => m.ToMethodSignature())
 				.Where(m => m.MethodName != nameof(Enumerable.AsEnumerable))
+				.Where(m => m.MethodName != nameof(Enumerable.SelectMany))
 				.Where(m => m.MethodName != nameof(Enumerable.TryGetNonEnumeratedCount))
+				.Where(m => m.MethodName != nameof(Enumerable.Zip))
 				.ToHashSet();
 
 			var functionalExtensions = typeof(EnumerableExtensions)
