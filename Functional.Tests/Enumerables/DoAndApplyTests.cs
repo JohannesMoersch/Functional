@@ -190,7 +190,7 @@ namespace Functional.Tests.Enumerables
 				.Do(list.Add)
 				.ToArray();
 
-			list.Should().BeEquivalentTo(1, 2, 3);
+			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
 
 		[Fact]
@@ -222,7 +222,7 @@ namespace Functional.Tests.Enumerables
 				.Do(list.Add)
 				.ToArray();
 
-			list.Should().BeEquivalentTo(1, 2, 3);
+			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
 
 		[Fact]
@@ -253,7 +253,7 @@ namespace Functional.Tests.Enumerables
 				.Do(list.Add)
 				.ToArray();
 
-			list.Should().BeEquivalentTo(1, 2, 3);
+			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
 
 		[Fact]
@@ -283,7 +283,7 @@ namespace Functional.Tests.Enumerables
 				.DoAsync(async i => { await Task.Delay(10); list.Add(i); })
 				.ToArray();
 
-			list.Should().BeEquivalentTo(1, 2, 3);
+			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
 
 		[Fact]
@@ -313,7 +313,7 @@ namespace Functional.Tests.Enumerables
 				.DoAsync(async i => { await Task.Delay(10); list.Add(i); })
 				.ToArray();
 
-			list.Should().BeEquivalentTo(1, 2, 3);
+			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
 
 		[Fact]

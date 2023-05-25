@@ -66,10 +66,10 @@ namespace Functional
 		public static async Task<StringCollectionAssertions> Should<T>(this Task<List<string>> source)
 		   => (await source).Should();
 
-		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this Task<StringCollectionAssertions> source, params string[] expectations)
+		public static async Task<AndConstraint<StringCollectionAssertions<IEnumerable<string>>>> BeEquivalentTo(this Task<StringCollectionAssertions> source, params string[] expectations)
 		   => (await source).BeEquivalentTo(expectations);
 
-		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this Task<StringCollectionAssertions> source, IEnumerable<string> expectations)
+		public static async Task<AndConstraint<StringCollectionAssertions<IEnumerable<string>>>> BeEquivalentTo(this Task<StringCollectionAssertions> source, IEnumerable<string> expectations)
 		   => (await source).BeEquivalentTo(expectations);
 
 		public static async Task<ObjectAssertions> Should<T>(this ValueTask<T> source)
@@ -122,10 +122,10 @@ namespace Functional
 		public static async Task<StringCollectionAssertions> Should<T>(this ValueTask<List<string>> source)
 		   => (await source).Should();
 
-		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, params string[] expectations)
+		public static async Task<AndConstraint<StringCollectionAssertions<IEnumerable<string>>>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, params string[] expectations)
 		   => (await source).BeEquivalentTo(expectations);
 
-		public static async Task<AndConstraint<StringCollectionAssertions>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, IEnumerable<string> expectations)
+		public static async Task<AndConstraint<StringCollectionAssertions<IEnumerable<string>>>> BeEquivalentTo(this ValueTask<StringCollectionAssertions> source, IEnumerable<string> expectations)
 		   => (await source).BeEquivalentTo(expectations);
 	}
 }

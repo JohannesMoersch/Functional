@@ -22,7 +22,7 @@ public class ResultCollectionPartitionTests
 				Result.Success<int, string>(ITEM3)
 			}.Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			successCollection.Should().BeEquivalentTo(new[] { ITEM1, ITEM2, ITEM3 });
 			failureCollection.Should().BeEmpty();
 		}
 
@@ -62,7 +62,7 @@ public class ResultCollectionPartitionTests
 				Result.Failure<int, string>(ERROR3)
 			}.Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			successCollection.Should().BeEquivalentTo(new[] { ITEM1, ITEM2, ITEM3 });
 			failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
 		}
 	}
@@ -82,7 +82,7 @@ public class ResultCollectionPartitionTests
 				Result.Success<int, string>(ITEM3)
 			}.AsEnumerable()).Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			successCollection.Should().BeEquivalentTo(new[] { ITEM1, ITEM2, ITEM3 });
 			failureCollection.Should().BeEmpty();
 		}
 
@@ -122,7 +122,7 @@ public class ResultCollectionPartitionTests
 				Result.Failure<int, string>(ERROR3)
 			}.AsEnumerable()).Partition();
 
-			successCollection.Should().BeEquivalentTo(ITEM1, ITEM2, ITEM3);
+			successCollection.Should().BeEquivalentTo(new[] { ITEM1, ITEM2, ITEM3 });
 			failureCollection.Should().BeEquivalentTo(ERROR1, ERROR2, ERROR3);
 		}
 	}

@@ -18,7 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Primitives.Enumerables.Extensions", "Functional.Primitives.Enumerables.Extensions\Functional.Primitives.Enumerables.Extensions.csproj", "{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Primitives.Enumerables.Extensions", "Functional.Primitives.Enumerables.Extensions\Functional.Primitives.Enumerables.Extensions.csproj", "{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Functional.Common.Extensions.Tests", "Functional.Common.Extensions.Tests\Functional.Common.Extensions.Tests.csproj", "{57971701-B5FC-4109-A48F-1FF14FAF4CF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0BC1F146-E2DA-4B5A-A383-F93EA55535CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Functional.Tests.Common", "Functional.Tests.Common\Functional.Tests.Common.csproj", "{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,9 +56,22 @@ Global
 		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2DC256D-1E3A-4478-AA89-1C29A5CADF93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57971701-B5FC-4109-A48F-1FF14FAF4CF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57971701-B5FC-4109-A48F-1FF14FAF4CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57971701-B5FC-4109-A48F-1FF14FAF4CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57971701-B5FC-4109-A48F-1FF14FAF4CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{01DF0B82-75DC-420D-A2A5-31025C930237} = {0BC1F146-E2DA-4B5A-A383-F93EA55535CB}
+		{57971701-B5FC-4109-A48F-1FF14FAF4CF3} = {0BC1F146-E2DA-4B5A-A383-F93EA55535CB}
+		{5C3FBEEF-DB5F-4017-A180-2F35B5774AE1} = {0BC1F146-E2DA-4B5A-A383-F93EA55535CB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9C3F6C95-8EAE-48A4-BE86-AA287AC6C322}
