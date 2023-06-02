@@ -4,20 +4,31 @@
 public static partial class EnumerableTest
 {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-	public static Task<Result<Option<TResult>, Exception>> Execute<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, TestEnumerable<TOne> one)
+	public static Task<Result<Option<TResult>, Exception>> ExecuteTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, TestEnumerable<TOne> one)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type))
-			.MapAsync(method => Result.TryAsync(() => (Task<Option<TResult>>)ConvertToTask<TResult>((dynamic)method.Invoke(null, new object?[] { one.Enumerable }))))
-			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."));
+			.Execute<TResult>(new object?[] { one.Enumerable });
 
-	public static Task<Result<Option<TResult>, Exception>> Execute<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, TestEnumerable<TOne> one, TTwo two)
+	public static Task<Result<Option<TResult>, Exception>> ExecuteTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, TestEnumerable<TOne> one, TTwo two)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type), typeof(TTwo))
-			.MapAsync(method => Result.TryAsync(() => (Task<Option<TResult>>)ConvertToTask<TResult>((dynamic)method.Invoke(null, new object?[] { one.Enumerable, two }))))
+			.Execute<TResult>(new object?[] { one.Enumerable, two });
+
+	public static Task<Result<Option<TResult>, Exception>> ExecuteNullTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one)
+		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type))
+			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null));
+
+	public static Task<Result<Option<TResult>, Exception>> ExecuteNullTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one, TTwo two)
+		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type), typeof(TTwo))
+			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null).Append(two));
+
+	private static Task<Result<Option<TResult>, Exception>> Execute<TResult>(this Option<MethodInfo> method, IEnumerable<object?> arguments)
+		=> method
+			.MapAsync(method => Result.TryAsync(() => (Task<Option<TResult>>)ConvertToTask<TResult>((dynamic)method.Invoke(null, arguments.ToArray()))))
 			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-	public static Task ShouldBeEquivalentTo<T>(this Task<Result<Option<T>, Exception>> source, Func<T> expected)
+	public static Task ShouldBeEquivalentTo<TResult>(this Task<Result<Option<TResult>, Exception>> source, Func<TResult> expected)
 		=> Result
-			.Try(() => expected.Invoke() is T value ? Option.Some(value) : Option.None())
+			.Try(() => expected.Invoke() is TResult value ? Option.Some(value) : Option.None())
 			.ApplyAsync
 			(
 				expectedValue => source
@@ -43,6 +54,9 @@ public static partial class EnumerableTest
 
 					)
 			);
+
+	public static Task ShouldBeEquivalentTo<TResult, TOne, TTwo>(this Task<Result<Option<TResult>, Exception>> source, Func<TOne, TTwo, TResult> method, TOne one, TTwo two)
+		=> source.ShouldBeEquivalentTo(() => method.Invoke(one, two));
 
 	private static Task<Option<T>> ConvertToTask<T>(T source)
 		=> Task.FromResult(source != null ? Option.Some(source) : Option.None());

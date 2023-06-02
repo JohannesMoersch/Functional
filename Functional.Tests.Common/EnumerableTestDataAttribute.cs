@@ -12,7 +12,7 @@ public class EnumerableTestDataAttribute<TOne> : DataAttribute
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 		=>
 		from one in _one.ToTestEnumerableVariants(Types)
-		select new object[] { new EnumerableTestInput<TOne>(one) };
+		select new object[] { new TestInput.OneEnumerable<TOne>(one) };
 }
 
 public class EnumerableTestDataAttribute<TOne, TTwo> : DataAttribute
@@ -37,5 +37,5 @@ public class EnumerableTestDataAttribute<TOne, TTwo> : DataAttribute
 		from one in _one.ToTestEnumerableVariants(TypesOne)
 		from two in _two.ToTestEnumerableVariants(TypesTwo)
 		where !SkipSynchronous || one.Type != EnumerableType.IEnumerable || two.Type != EnumerableType.IEnumerable
-		select new object[] { new EnumerableTestInput<TOne, TTwo>(one, two) };
+		select new object[] { new TestInput.TwoEnumerables<TOne, TTwo>(one, two) };
 }

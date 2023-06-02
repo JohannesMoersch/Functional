@@ -9,7 +9,7 @@ public static partial class EnumerableTest
 			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-	public static Task ShouldBeEquivalentTo<T>(this Task<Result<Option<IEnumerable<T>>, Exception>> source, Func<IEnumerable<T>> expected)
+	public static Task ShouldBeEquivalentTo<TResult>(this Task<Result<Option<IEnumerable<TResult>>, Exception>> source, Func<IEnumerable<TResult>> expected)
 		=> Result
 			.Try(() => Option.FromNullable(expected.Invoke()))
 			.ApplyAsync
