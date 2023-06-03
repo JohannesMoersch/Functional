@@ -3,32 +3,36 @@
 public static partial class EnumerableTest
 {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-	public static Task<Result<Option<IEnumerable<TResult>>, Exception>> Execute<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, Task<IEnumerable<TTwo>>, Task<IEnumerable<TResult>>> function, TestEnumerable<TOne> one, TestEnumerable<TTwo> two)
+	public static Task<TestResult<IEnumerable<TResult>>> Execute<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, Task<IEnumerable<TTwo>>, Task<IEnumerable<TResult>>> function, TestEnumerable<TOne> one, TestEnumerable<TTwo> two)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type), GetTypeFromEnumerableType<TTwo>(two.Type))
 			.MapAsync(method => Result.TryAsync(() => (Task<Option<IEnumerable<TResult>>>)ConvertToEnumerable<TResult>((dynamic)method.Invoke(null, new object?[] { one.Enumerable, two.Enumerable }))))
-			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."));
+			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."))
+			.ToTestResult();
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-	public static Task ShouldBeEquivalentTo<TResult>(this Task<Result<Option<IEnumerable<TResult>>, Exception>> source, Func<IEnumerable<TResult>> expected)
+	public static Task ShouldBeEquivalentTo<TResult>(this Task<TestResult<IEnumerable<TResult>>> result, Func<IEnumerable<TResult>> expected)
 		=> Result
 			.Try(() => Option.FromNullable(expected.Invoke()))
 			.ApplyAsync
 			(
-				expectedValue => source
+				async expectedValue => (await result)
+					.Result
 					.Apply
 					(
 						s => s.Should().BeEquivalentTo(expectedValue),
 						() => throw new Exception($"Expected {expectedValue.ToFormattedString()} but found null."),
 						e => throw new Exception($"Expected {expectedValue.ToFormattedString()} but found {e.ToFormattedString()}.")
 					),
-				() => source
+				async () => (await result)
+					.Result
 					.Apply
 					(
 						s => throw new Exception($"Expected null but found {s.ToFormattedString()}."),
 						() => { },
 						e => throw new Exception($"Expected null but found {e.ToFormattedString()}.")
 					),
-				expectedException => source
+				async expectedException => (await result)
+					.Result
 					.Apply
 					(
 						s => throw new Exception($"Expected {expectedException.ToFormattedString()} but found {s.ToFormattedString()}."),

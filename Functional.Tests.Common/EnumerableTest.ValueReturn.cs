@@ -1,24 +1,30 @@
-﻿namespace Functional.Tests;
+﻿using System.ComponentModel;
+
+namespace Functional.Tests;
 
 #pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 public static partial class EnumerableTest
 {
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-	public static Task<Result<Option<TResult>, Exception>> ExecuteTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, TestEnumerable<TOne> one)
+	public static Task<TestResult<TResult>> ExecuteTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, TestEnumerable<TOne> one)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type))
-			.Execute<TResult>(new object?[] { one.Enumerable });
+			.Execute<TResult>(new object?[] { one.Enumerable })
+			.ToTestResult();
 
-	public static Task<Result<Option<TResult>, Exception>> ExecuteTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, TestEnumerable<TOne> one, TTwo two)
+	public static Task<TestResult<TResult>> ExecuteTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, TestEnumerable<TOne> one, TTwo two)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type), typeof(TTwo))
-			.Execute<TResult>(new object?[] { one.Enumerable, two });
+			.Execute<TResult>(new object?[] { one.Enumerable, two })
+			.ToTestResult();
 
-	public static Task<Result<Option<TResult>, Exception>> ExecuteNullTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one)
+	public static Task<NullTestResult<TResult>> ExecuteNullTest<TOne, TResult>(Func<Task<IEnumerable<TOne>>, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type))
-			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null));
+			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null))
+			.ToNullTestResult(input.IsNull);
 
-	public static Task<Result<Option<TResult>, Exception>> ExecuteNullTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one, TTwo two)
+	public static Task<NullTestResult<TResult>> ExecuteNullTest<TOne, TTwo, TResult>(Func<Task<IEnumerable<TOne>>, TTwo, Task<TResult>> function, NullTestInput.OneEnumerable<TOne> input, TestEnumerable<TOne> one, TTwo two)
 		=> GetMethodFromMethodGroup(function.GetMethodInfo(), GetTypeFromEnumerableType<TOne>(one.Type), typeof(TTwo))
-			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null).Append(two));
+			.Execute<TResult>(new object?[] { one.Enumerable }.Select((o, i) => !input.IsNull[i] ? o : null).Append(two))
+			.ToNullTestResult(input.IsNull);
 
 	private static Task<Result<Option<TResult>, Exception>> Execute<TResult>(this Option<MethodInfo> method, IEnumerable<object?> arguments)
 		=> method
@@ -26,26 +32,26 @@ public static partial class EnumerableTest
 			.ThrowOnNone(() => new Exception("Couldn't find matching method in method group."));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-	public static Task ShouldBeEquivalentTo<TResult>(this Task<Result<Option<TResult>, Exception>> source, Func<TResult> expected)
+	public static void ShouldBeEquivalentTo<TResult>(this Result<Option<TResult>, Exception> result, Func<TResult> expected)
 		=> Result
 			.Try(() => expected.Invoke() is TResult value ? Option.Some(value) : Option.None())
-			.ApplyAsync
+			.Apply
 			(
-				expectedValue => source
+				expectedValue => result
 					.Apply
 					(
 						s => s.Should().BeEquivalentTo(expectedValue),
 						() => throw new Exception($"Expected {expectedValue} but found null."),
 						e => throw new Exception($"Expected {expectedValue} but found {e.ToFormattedString()}.")
 					),
-				() => source
+				() => result
 					.Apply
 					(
 						s => throw new Exception($"Expected null but found {s}."),
 						() => { },
 						e => throw new Exception($"Expected null but found {e.ToFormattedString()}.")
 					),
-				expectedException => source
+				expectedException => result
 					.Apply
 					(
 						s => throw new Exception($"Expected {expectedException.ToFormattedString()} but found {s}."),
@@ -55,8 +61,16 @@ public static partial class EnumerableTest
 					)
 			);
 
-	public static Task ShouldBeEquivalentTo<TResult, TOne, TTwo>(this Task<Result<Option<TResult>, Exception>> source, Func<TOne, TTwo, TResult> method, TOne one, TTwo two)
-		=> source.ShouldBeEquivalentTo(() => method.Invoke(one, two));
+	public static async Task ShouldBeEquivalentTo<TResult>(this Task<TestResult<TResult>> result, Func<TResult> expected)
+		=> (await result).Result.ShouldBeEquivalentTo(expected);
+
+	public static async Task ShouldBeEquivalentTo<TResult, TOne, TTwo>(this Task<NullTestResult<TResult>> source, Func<TOne, TTwo, TResult> method, TOne one, TTwo two)
+		=> (await source).ShouldBeEquivalentTo(method, one, two);
+
+#pragma warning disable CS8604 // Possible null reference argument.
+	private static void ShouldBeEquivalentTo<TResult, TOne, TTwo>(this NullTestResult<TResult> source, Func<TOne, TTwo, TResult> method, TOne one, TTwo two)
+		=> source.Result.ShouldBeEquivalentTo(() => method.Invoke(!source.IsNull[0] ? one : default, !source.IsNull[1] ? two : default));
+#pragma warning restore CS8604 // Possible null reference argument.
 
 	private static Task<Option<T>> ConvertToTask<T>(T source)
 		=> Task.FromResult(source != null ? Option.Some(source) : Option.None());

@@ -35,7 +35,7 @@ public class EnumerableExtensionsTests
 			.ShouldBeEquivalentTo(() => Enumerable.Sum(input.One.Reference, new Func<int, float>(i => i)));
 
 	[Theory]
-	[EnumerableNullTestData<int>(Types = EnumerableType.AsyncTypes)]
+	[EnumerableNullTestData<int>(Types = EnumerableType.AsyncTypes, AdditionalArgumentCount = 1)]
 	public Task Test5(NullTestInput.OneEnumerable<int> input)
 		=> EnumerableTest
 			.ExecuteNullTest(EnumerableExtensions.Sum, input, input.One, new Func<int, float>(i => i))

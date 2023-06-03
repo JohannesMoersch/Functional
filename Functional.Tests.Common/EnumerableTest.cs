@@ -1,4 +1,6 @@
-﻿namespace Functional.Tests;
+﻿using System;
+
+namespace Functional.Tests;
 
 public static partial class EnumerableTest
 {
@@ -33,4 +35,12 @@ public static partial class EnumerableTest
 
 	private static string ToFormattedString(this Exception value)
 		=> $"{value.GetType().Name} with message \"{value.Message}\"";
+
+#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+	private static async Task<TestResult<TResult>> ToTestResult<TResult>(this Task<Result<Option<TResult>, Exception>> result)
+		=> new TestResult<TResult>(await result);
+
+	private static async Task<NullTestResult<TResult>> ToNullTestResult<TResult>(this Task<Result<Option<TResult>, Exception>> result, bool[] isNull)
+		=> new NullTestResult<TResult>(await result, isNull);
+#pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
 }
