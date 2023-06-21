@@ -2,13 +2,13 @@
 
 public class EnumerableNullTestDataAttribute<TOne> : DataAttribute
 {
-	public EnumerableType Types { get; set; } = EnumerableType.AllTypes;
+	public EnumerableType Types { get; set; } = EnumerableType.AsyncTypes;
 
 	public int AdditionalArgumentCount { get; set; }
 
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 		=>
-		from one in Array.Empty<TOne>().ToTestEnumerableVariants(Types)
+		from one in Types.ToIndividualEnumerableTypes()
 		from isNull in Enumerable
 			.Range(0, AdditionalArgumentCount + 1)
 			.Select(i =>  Enumerable.Range(0, AdditionalArgumentCount + 1).Select(o => o == i).ToArray())
@@ -21,17 +21,17 @@ public class EnumerableNullTestDataAttribute<TOne, TTwo> : DataAttribute
 
 	public EnumerableType TypesTwo { get; set; } = EnumerableType.AllTypes;
 
-	public int AdditionalArgumentCount { get; set; }
+	public bool SkipSynchronous { get; set; } = true;
 
-	public bool SkipSynchronous { get; set; } = false;
+	public int AdditionalArgumentCount { get; set; }
 
 	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
 		=>
-		from one in Array.Empty<TOne>().ToTestEnumerableVariants(TypesOne)
-		from two in Array.Empty<TTwo>().ToTestEnumerableVariants(TypesTwo)
-		where !SkipSynchronous || one.Type != EnumerableType.IEnumerable || two.Type != EnumerableType.IEnumerable
+		from one in TypesOne.ToIndividualEnumerableTypes()
+		from two in TypesTwo.ToIndividualEnumerableTypes()
+		where !SkipSynchronous || one != EnumerableType.IEnumerable || two != EnumerableType.IEnumerable
 		from isNull in Enumerable
 			.Range(0, AdditionalArgumentCount + 2)
-			.Select(i => Enumerable.Range(0, AdditionalArgumentCount + 1).Select(o => o == i).ToArray())
+			.Select(i => Enumerable.Range(0, AdditionalArgumentCount + 2).Select(o => o == i).ToArray())
 		select new object[] { new NullTestInput.TwoEnumerables<TOne, TTwo>(one, two, isNull) };
 }

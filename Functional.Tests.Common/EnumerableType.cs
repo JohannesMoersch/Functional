@@ -12,3 +12,16 @@ public enum EnumerableType
 	NonTaskVariants = IEnumerable | IAsyncEnumerable,
 	TaskTypes = TaskOfIEnumerable | TaskOfIOrderedEnumerable
 }
+
+public static class EnumerableTypeExtensions
+{
+	public static Type GetTypeFromEnumerableType<T>(this EnumerableType enumerableType)
+		=> enumerableType switch
+		{
+			EnumerableType.IEnumerable => typeof(IEnumerable<T>),
+			EnumerableType.TaskOfIEnumerable => typeof(Task<IEnumerable<T>>),
+			EnumerableType.TaskOfIOrderedEnumerable => typeof(Task<IOrderedEnumerable<T>>),
+			EnumerableType.IAsyncEnumerable => typeof(IAsyncEnumerable<T>),
+			_ => throw new Exception($"Unexpected {nameof(EnumerableType)} found.")
+		};
+}

@@ -12,9 +12,9 @@ public static partial class ResultExtensions
 		where TFailure : notnull
 		=> result.Do(onSuccess, onFailure);
 
-	public static void Apply<T, TFailure>(this Result<Option<T>, TFailure> result, Action<T> onSome, Action onNone, Action<TFailure> onFailure)
+	public static void Apply<TValue, TFailure>(this Result<Option<TValue>, TFailure> result, Action<TValue> onSome, Action onNone, Action<TFailure> onFailure)
+		where TValue : notnull
 		where TFailure : notnull
-		where T : notnull
 	{
 		if (onSome == null) throw new ArgumentNullException(nameof(onSome));
 		if (onNone == null) throw new ArgumentNullException(nameof(onNone));
@@ -37,8 +37,8 @@ public static partial class ResultExtensions
 		}
 	}
 
-	public static async Task Apply<T, TFailure>(this Task<Result<Option<T>, TFailure>> result, Action<T> onSome, Action onNone, Action<TFailure> onFailure)
-		where T : notnull
+	public static async Task Apply<TValue, TFailure>(this Task<Result<Option<TValue>, TFailure>> result, Action<TValue> onSome, Action onNone, Action<TFailure> onFailure)
+		where TValue : notnull
 		where TFailure : notnull
 		=> (await result).Apply(onSome, onNone, onFailure);
 }
