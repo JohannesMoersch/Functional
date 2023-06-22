@@ -29,18 +29,19 @@ public class EnumerableExtensionsTests
 			.Execute(EnumerableExtensions.Sum)
 			.ShouldBeEquivalentTo(Enumerable.Sum);
 
-	/*
 	[Theory]
 	[EnumerableTestData<int>]
 	public Task Test4(TestInput.OneEnumerable<int> input)
-		=> EnumerableTest
-			.ExecuteTest(EnumerableExtensions.Sum, input.One, new Func<int, float>(i => i))
-			.ShouldBeEquivalentTo(() => Enumerable.Sum(input.One.Reference, new Func<int, float>(i => i)));
+		=> input
+			.WithReferenceArguments(new[] { 1, 2, 3 })
+			.Execute(EnumerableExtensions.Sum, new Func<int, float>(i => i))
+			.ShouldBeEquivalentTo(Enumerable.Sum, new Func<int, float>(i => i));
 
 	[Theory]
 	[EnumerableNullTestData<int>(AdditionalArgumentCount = 1)]
 	public Task Test5(NullTestInput.OneEnumerable<int> input)
-		=> EnumerableTest
-			.ExecuteNullTest(EnumerableExtensions.Sum, input, input.One, new Func<int, float>(i => i))
-			.ShouldBeEquivalentTo(Enumerable.Sum, input.One.Reference, new Func<int, float>(i => i));*/
+		=> input
+			.WithReferenceArguments(Array.Empty<int>())
+			.Execute(EnumerableExtensions.Sum, new Func<int, float>(i => i))
+			.ShouldBeEquivalentTo(Enumerable.Sum, new Func<int, float>(i => i));
 }

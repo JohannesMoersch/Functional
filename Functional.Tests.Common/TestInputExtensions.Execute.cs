@@ -22,6 +22,26 @@ public static partial class TestInputExtensions
 				(input.Input.OneType, input.Input.GetOne(input.One))
 			);
 
+	public static Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, TResult>> Execute<TOneReference, TOneTest, TTwo, TResult>(this TestInputWithArguments<TOneReference, TOneTest> input, Func<TOneTest, TTwo, Task<TResult>> method, TTwo two)
+		=> method
+			.GetMethodInfo()
+			.ExecuteSingle<TestInputWithArguments<TOneReference, TOneTest>, TResult>
+			(
+				input,
+				(input.Input.OneType, input.Input.GetOne(input.One)),
+				(typeof(TTwo), two)
+			);
+
+	public static Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, IEnumerable<TResult>>> Execute<TOneReference, TOneTest, TTwo, TResult>(this TestInputWithArguments<TOneReference, TOneTest> input, Func<TOneTest, TTwo, Task<IEnumerable<TResult>>> method, TTwo two)
+		=> method
+			.GetMethodInfo()
+			.ExecuteEnumerable<TestInputWithArguments<TOneReference, TOneTest>, TResult>
+			(
+				input,
+				(input.Input.OneType, input.Input.GetOne(input.One)),
+				(typeof(TTwo), two)
+			);
+
 	public static Task<TestResult<TestInputWithArguments<TOneReference, TOneTest, TTwoReference, TTwoTest>, TResult>> Execute<TOneReference, TOneTest, TTwoReference, TTwoTest, TResult>(this TestInputWithArguments<TOneReference, TOneTest, TTwoReference, TTwoTest> input, Func<TOneTest, TTwoTest, Task<TResult>> method)
 		=> method
 			.GetMethodInfo()

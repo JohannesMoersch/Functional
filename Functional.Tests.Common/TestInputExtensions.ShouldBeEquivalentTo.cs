@@ -20,6 +20,22 @@ public static partial class TestInputExtensions
 		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)));
 	}
 
+	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwo, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, TResult>> result, Func<TOneReference, TTwo, TResult> expected, TTwo two)
+		where TResult : notnull
+	{
+		var testResult = await result;
+
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, two)));
+	}
+
+	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwo, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, IEnumerable<TResult>>> result, Func<TOneReference, TTwo, IEnumerable<TResult>> expected, TTwo two)
+		where TResult : notnull
+	{
+		var testResult = await result;
+
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, two)));
+	}
+
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwoReference, TTwoTest, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest, TTwoReference, TTwoTest>, TResult>> result, Func<TOneReference, TTwoReference, TResult> expected)
 		where TResult : notnull
 	{
