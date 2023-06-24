@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Title>Functional.Unions</Title>
+	<Description>This package contains source code generators for dependency free discriminated union types.</Description>
+	<PackageTags>functional</PackageTags>
+	<Nullable>enable</Nullable>
+	<RootNamespace>Functional</RootNamespace>
+	<DevelopmentDependency>true</DevelopmentDependency>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+    <AssemblyVersion>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.DayOfYear).$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds),2))))</AssemblyVersion>
+    <Version>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.DayOfYear).$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds),2))))</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.3.0" PrivateAssets="all" />
+    <PackageReference Include="System.CodeDom" Version="6.0.0" PrivateAssets="all" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(PKGSystem_CodeDom)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(Configuration)'=='Debug' ">
+	  <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+
+  <Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(Configuration)'=='Debug' ">
+    <ItemGroup>
+      <FilesToDelete Include="$(SolutionDir)packages\$(PackageId).*.nupkg" />
+		<UpdatedTestsProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Functional.Unions.Tests\Functional.Unions.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Functional.Unions&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*&gt;),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+    <Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)packages\" />
+    <WriteLinesToFile File="$(SolutionDir)Functional.Unions.Tests\Functional.Unions.Tests.csproj" Lines="@(UpdatedTestsProjectContents)" Overwrite="true" />
+  </Target>
+
+</Project>
