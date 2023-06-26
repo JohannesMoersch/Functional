@@ -7,7 +7,7 @@
 	<Description>This package contains source code generators for dependency free discriminated union types.</Description>
 	<PackageTags>functional</PackageTags>
 	<Nullable>enable</Nullable>
-	<RootNamespace>Functional</RootNamespace>
+	<RootNamespace>Functional.Unions</RootNamespace>
 	<DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
 
