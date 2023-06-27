@@ -16,6 +16,8 @@ namespace Functional.Unions.Tests
 			};
 
 			var num = value.number;
+
+			var a = GeneratedTestUnion.Create(new Blah());
 		}
 	}
 
@@ -23,7 +25,7 @@ namespace Functional.Unions.Tests
 	public record struct Other;
 	public record struct Thing;
 
-	[DiscriminatedUnion<Blah, Other, Thing>(OneName = "Override")]
+	[DiscriminatedUnion<Blah, Other, Thing>]
 	public partial record GeneratedTestUnion;
 
 	public partial record TestUnion;

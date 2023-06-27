@@ -9,8 +9,6 @@ public static partial class Code
 
 	private static readonly IReadOnlyList<string> _numbers = new[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten" };
 
-	public static IReadOnlyList<string> DiscriminatedUnionAttribute_TypeNamePropertyNames { get; } = _numbers.Select(n => $"{n}Name").ToArray();
-
 	public static string GetDiscriminatedUnionAttributes()
 	{
 		var builder = new StringBuilder();
@@ -35,7 +33,6 @@ public static partial class Code
 
 		builder.AppendLine($"	public class {DiscriminatedUnionAttribute_Name}<{numbers.Join(", ", s => $"T{s}")}> : global::System.Attribute");
 		builder.AppendLine($"	{{");
-		builder.AppendLine(DiscriminatedUnionAttribute_TypeNamePropertyNames.Join($"{Environment.NewLine}{Environment.NewLine}", s => $"		public string? {s} {{ get; set; }}"));
 		builder.AppendLine($"	}}");
 
 		return builder.ToString();

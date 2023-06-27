@@ -35,12 +35,7 @@ public sealed class DiscriminatedUnionGenerator : ISourceGenerator
 
 			var typeSymbols = attribute.AttributeClass.TypeArguments.Cast<INamedTypeSymbol>().ToArray();
 
-			var typeNames = Enumerable
-				.Range(0, typeCount)
-				.Select(i => attribute.TryGetProperty<string?>(Code.DiscriminatedUnionAttribute_TypeNamePropertyNames[i], out var typeName) ? typeName : null)
-				.ToArray();
-
-			context.AddSource($"{namedTypeSymbol.Name}.g.cs", Code.GetDiscriminatedUnion(namedTypeSymbol, typeSymbols, typeNames));
+			context.AddSource($"{namedTypeSymbol.Name}.g.cs", Code.GetDiscriminatedUnion(namedTypeSymbol, typeSymbols));
 		}
 	}
 
