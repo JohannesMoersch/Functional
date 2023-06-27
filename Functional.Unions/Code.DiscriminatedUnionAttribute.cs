@@ -2,39 +2,42 @@
 
 public static partial class Code
 {
-	public const string DiscriminatedUnionAttribute_Namespace = "Functional";
-	public const string DiscriminatedUnionAttribute_Name = "DiscriminatedUnionAttribute";
-	
-	public static int MaxSupportedTypes => _numbers.Count;
-
-	private static readonly IReadOnlyList<string> _numbers = new[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten" };
-
-	public static string GetDiscriminatedUnionAttributes()
+	public static class DiscriminatedUnionAttribute
 	{
-		var builder = new StringBuilder();
+		public const string Namespace = "Functional";
+		public const string Name = "DiscriminatedUnionAttribute";
 
-		builder.AppendLine($"#nullable enable");
-		builder.AppendLine();
-		builder.AppendLine($"namespace {DiscriminatedUnionAttribute_Namespace}");
-		builder.AppendLine($"{{");
-		builder.AppendLine(_numbers.Select((_, i) => GetDiscriminatedUnionAttribute(i + 1)).Join(Environment.NewLine));
-		builder.AppendLine($"}}");
-		builder.AppendLine();
-		builder.AppendLine($"#nullable disable");
+		public static int MaxSupportedTypes => _numbers.Count;
 
-		return builder.ToString();
-	}
+		private static readonly IReadOnlyList<string> _numbers = new[] { "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten" };
 
-	private static string GetDiscriminatedUnionAttribute(int genericTypeParameterCount)
-	{
-		var numbers = _numbers.Take(genericTypeParameterCount);
+		public static string GetCode()
+		{
+			var builder = new StringBuilder();
 
-		var builder = new StringBuilder();
+			builder.AppendLine($"#nullable enable");
+			builder.AppendLine();
+			builder.AppendLine($"namespace {Namespace}");
+			builder.AppendLine($"{{");
+			builder.AppendLine(_numbers.Select((_, i) => GetCode(i + 1)).Join(Environment.NewLine));
+			builder.AppendLine($"}}");
+			builder.AppendLine();
+			builder.AppendLine($"#nullable disable");
 
-		builder.AppendLine($"	public class {DiscriminatedUnionAttribute_Name}<{numbers.Join(", ", s => $"T{s}")}> : global::System.Attribute");
-		builder.AppendLine($"	{{");
-		builder.AppendLine($"	}}");
+			return builder.ToString();
+		}
 
-		return builder.ToString();
+		private static string GetCode(int genericTypeParameterCount)
+		{
+			var numbers = _numbers.Take(genericTypeParameterCount);
+
+			var builder = new StringBuilder();
+
+			builder.AppendLine($"	public class {Name}<{numbers.Join(", ", s => $"T{s}")}> : global::System.Attribute");
+			builder.AppendLine($"	{{");
+			builder.AppendLine($"	}}");
+
+			return builder.ToString();
+		}
 	}
 }

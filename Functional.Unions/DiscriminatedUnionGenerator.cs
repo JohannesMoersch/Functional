@@ -35,13 +35,13 @@ public sealed class DiscriminatedUnionGenerator : ISourceGenerator
 
 			var typeSymbols = attribute.AttributeClass.TypeArguments.Cast<INamedTypeSymbol>().ToArray();
 
-			context.AddSource($"{namedTypeSymbol.Name}.g.cs", Code.GetDiscriminatedUnion(namedTypeSymbol, typeSymbols));
+			context.AddSource($"{namedTypeSymbol.Name}.g.cs", Code.DiscriminatedUnion.GetCode(namedTypeSymbol, typeSymbols));
 		}
 	}
 
 	private IReadOnlyDictionary<INamedTypeSymbol, int> GetDiscriminatedUnionTypes(Compilation compilation)
 		=> Enumerable
-			.Range(1, Code.MaxSupportedTypes)
-			.Select(i => (Key: compilation.Assembly.GetTypeByMetadataName($"{Code.DiscriminatedUnionAttribute_Namespace}.{Code.DiscriminatedUnionAttribute_Name}`{i}") ?? throw new Exception("Couldn't find discriminated union attribute type."), Value: i))
+			.Range(1, Code.DiscriminatedUnionAttribute.MaxSupportedTypes)
+			.Select(i => (Key: compilation.Assembly.GetTypeByMetadataName($"{Code.DiscriminatedUnionAttribute.Namespace}.{Code.DiscriminatedUnionAttribute.Name}`{i}") ?? throw new Exception("Couldn't find discriminated union attribute type."), Value: i))
 			.ToDictionary<(INamedTypeSymbol Key, int Value), INamedTypeSymbol, int>(kvp => kvp.Key, kvp => kvp.Value, SymbolEqualityComparer.Default);
 }

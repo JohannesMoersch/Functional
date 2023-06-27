@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(Configuration)'=='Debug' ">
-    <PackageReference Include="Functional.Unions" Version="2023.177.42337">
+    <PackageReference Include="Functional.Unions" Version="2023.177.43130">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

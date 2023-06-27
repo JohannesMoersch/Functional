@@ -1,4 +1,7 @@
-using static Functional.Unions.Tests.TestUnion;
+namespace OtherNamespae
+{
+	public record struct Other;
+}
 
 namespace Functional.Unions.Tests
 {
@@ -25,7 +28,7 @@ namespace Functional.Unions.Tests
 	public record struct Other;
 	public record struct Thing;
 
-	[DiscriminatedUnion<Blah, Other, Thing>]
+	[DiscriminatedUnion<Blah, Other, Thing>]//, OtherNamespae.Other>]
 	public partial record GeneratedTestUnion;
 
 	public partial record TestUnion;
