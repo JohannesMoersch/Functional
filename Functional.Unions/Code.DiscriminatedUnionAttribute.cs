@@ -19,7 +19,7 @@ public static partial class Code
 			builder.AppendLine();
 			builder.AppendLine($"namespace {Namespace}");
 			builder.AppendLine($"{{");
-			builder.AppendLine(_numbers.Select((_, i) => GetCode(i + 1)).Join(Environment.NewLine));
+			builder.AppendLine(_numbers.Select((_, i) => GetCode(i + 1)).Join($"{Environment.NewLine}{Environment.NewLine}"));
 			builder.AppendLine($"}}");
 			builder.AppendLine();
 			builder.AppendLine($"#nullable disable");
@@ -33,9 +33,10 @@ public static partial class Code
 
 			var builder = new StringBuilder();
 
-			builder.AppendLine($"	public class {Name}<{numbers.Join(", ", s => $"T{s}")}> : global::System.Attribute");
+			builder.AppendLine($"	[global::System.AttributeUsage(global::System.AttributeTargets.Class, AllowMultiple = false)]");
+			builder.AppendLine($"	internal class {Name}<{numbers.Join(", ", s => $"T{s}")}> : global::System.Attribute");
 			builder.AppendLine($"	{{");
-			builder.AppendLine($"	}}");
+			builder.Append($"	}}");
 
 			return builder.ToString();
 		}

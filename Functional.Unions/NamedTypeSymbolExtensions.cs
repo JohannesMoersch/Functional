@@ -1,4 +1,6 @@
-﻿namespace Functional.Unions
+﻿using System.Collections.Immutable;
+
+namespace Functional.Unions
 {
 	public static class NamedTypeSymbolExtensions
 	{
