@@ -33,9 +33,16 @@ public static class AnalyzerTest
 		return outputCompilation;
 	}
 
-	public static async Task ShouldHaveDiagnostic(this CompilationWithAnalyzers compilation, DiagnosticDescriptor descriptor, params string[] descriptionArguments)
+	public static async Task ShouldHaveDiagnostic(this CompilationWithAnalyzers compilation, DiagnosticDescriptor descriptor, params string[] messageArguments)
 	{
-		var diagnostics = (await compilation.GetAnalyzerDiagnosticsAsync())
+		var allDiagnostics = (await compilation.GetAnalyzerDiagnosticsAsync())
+			.Where(diagnostic => diagnostic.Id.StartsWith(AnalyzerDiagnosticDescriptors.DiagnosticIdPrefix))
+			.ToArray();
+
+		if (allDiagnostics.Select(d => d.Id).Distinct().OrderBy(_ => _).Any(id => id != descriptor.Id))
+			throw new Exception($"Expected to only find diagnostic \"{descriptor.Id}\", but found {allDiagnostics.Join(", ", ", and ", d => $"\"{d.Id}\"")}.");
+
+		var diagnostics = allDiagnostics
 			.Where(diagnostic => diagnostic.Id == descriptor.Id)
 			.ToArray();
 		
@@ -48,7 +55,7 @@ public static class AnalyzerTest
 		var location = compilation.Compilation.GetDiagnosticLocation();
 
 		diagnostics[0].Id.Should().Be(descriptor.Id);
-		diagnostics[0].GetMessage().Should().Be(String.Format(descriptor.MessageFormat.ToString(), descriptionArguments));
+		diagnostics[0].GetMessage().Should().Be(String.Format(descriptor.MessageFormat.ToString(), messageArguments));
 		diagnostics[0].Severity.Should().Be(location.Severity);
 		diagnostics[0].Location.SourceTree.Should().Be(location.SyntaxTree);
 		diagnostics[0].Location.SourceSpan.Should().Be(location.Span);

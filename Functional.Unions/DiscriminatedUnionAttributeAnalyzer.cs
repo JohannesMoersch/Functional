@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis.Diagnostics;
-using System;
 using System.Collections.Immutable;
 
 namespace Functional.Unions;
@@ -11,6 +10,7 @@ public class DiscriminatedUnionAttributeAnalyzer : DiagnosticAnalyzer
 		=> ImmutableArray
 			.Create
 			(
+				AnalyzerDiagnosticDescriptors.DuplicateTypeInDiscriminatedUnion,
 				AnalyzerDiagnosticDescriptors.DuplicateTypeNameInDiscriminatedUnion
 			);
 
@@ -43,6 +43,7 @@ public class DiscriminatedUnionAttributeAnalyzer : DiagnosticAnalyzer
 									var _ =
 									failure switch
 									{
+										DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType => ReportDiagnostic(context, duplicateType),
 										DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName => ReportDiagnostic(context, duplicateTypeName),
 										_ => null
 									};
@@ -54,18 +55,36 @@ public class DiscriminatedUnionAttributeAnalyzer : DiagnosticAnalyzer
 			);
 	}
 
+	private object? ReportDiagnostic(SymbolAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType)
+		=> ReportDiagnostic
+		(
+			context,
+			AnalyzerDiagnosticDescriptors.DuplicateTypeInDiscriminatedUnion,
+			duplicateType,
+			duplicateType.TypeArgument.GetFullNameWithNamespace("+", false)
+		);
+
 	private object? ReportDiagnostic(SymbolAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName)
+		=> ReportDiagnostic
+		(
+			context, 
+			AnalyzerDiagnosticDescriptors.DuplicateTypeNameInDiscriminatedUnion, 
+			duplicateTypeName, 
+			duplicateTypeName.TypeName
+		);
+
+	private object? ReportDiagnostic(SymbolAnalysisContext context, DiagnosticDescriptor descriptor, DiscriminatedUnionTypeInformation.ValidationFailure.IHasAttribute attribute, params object?[] messageArguments)
 	{
-		if (duplicateTypeName.DiscrimiantedUnionAttribute.ApplicationSyntaxReference is SyntaxReference syntaxReference)
+		if (attribute.DiscrimiantedUnionAttribute.ApplicationSyntaxReference is SyntaxReference syntaxReference)
 		{
 			context
 				.ReportDiagnostic
 				(
 					Diagnostic.Create
 					(
-						AnalyzerDiagnosticDescriptors.DuplicateTypeNameInDiscriminatedUnion,
+						descriptor,
 						Location.Create(syntaxReference.SyntaxTree, syntaxReference.Span),
-						duplicateTypeName.TypeName
+						messageArguments
 					)
 				);
 		}

@@ -34,7 +34,10 @@ public record DiscriminatedUnionTypeInformation(INamedTypeSymbol UnionType, INam
 
 		var typeArguments = attributeData.AttributeClass.TypeArguments.OfType<INamedTypeSymbol>().ToArray();
 
-		foreach (var group in typeArguments.GroupBy(t => t.Name).Where(g => g.Count() >= 2))
+		foreach (var group in typeArguments.GroupBy<INamedTypeSymbol, INamedTypeSymbol>(_ => _, SymbolEqualityComparer.Default).Where(g => g.Count() >= 2))
+			yield return new ValidationFailure.DuplicateType(type, attributeData, group.Key);
+
+		foreach (var group in typeArguments.Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default).GroupBy(t => t.Name).Where(g => g.Count() >= 2))
 			yield return new ValidationFailure.DuplicateTypeName(type, attributeData, group.Key, group.ToArray());
 	}
 
@@ -45,12 +48,20 @@ public record DiscriminatedUnionTypeInformation(INamedTypeSymbol UnionType, INam
 
 	public record ValidationFailure
 	{
+		public interface IHasAttribute
+		{
+			INamedTypeSymbol Type { get; } 
+			AttributeData DiscrimiantedUnionAttribute { get; }
+		}
+
 		public record NoDiscriminatedUnionAttribute(INamedTypeSymbol Type) : ValidationFailure;
 
-		public record AttributeClassNull(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute) : ValidationFailure;
+		public record AttributeClassNull(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute) : ValidationFailure, IHasAttribute;
 
-		public record UnrecognizedType(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, ITypeSymbol TypeArgument) : ValidationFailure;
+		public record UnrecognizedType(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, ITypeSymbol TypeArgument) : ValidationFailure, IHasAttribute;
 
-		public record DuplicateTypeName(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, string TypeName, INamedTypeSymbol[] TypeArguments) : ValidationFailure;
+		public record DuplicateType(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, INamedTypeSymbol TypeArgument) : ValidationFailure, IHasAttribute;
+
+		public record DuplicateTypeName(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, string TypeName, INamedTypeSymbol[] TypeArguments) : ValidationFailure, IHasAttribute;
 	}
 }
