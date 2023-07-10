@@ -1,5 +1,42 @@
 namespace Functional.Unions.Tests;
 
+/*
+internal interface DiscriminatedUnion<TOne, TTwo, TThree> { }
+
+public class GetStuffFailure<TValue> 
+	: DiscriminatedUnion<
+		GetStuffFailure<TValue>.NetworkPartition, 
+		GetStuffFailure<TValue>.DeserializationFailure, 
+		Other
+	>
+{
+	public record NetworkPartition;
+	public record DeserializationFailure;
+}
+
+public class NewTestUnion<TValue> : DiscriminatedUnion<NewTestUnion<TValue>.One, TValue, bool>
+{
+	public record One;
+
+	public record Success;
+}
+public class TestTestAttribute : Attribute
+{
+	public TestTestAttribute(Type type)
+	{
+	}
+
+}
+
+public class BlahBlah<T>
+{
+	public class NestedAttribute : Attribute
+	{
+		public class T { }
+	}
+}
+*/
+
 public class UnitTest1
 {
 	[Fact]
@@ -23,8 +60,22 @@ public record struct Blah(int number);
 public record struct Other;
 public record struct Thing;
 
-[DiscriminatedUnion<Blah, Other, Thing>]
-public partial record GeneratedTestUnion;
+//[DiscriminatedUnion<DU.FromGeneric.TValue, Other, Thing, DU.New.NewThing>]
+public partial record GeneratedTestUnion : DiscriminatedUnion<Blah, Thing>
+{
+	internal static class DU
+	{
+		internal static class FromGeneric
+		{
+			internal record TValue;
+		}
+
+		internal static class New
+		{
+			internal record NewThing;
+		}
+	}
+}
 
 public partial record TestUnion;
 

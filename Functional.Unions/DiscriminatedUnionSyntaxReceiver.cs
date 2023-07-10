@@ -9,13 +9,15 @@ public sealed class DiscriminatedUnionSyntaxReceiver : ISyntaxReceiver
 
 	public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
 	{
-		if (syntaxNode is TypeDeclarationSyntax typeDeclarationSyntax)
+		if (syntaxNode is TypeDeclarationSyntax typeDeclarationSyntax && typeDeclarationSyntax.BaseList is not null)
 		{
-			var typeAttributes = typeDeclarationSyntax
-				.AttributeLists
-				.SelectMany(list => list.Attributes);
+			var isCandidate = typeDeclarationSyntax
+				.BaseList
+				.Types
+				.Select(syntax => syntax.Type.ToString())
+				.Any(text => text.Contains(Code.DiscriminatedUnion.Name));
 
-			if (typeAttributes.Any(a => a.Name.ToString().Contains("DiscriminatedUnion")))
+			if (isCandidate)
 				_candidates.Add(typeDeclarationSyntax);
 		}
 	}

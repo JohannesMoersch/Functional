@@ -3,15 +3,18 @@
 public static class EnumerableExtensions
 {
 	public static string Join(this IEnumerable<string> source, string separator)
-		=> source.Join(separator, separator, _ => _);
+		=> source.Join(separator, _ => separator, _ => _);
 
 	public static string Join<T>(this IEnumerable<T> source, string separator, Func<T, string> selector)
-		=> source.Join(separator, separator, selector);
+		=> source.Join(separator, _ => separator, selector);
 
-	public static string Join(this IEnumerable<string> source, string separator, string lastSeparator)
-		=> source.Join(separator, lastSeparator, _ => _);
+	public static string JoinWithCommas(this IEnumerable<string> source)
+		=> source.JoinWithCommas(_ => _);
 
-	public static string Join<T>(this IEnumerable<T> source, string separator, string lastSeparator, Func<T, string> selector)
+	public static string JoinWithCommas<T>(this IEnumerable<T> source, Func<T, string> selector)
+		=> source.Join(", ", i => i == 2 ? " and " : ", and ", selector);
+
+	public static string Join<T>(this IEnumerable<T> source, string separator, Func<int, string> lastSeparator, Func<T, string> selector)
 	{
 		var items = source.ToArray();
 		
@@ -21,7 +24,7 @@ public static class EnumerableExtensions
 		for (int i = 0; i < items.Length; ++i)
 		{
 			if (!first)
-				builder.Append(i == items.Length - 1 ? lastSeparator : separator);
+				builder.Append(i == items.Length - 1 ? lastSeparator.Invoke(items.Length) : separator);
 			else 
 				first = false;
 
@@ -50,4 +53,11 @@ public static class EnumerableExtensions
 #pragma warning restore CS8601 // Possible null reference assignment.
 		return false;
 	}
+
+	public static IEnumerable<T> SwapFirstAndSecondItems<T>(this IEnumerable<T> source)
+		=> source
+			.Skip(1)
+			.Take(1)
+			.Concat(source.Take(1))
+			.Concat(source.Skip(2));
 }

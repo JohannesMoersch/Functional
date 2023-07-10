@@ -6,8 +6,8 @@ public static class CompilationExtensions
 {
 	public static IImmutableSet<INamedTypeSymbol> GetDiscriminatedUnionTypes(this Compilation compilation)
 		=> Enumerable
-			.Range(1, Code.DiscriminatedUnionAttribute.MaxSupportedTypes)
-			.Select(i => compilation.Assembly.GetTypeByMetadataName($"{Code.DiscriminatedUnionAttribute.Namespace}.{Code.DiscriminatedUnionAttribute.Name}`{i}") ?? throw new Exception("Couldn't find discriminated union attribute type."))
+			.Range(1, Code.DiscriminatedUnion.MaxSupportedTypes)
+			.Select(i => compilation.Assembly.GetTypeByMetadataName($"{Code.DiscriminatedUnion.Namespace}.{Code.DiscriminatedUnion.Name}`{i}") ?? throw new Exception("Couldn't find discriminated union interface types."))
 			.ToImmutableHashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
 	public static IEnumerable<INamedTypeSymbol> GetAllNamedTypeSymbols(this Compilation compilation)

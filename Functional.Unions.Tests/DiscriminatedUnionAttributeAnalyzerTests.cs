@@ -13,12 +13,11 @@ public class DiscriminatedUnionAttributeAnalyzerTests
 						public record struct Blah;
 						public record struct Other;
 
-						[{AnalyzerTest.LocationMarkerError}DiscriminatedUnion<Blah, Other, Blah>{AnalyzerTest.LocationMarkerError}]
-						public partial record TestUnion;
+						public partial record TestUnion : {AnalyzerTest.LocationMarkerError}DiscriminatedUnion<Blah, Other, Blah>{AnalyzerTest.LocationMarkerError};
 					}}",
-				new DiscriminatedUnionAttributeGenerator()
+				new DiscriminatedUnionInterfaceGenerator()
 			)
-			.WithAnalyzers(new DiscriminatedUnionAttributeAnalyzer())
+			.WithAnalyzers(new DiscriminatedUnionAttributeAnalyzer())	
 			.ShouldHaveDiagnostic
 			(
 				AnalyzerDiagnosticDescriptors.DuplicateTypeInDiscriminatedUnion,
@@ -44,7 +43,7 @@ public class DiscriminatedUnionAttributeAnalyzerTests
 					[{AnalyzerTest.LocationMarkerError}DiscriminatedUnion<Blah, Other, TestOne.Other>{AnalyzerTest.LocationMarkerError}]
 					public partial record TestUnion;
 				}}",
-				new DiscriminatedUnionAttributeGenerator()
+				new DiscriminatedUnionInterfaceGenerator()
 			)
 			.WithAnalyzers(new DiscriminatedUnionAttributeAnalyzer())
 			.ShouldHaveDiagnostic

@@ -1,5 +1,10 @@
-﻿using Microsoft.CodeAnalysis.Diagnostics;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.FindSymbols;
 using System.Collections.Immutable;
+using System.Threading;
 
 namespace Functional.Unions;
 
@@ -25,57 +30,60 @@ public class DiscriminatedUnionAttributeAnalyzer : DiagnosticAnalyzer
 			(
 				contextStart =>
 				{
-					var discriminatedUnionAttributes = contextStart.Compilation.GetDiscriminatedUnionTypes();
+					var discriminatedUnionInterfaceTypes = contextStart.Compilation.GetDiscriminatedUnionTypes();
 
 					contextStart
-						.RegisterSymbolAction
+						.RegisterSemanticModelAction
 						(
 							context =>
 							{
-								if (context.Symbol is not INamedTypeSymbol namedTypeSymbol)
-									return;
+								var syntaxRoot = context.SemanticModel.SyntaxTree.GetRoot(context.CancellationToken);
 
-								if (DiscriminatedUnionTypeInformation.TryCreate(namedTypeSymbol, discriminatedUnionAttributes).TryGetValue(out _, out var failures))
-									return;
-
-								foreach (var failure in failures)
+								foreach (var typeMatch in context.SemanticModel.GetDiscriminatedUnionTypes(syntaxRoot, discriminatedUnionInterfaceTypes, context.CancellationToken))
 								{
-									var _ =
-									failure switch
+									if (DiscriminatedUnionTypeInformation.TryCreate(typeMatch).TryGetValue(out _, out var failures))
+										return;
+
+									foreach (var failure in failures)
 									{
-										DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType => ReportDiagnostic(context, duplicateType),
-										DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName => ReportDiagnostic(context, duplicateTypeName),
-										_ => null
-									};
+										var _ =
+										failure switch
+										{
+											DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType => ReportDiagnostic(context, duplicateType),
+											DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName => ReportDiagnostic(context, duplicateTypeName),
+											_ => null
+										};
+									}
 								}
-							},
-							SymbolKind.NamedType
+							}
 						);
 				}
 			);
 	}
 
-	private object? ReportDiagnostic(SymbolAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType)
-		=> ReportDiagnostic
+	private object? ReportDiagnostic(SemanticModelAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateType duplicateType)
+	=> ReportDiagnostic
 		(
 			context,
 			AnalyzerDiagnosticDescriptors.DuplicateTypeInDiscriminatedUnion,
-			duplicateType,
+			duplicateType.TypeArgumentSyntax.Select(t => t.GetLocation()),
 			duplicateType.TypeArgument.GetFullNameWithNamespace("+", false)
 		);
 
-	private object? ReportDiagnostic(SymbolAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName)
+	private object? ReportDiagnostic(SemanticModelAnalysisContext context, DiscriminatedUnionTypeInformation.ValidationFailure.DuplicateTypeName duplicateTypeName)
 		=> ReportDiagnostic
 		(
-			context, 
+			context,
 			AnalyzerDiagnosticDescriptors.DuplicateTypeNameInDiscriminatedUnion, 
-			duplicateTypeName, 
+			duplicateTypeName.TypeArgumentSyntax.Select(t => t.GetLocation()),
 			duplicateTypeName.TypeName
 		);
 
-	private object? ReportDiagnostic(SymbolAnalysisContext context, DiagnosticDescriptor descriptor, DiscriminatedUnionTypeInformation.ValidationFailure.IHasAttribute attribute, params object?[] messageArguments)
+	private object? ReportDiagnostic(SemanticModelAnalysisContext context, DiagnosticDescriptor descriptor, IEnumerable<Location> locations, params object?[] messageArguments)
 	{
-		if (attribute.DiscrimiantedUnionAttribute.ApplicationSyntaxReference is SyntaxReference syntaxReference)
+		var locationArray = locations.ToArray();
+
+		if (locationArray.Any())
 		{
 			context
 				.ReportDiagnostic
@@ -83,7 +91,8 @@ public class DiscriminatedUnionAttributeAnalyzer : DiagnosticAnalyzer
 					Diagnostic.Create
 					(
 						descriptor,
-						Location.Create(syntaxReference.SyntaxTree, syntaxReference.Span),
+						locationArray[0],
+						locationArray.Skip(1),
 						messageArguments
 					)
 				);

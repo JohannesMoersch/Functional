@@ -35,12 +35,10 @@ public static class AnalyzerTest
 
 	public static async Task ShouldHaveDiagnostic(this CompilationWithAnalyzers compilation, DiagnosticDescriptor descriptor, params string[] messageArguments)
 	{
-		var allDiagnostics = (await compilation.GetAnalyzerDiagnosticsAsync())
-			.Where(diagnostic => diagnostic.Id.StartsWith(AnalyzerDiagnosticDescriptors.DiagnosticIdPrefix))
-			.ToArray();
+		var allDiagnostics = await compilation.GetAllDiagnosticsAsync();
 
-		if (allDiagnostics.Select(d => d.Id).Distinct().OrderBy(_ => _).Any(id => id != descriptor.Id))
-			throw new Exception($"Expected to only find diagnostic \"{descriptor.Id}\", but found {allDiagnostics.Join(", ", ", and ", d => $"\"{d.Id}\"")}.");
+		if (allDiagnostics.Select(d => d.Id).Distinct().Where(id => id != "CS5001").OrderBy(_ => _).Any(id => id != descriptor.Id))
+			throw new Exception($"Expected to only find diagnostic \"{descriptor.Id}\", but found {allDiagnostics.JoinWithCommas(d => $"\"{d.Id}\"")}.");
 
 		var diagnostics = allDiagnostics
 			.Where(diagnostic => diagnostic.Id == descriptor.Id)

@@ -1,67 +1,53 @@
-﻿using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
-using static Functional.Unions.Code;
+﻿namespace Functional.Unions;
 
-namespace Functional.Unions;
-
-public record DiscriminatedUnionTypeInformation(INamedTypeSymbol UnionType, INamedTypeSymbol[] Types)
+public record DiscriminatedUnionTypeInformation(INamedTypeSymbol UnionType, INamedTypeSymbol[] ArgumentTypes)
 {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-	public static Result<DiscriminatedUnionTypeInformation, ValidationFailure[]> TryCreate(INamedTypeSymbol type, IImmutableSet<INamedTypeSymbol> discriminatedUnionAttributes)
+	public static Result<DiscriminatedUnionTypeInformation, ValidationFailure[]> TryCreate(SemanticModelExtensions.DerivedTypeMatch typeMatch)
 	{
-		if (!TryGetDiscriminatedUnionAttributeData(type, discriminatedUnionAttributes, out var attributeData))
-			return new[] { new ValidationFailure.NoDiscriminatedUnionAttribute(type) };
-
-		var failures = Validate(type, attributeData).ToArray();
+		var failures = Validate(typeMatch).ToArray();
 
 		if (failures.Any())
 			return failures;
 
-		return new DiscriminatedUnionTypeInformation(type, attributeData.AttributeClass.TypeArguments.OfType<INamedTypeSymbol>().ToArray());
+		return new DiscriminatedUnionTypeInformation(typeMatch.DiscriminatedUnion, typeMatch.DiscriminatedUnionInterfaceTypeArguments.Select(t => t.TypeSymbol).OfType<INamedTypeSymbol>().ToArray());
 	}
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-	private static IEnumerable<ValidationFailure> Validate(INamedTypeSymbol type, AttributeData attributeData)
+	private static IEnumerable<ValidationFailure> Validate(SemanticModelExtensions.DerivedTypeMatch typeMatch)
 	{
-		if (attributeData.AttributeClass is null)
+		var unionTypeInfo = new ValidationFailure.DiscriminatedUnionTypeInfo(typeMatch.DiscriminatedUnionSyntaxNode, typeMatch.DiscriminatedUnionInterfaceSyntaxNode);
+
+		foreach (var typeArgument in typeMatch.DiscriminatedUnionInterfaceTypeArguments.Where(argument => argument.TypeSymbol is not INamedTypeSymbol))
+			yield return new ValidationFailure.UnrecognizedType(unionTypeInfo, typeArgument.SyntaxNode);
+
+		foreach (var group in typeMatch
+			.DiscriminatedUnionInterfaceTypeArguments
+			.GroupBy(type => type.TypeSymbol, SymbolEqualityComparer.Default)
+			.Where(g => g.Count() >= 2)
+		)
 		{
-			yield return new ValidationFailure.AttributeClassNull(type, attributeData);
-			yield break;
+			if (group.Key is INamedTypeSymbol typeSymbol)
+				yield return new ValidationFailure.DuplicateType(unionTypeInfo, typeSymbol, group.Select(t => t.SyntaxNode).SwapFirstAndSecondItems().ToArray());
 		}
 
-		foreach (var typeArgument in attributeData.AttributeClass.TypeArguments.Where(t => t is not INamedTypeSymbol))
-			yield return new ValidationFailure.UnrecognizedType(type, attributeData, typeArgument);
-
-		var typeArguments = attributeData.AttributeClass.TypeArguments.OfType<INamedTypeSymbol>().ToArray();
-
-		foreach (var group in typeArguments.GroupBy<INamedTypeSymbol, INamedTypeSymbol>(_ => _, SymbolEqualityComparer.Default).Where(g => g.Count() >= 2))
-			yield return new ValidationFailure.DuplicateType(type, attributeData, group.Key);
-
-		foreach (var group in typeArguments.Distinct<INamedTypeSymbol>(SymbolEqualityComparer.Default).GroupBy(t => t.Name).Where(g => g.Count() >= 2))
-			yield return new ValidationFailure.DuplicateTypeName(type, attributeData, group.Key, group.ToArray());
+		foreach (var group in typeMatch
+			.DiscriminatedUnionInterfaceTypeArguments
+			.GroupBy(argument => argument.TypeSymbol?.Name)
+			.Where(g => g.Count() >= 2)
+		)
+		{
+			if (group.Key is string name && group.Select(argument => argument.TypeSymbol).Distinct(SymbolEqualityComparer.Default).Count() > 1)
+				yield return new ValidationFailure.DuplicateTypeName(unionTypeInfo, name, group.Select(t => t.SyntaxNode).SwapFirstAndSecondItems().ToArray());
+		}
 	}
-
-	private static bool TryGetDiscriminatedUnionAttributeData(INamedTypeSymbol typeSymbol, IImmutableSet<INamedTypeSymbol> discriminatedUnionAttributes, out AttributeData attributeData)
-		=> typeSymbol
-			.GetAttributes()
-			.TryGetFirst(att => att.AttributeClass is not null && discriminatedUnionAttributes.Contains(att.AttributeClass.ConstructedFrom), out attributeData);
 
 	public record ValidationFailure
 	{
-		public interface IHasAttribute
-		{
-			INamedTypeSymbol Type { get; } 
-			AttributeData DiscrimiantedUnionAttribute { get; }
-		}
+		public record DiscriminatedUnionTypeInfo(TypeDeclarationSyntax SyntaxNode, GenericNameSyntax InterfaceSyntaxNode);
 
-		public record NoDiscriminatedUnionAttribute(INamedTypeSymbol Type) : ValidationFailure;
+		public record UnrecognizedType(DiscriminatedUnionTypeInfo DiscriminatedUnion, TypeSyntax TypeArgumentSyntax) : ValidationFailure;
 
-		public record AttributeClassNull(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute) : ValidationFailure, IHasAttribute;
+		public record DuplicateType(DiscriminatedUnionTypeInfo DiscriminatedUnion, INamedTypeSymbol TypeArgument, IReadOnlyList<TypeSyntax> TypeArgumentSyntax) : ValidationFailure;
 
-		public record UnrecognizedType(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, ITypeSymbol TypeArgument) : ValidationFailure, IHasAttribute;
-
-		public record DuplicateType(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, INamedTypeSymbol TypeArgument) : ValidationFailure, IHasAttribute;
-
-		public record DuplicateTypeName(INamedTypeSymbol Type, AttributeData DiscrimiantedUnionAttribute, string TypeName, INamedTypeSymbol[] TypeArguments) : ValidationFailure, IHasAttribute;
+		public record DuplicateTypeName(DiscriminatedUnionTypeInfo DiscriminatedUnion, string TypeName, IReadOnlyList<TypeSyntax> TypeArgumentSyntax) : ValidationFailure;
 	}
 }
