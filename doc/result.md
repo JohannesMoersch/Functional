@@ -429,7 +429,7 @@ You can either bind to functions producing `Result<TSuccess, TFailure>` or `Resu
 // Bind to functions producing Result<TSuccess, TFailure>
 
 // Returns Result<Option<int>, string> with a success value of Option.Some(100)
-Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(()) => Result.Success<int, string>(i * 2));
+Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Success<int, string>(i * 2));
 
 // Returns Result<Option<int>, string> with a success value of Option.Some(100)
 Result<Option<int>, string> result = Result.Success<Option<int>, string>(Option.Some(100)).BindOnNone(() => Result.Failure<int, string>("Failure"));
