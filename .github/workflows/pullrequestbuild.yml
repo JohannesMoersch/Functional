@@ -1,6 +1,9 @@
 name: .NET Core Pull Request Build
 
-on: [pull_request_target]
+on:
+  pull_request_target:
+    branches:
+      - master
 
 jobs:
   build:
