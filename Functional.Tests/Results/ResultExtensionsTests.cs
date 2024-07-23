@@ -147,6 +147,17 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
+			public void ApplyOnFailure()
+			{
+				bool failure = false;
+				Value.Map(_ => Unit.Value).ApplyOnFailure(_ => failure = true);
+				
+				failure
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
 			public void TrySelect()
 				=> Value
 					.TryMap(i => i * 2, e => e.Message)
@@ -316,6 +327,17 @@ namespace Functional.Tests.Results
 				success
 					.Should()
 					.BeTrue();
+				failure
+					.Should()
+					.BeFalse();
+			}
+
+			[Fact]
+			public async Task ApplyOnFailure()
+			{
+				bool failure = false;
+				await Value.Map(_ => Unit.Value).ApplyOnFailure(_ => failure = true);
+				
 				failure
 					.Should()
 					.BeFalse();
@@ -501,6 +523,17 @@ namespace Functional.Tests.Results
 			}
 
 			[Fact]
+			public void ApplyOnFailure()
+			{
+				bool failure = false;
+				Value.Map(_ => Unit.Value).ApplyOnFailure(_ => failure = true);
+				
+				failure
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
 			public void TrySelect()
 				=> Value
 					.TryMap(i => i * 2, e => e.Message)
@@ -680,6 +713,17 @@ namespace Functional.Tests.Results
 				success
 					.Should()
 					.BeFalse();
+				failure
+					.Should()
+					.BeTrue();
+			}
+
+			[Fact]
+			public async Task ApplyOnFailure()
+			{
+				bool failure = false;
+				await Value.Map(_ => Unit.Value).ApplyOnFailure(_ => failure = true);
+				
 				failure
 					.Should()
 					.BeTrue();

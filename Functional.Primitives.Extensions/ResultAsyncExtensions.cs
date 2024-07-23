@@ -196,6 +196,14 @@ namespace Functional
 			where TFailure : notnull
 			=> result.DoAsync(success, failure);
 
+		public static Task ApplyOnFailureAsync<TFailure>(this Result<Unit, TFailure> result, Func<TFailure, Task> failure)
+			where TFailure : notnull
+			=> result.ApplyAsync(DelegateCache<Unit>.Task, failure);
+
+		public static Task ApplyOnFailureAsync<TFailure>(this Task<Result<Unit, TFailure>> result, Func<TFailure, Task> failure)
+			where TFailure : notnull
+			=> result.ApplyAsync(DelegateCache<Unit>.Task, failure);
+
 		public static async Task<Result<TResult, TFailure>> TryMapAsync<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, Task<TResult>> successFactory, Func<Exception, TFailure> failureFactory)
 			where TSuccess : notnull
 			where TFailure : notnull
