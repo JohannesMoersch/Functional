@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Functional.Tests.Utilities;
+namespace Functional;
 
 public class EquatableList<T> : IReadOnlyList<T>, IEquatable<EquatableList<T>?>
 {

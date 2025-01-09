@@ -6,4 +6,7 @@ global using System.Linq;
 global using System.Threading;
 global using System.Threading.Tasks;
 global using FluentAssertions;
+global using Functional.Tests;
 global using Xunit;
+global using Xunit.Sdk;
+global using Xunit.v3;

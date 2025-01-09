@@ -37,11 +37,11 @@
 
 			evaluationCount.Should().Be(0);
 			var firstEvaluation = Task.Run(() => enumerable.Should().BeEquivalentTo(new[] { 1, 2 }));
-			await semaphore.WaitAsync();
+			await semaphore.WaitAsync(TestContext.Current.CancellationToken);
 			evaluationCount.Should().Be(1);
 			var secondEvaluation = Task.Run(() => enumerable.Should().BeEquivalentTo(new[] { 1, 2 }));
 			collection[0].SetResult(1);
-			await semaphore.WaitAsync();
+			await semaphore.WaitAsync(TestContext.Current.CancellationToken);
 			evaluationCount.Should().Be(2);
 			collection[1].SetResult(2);
 			await firstEvaluation;
@@ -92,7 +92,7 @@
 		{
 			var exception = new Exception();
 
-			var collection = new Task<int>[] { Task.FromResult(1), Task.FromResult(2), Task.FromException<int>(exception), Task.Delay(-1).ContinueWith(_ => 2) }
+			var collection = new Task<int>[] { Task.FromResult(1), Task.FromResult(2), Task.FromException<int>(exception), Task.Delay(-1, TestContext.Current.CancellationToken).ContinueWith(_ => 2) }
 				.SelectAsync()
 				.Cached();
 

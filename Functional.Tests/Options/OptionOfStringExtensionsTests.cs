@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -13,14 +12,15 @@ namespace Functional.Tests.Options
 			[Theory]
 			[InlineData(null)]
 			[InlineData("")]
-			public void ReturnsNoneForEmptyString(string value)
+			public void ReturnsNoneForEmptyString(string? value)
 				=> Option.FromNullable(value)
 					.WhereNotEmpty()
 					.AssertNone();
 
-			[Theory, AutoData]
+			[Theory]
+			[InlineData("value")]
 			public void ReturnsSomeForNonEmptyString(string value)
-				=> Option.FromNullable(value)
+				=> Option.Some(value)
 					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
@@ -33,14 +33,15 @@ namespace Functional.Tests.Options
 			[InlineData("     ")]
 			[InlineData("\t")]
 			[InlineData("\n")]
-			public void ReturnsNoneForWhiteSpaceString(string value)
+			public void ReturnsNoneForWhiteSpaceString(string? value)
 				=> Option.FromNullable(value)
 					.WhereNotWhiteSpace()
 					.AssertNone();
 
-			[Theory, AutoData]
+			[Theory]
+			[InlineData("value")]
 			public void ReturnsSomeForNonWhiteSpaceString(string value)
-				=> Option.FromNullable(value)
+				=> Option.Some(value)
 					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
@@ -52,14 +53,15 @@ namespace Functional.Tests.Options
 			[Theory]
 			[InlineData(null)]
 			[InlineData("")]
-			public async Task ReturnsNoneForEmptyString(string value)
+			public async Task ReturnsNoneForEmptyString(string? value)
 				=> await Task.FromResult(Option.FromNullable(value))
 					.WhereNotEmpty()
 					.AssertNone();
 
-			[Theory, AutoData]
+			[Theory]
+			[InlineData("value")]
 			public async Task ReturnsSomeForNonEmptyString(string value)
-				=> await Task.FromResult(Option.FromNullable(value))
+				=> await Task.FromResult(Option.Some(value))
 					.WhereNotEmpty()
 					.AssertSome()
 					.Should()
@@ -72,14 +74,15 @@ namespace Functional.Tests.Options
 			[InlineData("     ")]
 			[InlineData("\t")]
 			[InlineData("\n")]
-			public async Task ReturnsNoneForWhiteSpaceString(string value)
+			public async Task ReturnsNoneForWhiteSpaceString(string? value)
 				=> await Task.FromResult(Option.FromNullable(value))
 					.WhereNotWhiteSpace()
 					.AssertNone();
 
-			[Theory, AutoData]
+			[Theory]
+			[InlineData("value")]
 			public async Task ReturnsSomeForNonWhiteSpaceString(string value)
-				=> await Task.FromResult(Option.FromNullable(value))
+				=> await Task.FromResult(Option.Some(value))
 					.WhereNotEmpty()
 					.AssertSome()
 					.Should()

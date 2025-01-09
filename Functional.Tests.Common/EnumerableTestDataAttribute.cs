@@ -1,16 +1,16 @@
 ﻿namespace Functional.Tests;
 
-public class EnumerableTestDataAttribute<TOne> : DataAttribute
+public class EnumerableTestDataAttribute<TOne> : TheoryDataAttribute
 {
 	public EnumerableType Types { get; set; } = EnumerableType.AsyncTypes;
 
-	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+	public override IEnumerable<object[]> GetData()
 		=>
 		from one in Types.ToIndividualEnumerableTypes()
 		select new object[] { new TestInput.OneEnumerable<TOne>(one) };
 }
 
-public class EnumerableTestDataAttribute<TOne, TTwo> : DataAttribute
+public class EnumerableTestDataAttribute<TOne, TTwo> : TheoryDataAttribute
 {
 	public EnumerableType TypesOne { get; set; } = EnumerableType.AllTypes;
 	 
@@ -18,7 +18,7 @@ public class EnumerableTestDataAttribute<TOne, TTwo> : DataAttribute
 
 	public bool SkipSynchronous { get; set; } = true;
 
-	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+	public override IEnumerable<object[]> GetData()
 		=>
 		from one in TypesOne.ToIndividualEnumerableTypes()
 		from two in TypesTwo.ToIndividualEnumerableTypes()

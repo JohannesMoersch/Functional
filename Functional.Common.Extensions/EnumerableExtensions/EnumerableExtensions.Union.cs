@@ -3,7 +3,7 @@ namespace Functional;
 public static partial class EnumerableExtensions
 {
 	public static async Task<IEnumerable<TSource>> Union<TSource>(this IEnumerable<TSource> first, Task<IEnumerable<TSource>> second)
-		=> first.Union(await second);
+		=> first.Union(await (second ?? throw new ArgumentNullException(nameof(second), "Value cannot be null.")));
 
 	public static async Task<IEnumerable<TSource>> Union<TSource>(this IEnumerable<TSource> first, Task<IEnumerable<TSource>> second, IEqualityComparer<TSource>? comparer)
 		=> first.Union(await second, comparer);

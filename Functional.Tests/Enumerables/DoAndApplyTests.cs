@@ -102,7 +102,7 @@ namespace Functional.Tests.Enumerables
 		{
 			var list = new List<int>();
 
-			await new[] { 1, 2, 3 }.ApplyAsync(async i => { await Task.Delay(10); list.Add(i); });
+			await new[] { 1, 2, 3 }.ApplyAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); });
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
@@ -112,7 +112,7 @@ namespace Functional.Tests.Enumerables
 		{
 			var dictionary = new Dictionary<int, string>();
 
-			await new[] { FIRST, SECOND, THIRD }.ApplyAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); });
+			await new[] { FIRST, SECOND, THIRD }.ApplyAsync(async (item, index) => { await Task.Delay(10, TestContext.Current.CancellationToken); dictionary.Add(index, item); });
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
 			{
@@ -129,7 +129,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { 1, 2, 3 })
 				.AsEnumerable()
-				.ApplyAsync(async i => { await Task.Delay(10); list.Add(i); });
+				.ApplyAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); });
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
@@ -141,7 +141,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
 				.AsEnumerable()
-				.ApplyAsync(async (item, index) => { await Task.Delay(2); dictionary.Add(index, item); });
+				.ApplyAsync(async (item, index) => { await Task.Delay(2, TestContext.Current.CancellationToken); dictionary.Add(index, item); });
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
 			{
@@ -158,7 +158,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { 1, 2, 3 })
 				.AsAsyncEnumerable()
-				.ApplyAsync(async i => { await Task.Delay(10); list.Add(i); });
+				.ApplyAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); });
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
 		}
@@ -170,7 +170,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
 				.AsAsyncEnumerable()
-				.ApplyAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); });
+				.ApplyAsync(async (item, index) => { await Task.Delay(10, TestContext.Current.CancellationToken); dictionary.Add(index, item); });
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
 			{
@@ -280,7 +280,7 @@ namespace Functional.Tests.Enumerables
 			var list = new List<int>();
 
 			await new[] { 1, 2, 3 }
-				.DoAsync(async i => { await Task.Delay(10); list.Add(i); })
+				.DoAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); })
 				.ToArray();
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
@@ -292,7 +292,7 @@ namespace Functional.Tests.Enumerables
 			var dictionary = new Dictionary<int, string>();
 
 			await new[] { FIRST, SECOND, THIRD }
-				.DoAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); })
+				.DoAsync(async (item, index) => { await Task.Delay(10, TestContext.Current.CancellationToken); dictionary.Add(index, item); })
 				.ToArray();
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
@@ -310,7 +310,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { 1, 2, 3 })
 				.AsEnumerable()
-				.DoAsync(async i => { await Task.Delay(10); list.Add(i); })
+				.DoAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); })
 				.ToArray();
 
 			list.Should().BeEquivalentTo(new[] { 1, 2, 3 });
@@ -323,7 +323,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
 				.AsEnumerable()
-				.DoAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); })
+				.DoAsync(async (item, index) => { await Task.Delay(10, TestContext.Current.CancellationToken); dictionary.Add(index, item); })
 				.ToArray();
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>
@@ -341,7 +341,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { 1, 2, 3 })
 				.AsAsyncEnumerable()
-				.DoAsync(async i => { await Task.Delay(10); list.Add(i); })
+				.DoAsync(async i => { await Task.Delay(10, TestContext.Current.CancellationToken); list.Add(i); })
 				.ToArray();
 
 			list.Should().BeEquivalentTo(list);
@@ -354,7 +354,7 @@ namespace Functional.Tests.Enumerables
 
 			await Task.FromResult(new[] { FIRST, SECOND, THIRD })
 				.AsAsyncEnumerable()
-				.DoAsync(async (item, index) => { await Task.Delay(10); dictionary.Add(index, item); })
+				.DoAsync(async (item, index) => { await Task.Delay(10, TestContext.Current.CancellationToken); dictionary.Add(index, item); })
 				.ToArray();
 
 			dictionary.Should().BeEquivalentTo(new Dictionary<int, string>

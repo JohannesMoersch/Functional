@@ -1,10 +1,13 @@
 using FluentAssertions;
+using Functional.Tests;
 using System;
 using System.Collections;
-namespace Functional.Tests;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
+namespace Functional.Tests;
 public class EnumerableExtensionsTests
-{	
+{
 	[Theory]
 	[EnumerableTestData<int, int>]
 	public Task Test1(TestInput.TwoEnumerables<int, int> input)

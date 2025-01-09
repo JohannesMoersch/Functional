@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Functional.Tests.Utilities
+namespace Functional
 {
 	public static class MethodSignatureExtensions
 	{

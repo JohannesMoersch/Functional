@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Functional.Tests.Utilities;
+namespace Functional;
 
 public static class EquatableListExtensions
 {

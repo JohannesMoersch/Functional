@@ -54,7 +54,7 @@ namespace Functional.Tests.AsyncEnumerables
 			var results = AsyncEnumerable
 				.Create(new[] { 1, 2, 3 })
 				.ConcurrentSelectAsync(i => tasks[count++].Task, 2)
-				.GetAsyncEnumerator();
+				.GetAsyncEnumerator(TestContext.Current.CancellationToken);
 			
 			var moveNextTask = results.MoveNextAsync();
 

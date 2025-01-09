@@ -3,13 +3,12 @@
 
 public static partial class TestInputExtensions
 {
-#pragma warning disable CS8604 // Possible null reference argument.
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, TResult>> result, Func<TOneReference, TResult> expected)
 		where TResult : notnull
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!));
 	}
 
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, IEnumerable<TResult>>> result, Func<TOneReference, IEnumerable<TResult>> expected)
@@ -17,7 +16,7 @@ public static partial class TestInputExtensions
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!));
 	}
 
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwo, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, TResult>> result, Func<TOneReference, TTwo, TResult> expected, TTwo two)
@@ -25,7 +24,7 @@ public static partial class TestInputExtensions
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, two)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!, testResult.Input.Input.GetArgument(1, two)!));
 	}
 
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwo, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest>, IEnumerable<TResult>>> result, Func<TOneReference, TTwo, IEnumerable<TResult>> expected, TTwo two)
@@ -33,7 +32,7 @@ public static partial class TestInputExtensions
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, two)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!, testResult.Input.Input.GetArgument(1, two)!));
 	}
 
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwoReference, TTwoTest, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest, TTwoReference, TTwoTest>, TResult>> result, Func<TOneReference, TTwoReference, TResult> expected)
@@ -41,7 +40,7 @@ public static partial class TestInputExtensions
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, testResult.Input.Two)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!, testResult.Input.Input.GetArgument(1, testResult.Input.Two)!));
 	}
 
 	public static async Task ShouldBeEquivalentTo<TOneReference, TOneTest, TTwoReference, TTwoTest, TResult>(this Task<TestResult<TestInputWithArguments<TOneReference, TOneTest, TTwoReference, TTwoTest>, IEnumerable<TResult>>> result, Func<TOneReference, TTwoReference, IEnumerable<TResult>> expected)
@@ -49,9 +48,8 @@ public static partial class TestInputExtensions
 	{
 		var testResult = await result;
 
-		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One), testResult.Input.Input.GetArgument(1, testResult.Input.Two)));
+		testResult.Result.ShouldBeEquivalentTo(() => expected.Invoke(testResult.Input.Input.GetArgument(0, testResult.Input.One)!, testResult.Input.Input.GetArgument(1, testResult.Input.Two)!));
 	}
-#pragma warning restore CS8604 // Possible null reference argument.
 
 	public static void ShouldBeEquivalentTo<TResult>(this Result<Option<TResult>, Exception> result, Func<TResult> expected)
 		where TResult : notnull

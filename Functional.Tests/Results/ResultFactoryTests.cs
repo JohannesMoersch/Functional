@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -460,9 +459,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip2ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip2ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 2) - 1; ++i)
 					{
@@ -507,9 +506,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip3ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip3ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 3) - 1; ++i)
 					{
@@ -557,9 +556,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip4ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip4ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 4) - 1; ++i)
 					{
@@ -610,9 +609,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip5ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip5ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 5) - 1; ++i)
 					{
@@ -666,9 +665,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip6ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip6ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 6) - 1; ++i)
 					{
@@ -725,9 +724,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip7ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip7ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 7) - 1; ++i)
 					{
@@ -787,9 +786,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip8ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip8ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 8) - 1; ++i)
 					{
@@ -852,9 +851,9 @@ namespace Functional.Tests.Results
 
 			#region Arrangements
 
-			private class ResultZip9ReturnsFailureArrangement : AutoDataAttribute
+			private class ResultZip9ReturnsFailureArrangement : TheoryDataAttribute
 			{
-				public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+				public override IEnumerable<object[]> GetData()
 				{
 					for (var i = 0; i < (1 << 9) - 1; ++i)
 					{

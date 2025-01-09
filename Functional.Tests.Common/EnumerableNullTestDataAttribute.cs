@@ -1,12 +1,14 @@
-﻿namespace Functional.Tests;
+﻿using Xunit.v3;
 
-public class EnumerableNullTestDataAttribute<TOne> : DataAttribute
+namespace Functional.Tests;
+
+public class EnumerableNullTestDataAttribute<TOne> : TheoryDataAttribute
 {
 	public EnumerableType Types { get; set; } = EnumerableType.AsyncTypes;
 
 	public int AdditionalArgumentCount { get; set; }
 
-	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+	public override IEnumerable<object[]> GetData()
 		=>
 		from one in Types.ToIndividualEnumerableTypes()
 		from isNull in Enumerable
@@ -15,7 +17,7 @@ public class EnumerableNullTestDataAttribute<TOne> : DataAttribute
 		select new object[] { new NullTestInput.OneEnumerable<TOne>(one, isNull) };
 }
 
-public class EnumerableNullTestDataAttribute<TOne, TTwo> : DataAttribute
+public class EnumerableNullTestDataAttribute<TOne, TTwo> : TheoryDataAttribute
 {
 	public EnumerableType TypesOne { get; set; } = EnumerableType.AllTypes;
 
@@ -25,7 +27,7 @@ public class EnumerableNullTestDataAttribute<TOne, TTwo> : DataAttribute
 
 	public int AdditionalArgumentCount { get; set; }
 
-	public override IEnumerable<object[]> GetData(MethodInfo testMethod)
+	public override IEnumerable<object[]> GetData()
 		=>
 		from one in TypesOne.ToIndividualEnumerableTypes()
 		from two in TypesTwo.ToIndividualEnumerableTypes()
