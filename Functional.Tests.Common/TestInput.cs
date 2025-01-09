@@ -1,40 +1,42 @@
-﻿using System;
-using System.Reflection.Metadata;
+﻿using System.Text.Json.Serialization;
 
 namespace Functional.Tests;
 
-public static class TestInput
+public static partial class TestInput
 {
-	public record OneEnumerable<TOne>(EnumerableType One) : ITestInput<IEnumerable<TOne>, Task<IEnumerable<TOne>>>
+	public record OneEnumerable<TOne>(EnumerableType One, bool[] IsNull) : ITestInput<IEnumerable<TOne>, Task<IEnumerable<TOne>>>
 	{
+		[JsonIgnore]
 		public Type OneType => One.GetTypeFromEnumerableType<TOne>();
 
 		public object? GetOne(IEnumerable<TOne> one)
-			=> one.ToEnumerableType(One);
+			=> GetArgument(0, one.ToEnumerableType(One));
 
 		public T? GetArgument<T>(int index, T value)
-			=> value;
+			=> IsNull.ValueIfNotNull(index, value);
 
 		public override string ToString()
-			=> $"({One})";
+			=> $"{IsNull.ValueIfNotNull<object>(0, One) ?? $"{One} (null)"}";
 	}
 
-	public record TwoEnumerables<TOne, TTwo>(EnumerableType One, EnumerableType Two) : ITestInput<IEnumerable<TOne>, Task<IEnumerable<TOne>>, IEnumerable<TTwo>, Task<IEnumerable<TTwo>>>
+	public record TwoEnumerables<TOne, TTwo>(EnumerableType One, EnumerableType Two, bool[] IsNull) : ITestInput<IEnumerable<TOne>, Task<IEnumerable<TOne>>, IEnumerable<TTwo>, Task<IEnumerable<TTwo>>>
 	{
+		[JsonIgnore]
 		public Type OneType => One.GetTypeFromEnumerableType<TOne>();
 
+		[JsonIgnore]
 		public Type TwoType => Two.GetTypeFromEnumerableType<TTwo>();
 
 		public object? GetOne(IEnumerable<TOne> one)
-			=> one.ToEnumerableType(One);
+			=> GetArgument(0, one.ToEnumerableType(One));
 
 		public object? GetTwo(IEnumerable<TTwo> two)
-			=> two.ToEnumerableType(Two);
+			=> GetArgument(1, two.ToEnumerableType(Two));
 
 		public T? GetArgument<T>(int index, T value)
-			=> value;
+			=> IsNull.ValueIfNotNull(index, value);
 
 		public override string ToString()
-			=> $"({One}, {Two})";
+			=> $"{IsNull.ValueIfNotNull<object>(0, One) ?? $"{One} (null)"}, {IsNull.ValueIfNotNull<object>(1, Two) ?? $"{Two} (null)"}";
 	}
 }

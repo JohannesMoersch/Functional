@@ -56,7 +56,14 @@ public static class AnalyzerTest
 		diagnostics[0].GetMessage().Should().Be(String.Format(descriptor.MessageFormat.ToString(), messageArguments));
 		diagnostics[0].Severity.Should().Be(location.Severity);
 		diagnostics[0].Location.SourceTree.Should().Be(location.SyntaxTree);
-		diagnostics[0].Location.SourceSpan.Should().Be(location.Span);
+		if (diagnostics[0].Location.SourceSpan.Start != location.Span.Start || diagnostics[0].Location.SourceSpan.End != location.Span.End)
+		{
+			var expectedText = (await location.SyntaxTree.GetTextAsync()).GetSubText(location.Span);
+			var foundText = (await diagnostics[0].Location.SourceTree!.GetTextAsync()).GetSubText(diagnostics[0].Location.SourceSpan);
+
+			throw new XunitException($"Expected diagnostic \"{descriptor.Id}\" on \"{expectedText}\" at {location.Span} but found diagnostic on \"{foundText}\" at {diagnostics[0].Location.SourceSpan}.");
+			//;
+		}
 	}
 
 	public static (SyntaxTree SyntaxTree, TextSpan Span, DiagnosticSeverity Severity) GetDiagnosticLocation(this Compilation compilation)
