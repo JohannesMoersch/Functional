@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Functional;
 
+[CollectionBuilder(typeof(EquatableListBuilder), nameof(EquatableListBuilder.Create))]
 public class EquatableList<T> : IReadOnlyList<T>, IEquatable<EquatableList<T>?>
 {
 	private readonly IReadOnlyList<T> _list;
@@ -36,4 +38,10 @@ public class EquatableList<T> : IReadOnlyList<T>, IEquatable<EquatableList<T>?>
 
 	public static bool operator !=(EquatableList<T>? left, EquatableList<T>? right) 
 		=> !(left == right);
+}
+
+public static class EquatableListBuilder
+{
+	public static EquatableList<T> Create<T>(ReadOnlySpan<T> elements)
+		=> new EquatableList<T>(elements.ToArray());
 }

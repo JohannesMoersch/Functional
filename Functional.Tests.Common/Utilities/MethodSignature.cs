@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Functional;
 
-public record MethodSignature
+public sealed partial record MethodSignature
 {
 	public record TypeSignature
 	{
@@ -42,15 +42,27 @@ public record MethodSignature
 	public TypeSignature ReturnType { get; init; }
 	public EquatableList<TypeSignature> GenericTypeArguments { get; init; }
 	public EquatableList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)> ParameterTypes { get; init; }
+	public EquatableList<string?> ParameterNames { get; init; }
 
-	public MethodSignature(string methodName, TypeSignature returnType, IReadOnlyList<TypeSignature> genericTypeArguments, IReadOnlyList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)> parameterTypes)
+	public MethodSignature(string methodName, TypeSignature returnType, IReadOnlyList<TypeSignature> genericTypeArguments, IReadOnlyList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)> parameterTypes, IReadOnlyList<string?> parameterNames)
 	{
 		MethodName = methodName;
 		ReturnType = returnType;
 		GenericTypeArguments = genericTypeArguments.ToEquatableList();
 		ParameterTypes = parameterTypes.ToEquatableList();
+		ParameterNames = parameterNames.ToEquatableList();
 	}
 
 	public override string ToString()
 		=> $"\t{ReturnType} {MethodName}{(GenericTypeArguments.Any() ? $"<{String.Join(", ", GenericTypeArguments)}>" : "")}(this {String.Join(", ", ParameterTypes.Select(o => $"{(o.IsOut ? "out " : "")}{o.TypeSignature}{(o.IsNullable ? "?" : "")}"))})";
+
+	public bool Equals(MethodSignature? other) 
+		=> other is not null &&
+			MethodName == other.MethodName &&
+			EqualityComparer<TypeSignature>.Default.Equals(ReturnType, other.ReturnType) &&
+			EqualityComparer<EquatableList<TypeSignature>>.Default.Equals(GenericTypeArguments, other.GenericTypeArguments) &&
+			EqualityComparer<EquatableList<(TypeSignature TypeSignature, bool IsOut, bool IsNullable)>>.Default.Equals(ParameterTypes, other.ParameterTypes);
+
+	public override int GetHashCode() 
+		=> HashCode.Combine(MethodName, ReturnType, GenericTypeArguments, ParameterTypes);
 }

@@ -6,7 +6,7 @@ public class UnionTests
 	[EnumerableTestData<int, int>]
 	public Task Union(TestInput.TwoEnumerables<int, int> input)
 		=> input
-			.WithReferenceArguments(new[] { 1, 2, 2, 3 }, new[] { 4, 3, 2 })
+			.WithReferenceArguments([1, 2, 2, 3], [4, 3, 2])
 			.Execute(EnumerableExtensions.Union)
 			.ShouldBeEquivalentTo(Enumerable.Union);
 }
