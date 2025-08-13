@@ -20,6 +20,50 @@ namespace Functional
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
+		public static IAsyncEnumerable<T> WhereSome<T>(this IAsyncEnumerable<Option<T>> source, Func<T, bool> predicate)
+			where T : notnull
+			=> source
+				.Where(option => option.Match(predicate, () => false))
+				.Select(option => option.Match(o => o, () => default));
+#pragma warning restore CS8603 // Possible null reference return.
+
+#pragma warning disable CS8603 // Possible null reference return.
+		public static IAsyncEnumerable<TSuccess> WhereSuccess<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Where(result => result.Match(_ => true, _ => false))
+				.Select(result => result.Match(r => r, _ => default));
+#pragma warning restore CS8603 // Possible null reference return.
+
+#pragma warning disable CS8603 // Possible null reference return.
+		public static IAsyncEnumerable<TSuccess> WhereSuccess<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source, Func<TSuccess, bool> predicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Where(result => result.Match(predicate, _ => false))
+				.Select(result => result.Match(r => r, _ => default));
+#pragma warning restore CS8603 // Possible null reference return.
+
+#pragma warning disable CS8603 // Possible null reference return.
+		public static IAsyncEnumerable<TFailure> WhereFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Where(result => result.Match(_ => false, _ => true))
+				.Select(result => result.Match(_ => default, r => r));
+#pragma warning restore CS8603 // Possible null reference return.
+
+#pragma warning disable CS8603 // Possible null reference return.
+		public static IAsyncEnumerable<TFailure> WhereFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source, Func<TFailure, bool> predicate)
+			where TSuccess : notnull
+			where TFailure : notnull
+			=> source
+				.Where(result => result.Match(_ => false, predicate))
+				.Select(result => result.Match(_ => default, r => r));
+#pragma warning restore CS8603 // Possible null reference return.
+
+#pragma warning disable CS8603 // Possible null reference return.
 		public static async Task<Result<TSuccess[], TFailure>> TakeUntilFailure<TSuccess, TFailure>(this IAsyncEnumerable<Result<TSuccess, TFailure>> source)
 			where TSuccess : notnull
 			where TFailure : notnull
