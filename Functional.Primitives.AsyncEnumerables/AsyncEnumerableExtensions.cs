@@ -32,8 +32,8 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> source
-				.Where(option => option.Match(_ => true, _ => false))
-				.Select(option => option.Match(o => o, _ => default));
+				.Where(result => result.Match(_ => true, _ => false))
+				.Select(result => result.Match(r => r, _ => default));
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
@@ -41,8 +41,8 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> source
-				.Where(option => option.Match(predicate, _ => false))
-				.Select(option => option.Match(o => o, _ => default));
+				.Where(result => result.Match(predicate, _ => false))
+				.Select(result => result.Match(r => r, _ => default));
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
@@ -50,8 +50,8 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> source
-				.Where(option => option.Match(_ => false, _ => true))
-				.Select(option => option.Match(_ => default, o => o));
+				.Where(result => result.Match(_ => false, _ => true))
+				.Select(result => result.Match(_ => default, r => r));
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
@@ -59,8 +59,8 @@ namespace Functional
 			where TSuccess : notnull
 			where TFailure : notnull
 			=> source
-				.Where(option => option.Match(_ => false, predicate))
-				.Select(option => option.Match(_ => default, o => o));
+				.Where(result => result.Match(_ => false, predicate))
+				.Select(result => result.Match(_ => default, r => r));
 #pragma warning restore CS8603 // Possible null reference return.
 
 #pragma warning disable CS8603 // Possible null reference return.
