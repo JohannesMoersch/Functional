@@ -456,7 +456,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -503,7 +503,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -553,7 +553,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -606,7 +606,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -662,7 +662,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -721,7 +721,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -783,7 +783,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
@@ -848,7 +848,7 @@ namespace Functional.Tests.Results
 					.Should()
 					.Match(errorCollection
 						=> errorCollection.Count() == resultCollection.Count(r => !r.IsSuccess())
-						   && resultCollection.Where(r => !r.IsSuccess()).Select(r => r.Failure()).WhereSome().All(errorCollection.Contains));
+						   && resultCollection.WhereFailure().All(errorCollection.Contains));
 
 			#region Arrangements
 
