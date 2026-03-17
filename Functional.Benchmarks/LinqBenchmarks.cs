@@ -25,13 +25,13 @@ public class LinqBenchmarks
     public IMatchableUnion<string, Exception> Native_Select_Error()
         => from s in _nativeErr select s.ToUpper();
 
-    [Benchmark(Description = "Legacy Union — Select via ProjectedMatchableUnion (string case)")]
-    public IMatchableUnion<string, Exception> Legacy_Select_String()
-        => from s in _legacyStr.Value() select s.ToUpper();
+    [Benchmark(Description = "Legacy Union — Match equivalent (no LINQ support) (string case)")]
+    public string Legacy_Match_String()
+        => _legacyStr.Value().Match(s => s.ToUpper(), e => e.Message);
 
-    [Benchmark(Description = "Legacy Union — Select via ProjectedMatchableUnion (int case)")]
-    public IMatchableUnion<string, Exception> Legacy_Select_Error()
-        => from s in _legacyErr.Value() select s.ToUpper();
+    [Benchmark(Description = "Legacy Union — Match equivalent (no LINQ support) (error case)")]
+    public string Legacy_Match_Error()
+        => _legacyErr.Value().Match(s => s.ToUpper(), e => e.Message);
 
     [Benchmark(Description = "Option — from x in some select x.ToUpper")]
     public Option<string> Option_Select_Some()
