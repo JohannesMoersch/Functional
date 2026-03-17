@@ -58,16 +58,16 @@ namespace Functional.Unions.Native.Tests
 		public void Select_TransformsFirstCase()
 		{
 			Functional.Native.Union<string, int> union = "hello";
-			Functional.IMatchableUnion<string, int> projected = Functional.Native.NativeUnionExtensions.Select<string, int, string>(union, s => s.ToUpper());
-			projected.Match<string>(s => s, _ => "none").Should().Be("HELLO");
+			Functional.Native.Union<string, int> result = Functional.Native.NativeUnionExtensions.Select<string, int, string>(union, s => s.ToUpper());
+			result.Match<string>(s => s, _ => "none").Should().Be("HELLO");
 		}
 
 		[Fact]
 		public void Select_PassesThroughSecondCase()
 		{
 			Functional.Native.Union<string, int> union = 42;
-			Functional.IMatchableUnion<string, int> projected = Functional.Native.NativeUnionExtensions.Select<string, int, string>(union, s => s.ToUpper());
-			projected.Match<string>(s => s, i => i.ToString()).Should().Be("42");
+			Functional.Native.Union<string, int> result = Functional.Native.NativeUnionExtensions.Select<string, int, string>(union, s => s.ToUpper());
+			result.Match<string>(s => s, i => i.ToString()).Should().Be("42");
 		}
 
 		// ── MatchAsync ──────────────────────────────────────────────────

@@ -18,11 +18,11 @@ public class LinqBenchmarks
     private readonly Option<string> _none = Option.None<string>();
 
     [Benchmark(Description = "Native Union — from x in u select x.ToUpper (string case)", Baseline = true)]
-    public IMatchableUnion<string, Exception> Native_Select_String()
+    public Functional.Native.Union<string, Exception> Native_Select_String()
         => from s in _nativeStr select s.ToUpper();
 
     [Benchmark(Description = "Native Union — from x in u select x.ToUpper (error case)")]
-    public IMatchableUnion<string, Exception> Native_Select_Error()
+    public Functional.Native.Union<string, Exception> Native_Select_Error()
         => from s in _nativeErr select s.ToUpper();
 
     [Benchmark(Description = "Legacy Union — Match equivalent (no LINQ support) (string case)")]

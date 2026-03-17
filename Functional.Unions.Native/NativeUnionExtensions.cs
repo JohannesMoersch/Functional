@@ -176,57 +176,30 @@ namespace Functional.Native
 		public static Option<TThree> Three<TOne, TTwo, TThree>(this Union<TOne, TTwo, TThree> union)
 			=> union.Match(_ => Option.None<TThree>(), _ => Option.None<TThree>(), Option.Some);
 
-		// ── Select ───────────────────────────────────────────────────────────────────
+		// ── Select / SelectMany ──────────────────────────────────────────────────────
+		//
+		// Mirrors Result<TSuccess, TFailure> LINQ query-expression support:
+		//   • select maps the first (success) case
+		//   • from … from … select chains, short-circuiting on the first failure
+		// Returns Union<TResult, TFailure> directly — zero allocation, no wrapper type.
 
-		public static IMatchableUnion<TResult, TTwo> Select<TOne, TTwo, TResult>(
-			this Union<TOne, TTwo> union,
-			Func<TOne, TResult> selector)
-			=> union.Match(
-				v => (IMatchableUnion<TResult, TTwo>)new ProjectedMatchableUnion<TResult, TTwo>(selector(v)),
-				v => new ProjectedMatchableUnion<TResult, TTwo>(v));
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Union<TResult, TFailure> Select<TSuccess, TFailure, TResult>(
+			this Union<TSuccess, TFailure> union,
+			Func<TSuccess, TResult> selector)
+			=> union.Match<Union<TResult, TFailure>>(
+				v => selector(v),
+				err => err);
 
-		public static IMatchableUnion<TResult, TTwo, TThree> Select<TOne, TTwo, TThree, TResult>(
-			this Union<TOne, TTwo, TThree> union,
-			Func<TOne, TResult> selector)
-			=> union.Match(
-				v => (IMatchableUnion<TResult, TTwo, TThree>)new ProjectedMatchableUnion<TResult, TTwo, TThree>(selector(v)),
-				v => new ProjectedMatchableUnion<TResult, TTwo, TThree>(v),
-				v => new ProjectedMatchableUnion<TResult, TTwo, TThree>(v));
-
-		// ── SelectMany ───────────────────────────────────────────────────────────────
-
-		// Overload for IMatchableUnion selector (e.g. chaining after a Select)
-		public static IMatchableUnion<TResult, TTwo> SelectMany<TOne, TIntermediate, TTwo, TResult>(
-			this Union<TOne, TTwo> union,
-			Func<TOne, IMatchableUnion<TIntermediate, TTwo>> selector,
-			Func<TOne, TIntermediate, TResult> resultSelector)
-			=> union.Match(
-				v => selector(v).Match(
-					i => (IMatchableUnion<TResult, TTwo>)new ProjectedMatchableUnion<TResult, TTwo>(resultSelector(v, i)),
-					err => new ProjectedMatchableUnion<TResult, TTwo>(err)),
-				err => new ProjectedMatchableUnion<TResult, TTwo>(err));
-
-		// Overload for native Union selector (e.g. `from x in a from y in b select ...`)
-		public static IMatchableUnion<TResult, TTwo> SelectMany<TOne, TIntermediate, TTwo, TResult>(
-			this Union<TOne, TTwo> union,
-			Func<TOne, Union<TIntermediate, TTwo>> selector,
-			Func<TOne, TIntermediate, TResult> resultSelector)
-			=> union.Match(
-				v => selector(v).Match(
-					i => (IMatchableUnion<TResult, TTwo>)new ProjectedMatchableUnion<TResult, TTwo>(resultSelector(v, i)),
-					err => new ProjectedMatchableUnion<TResult, TTwo>(err)),
-				err => new ProjectedMatchableUnion<TResult, TTwo>(err));
-
-		// Overload for `select ... into ... from t in Union<> ...` pattern:
-		// source is IMatchableUnion<> (result of a prior Select), selector returns a native Union<>
-		public static IMatchableUnion<TResult, TTwo> SelectMany<TOne, TIntermediate, TTwo, TResult>(
-			this IMatchableUnion<TOne, TTwo> union,
-			Func<TOne, Union<TIntermediate, TTwo>> selector,
-			Func<TOne, TIntermediate, TResult> resultSelector)
-			=> union.Match(
-				v => selector(v).Match(
-					i => (IMatchableUnion<TResult, TTwo>)new ProjectedMatchableUnion<TResult, TTwo>(resultSelector(v, i)),
-					err => new ProjectedMatchableUnion<TResult, TTwo>(err)),
-				err => new ProjectedMatchableUnion<TResult, TTwo>(err));
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Union<TResult, TFailure> SelectMany<TSuccess, TFailure, TBind, TResult>(
+			this Union<TSuccess, TFailure> union,
+			Func<TSuccess, Union<TBind, TFailure>> selector,
+			Func<TSuccess, TBind, TResult> resultSelector)
+			=> union.Match<Union<TResult, TFailure>>(
+				v => selector(v).Match<Union<TResult, TFailure>>(
+					b => resultSelector(v, b),
+					err => err),
+				err => err);
 	}
 }
