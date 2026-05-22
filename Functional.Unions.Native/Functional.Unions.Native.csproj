@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Title>Functional.Unions.Native</Title>
+    <Description>Native C# 15 union type declarations for Functional.Unions.</Description>
+    <PackageTags>functional unions native</PackageTags>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.Unions\Functional.Unions.csproj" />
+    <ProjectReference Include="..\Functional.Primitives\Functional.Primitives.csproj" />
+  </ItemGroup>
+
+</Project>

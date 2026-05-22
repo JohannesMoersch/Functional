@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkRun-joined-2026-03-16-23-35-24</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.26200.7840)
+13th Gen Intel Core i7-13705H, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 11.0.100-preview.2.26159.112
+  [Host]     : .NET 11.0.0 (11.0.26.16012), X64 RyuJIT AVX2
+  Job-RCHZZN : .NET 11.0.0 (11.0.26.16012), X64 RyuJIT AVX2
+</code></pre>
+<pre><code>IterationCount=7  LaunchCount=1  WarmupCount=5  
+</code></pre>
+
+<table>
+<thead><tr><th>Type                 </th><th>Method                                                     </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>AsyncBenchmarks</td><td>&#39;Native.MatchAsync [string]&#39;</td><td>3.0783 ns</td><td>0.2012 ns</td><td>0.0893 ns</td><td>3.0486 ns</td><td>1.00</td><td>0.04</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>CreationBenchmarks</td><td>&#39;Legacy.Create [string]&#39;</td><td>6.7661 ns</td><td>0.6564 ns</td><td>0.2914 ns</td><td>6.6525 ns</td><td>2.20</td><td>0.11</td><td>0.0025</td><td>32 B</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Native Union — from x in u select x.ToUpper (string case)&#39;</td><td>32.8741 ns</td><td>3.1271 ns</td><td>1.3885 ns</td><td>33.2938 ns</td><td>10.69</td><td>0.51</td><td>0.0076</td><td>96 B</td><td>NA</td>
+</tr><tr><td>MatchBenchmarks</td><td>&#39;Legacy.Match [string]&#39;</td><td>2.9761 ns</td><td>0.5892 ns</td><td>0.2101 ns</td><td>3.0373 ns</td><td>0.97</td><td>0.07</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Create [string]&#39;</td><td>0.0238 ns</td><td>0.1164 ns</td><td>0.0415 ns</td><td>0.0065 ns</td><td>0.01</td><td>0.01</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>OptionBenchmarks</td><td>&#39;Option.Match [some]&#39;</td><td>3.8624 ns</td><td>0.6966 ns</td><td>0.3093 ns</td><td>4.0044 ns</td><td>1.26</td><td>0.10</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>AsyncBenchmarks</td><td>&#39;Native.MatchAsync [int]&#39;</td><td>10.2733 ns</td><td>0.8453 ns</td><td>0.3753 ns</td><td>10.4222 ns</td><td>3.34</td><td>0.14</td><td>0.0057</td><td>72 B</td><td>NA</td>
+</tr><tr><td>CreationBenchmarks</td><td>&#39;Legacy.Create [int]&#39;</td><td>6.6234 ns</td><td>0.4935 ns</td><td>0.1760 ns</td><td>6.6248 ns</td><td>2.15</td><td>0.08</td><td>0.0025</td><td>32 B</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Native Union — from x in u select x.ToUpper (error case)&#39;</td><td>17.9955 ns</td><td>1.0173 ns</td><td>0.3628 ns</td><td>17.9919 ns</td><td>5.85</td><td>0.19</td><td>0.0051</td><td>64 B</td><td>NA</td>
+</tr><tr><td>MatchBenchmarks</td><td>&#39;Legacy.Match [int]&#39;</td><td>3.1567 ns</td><td>0.4780 ns</td><td>0.2122 ns</td><td>3.1092 ns</td><td>1.03</td><td>0.07</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Create [int]&#39;</td><td>4.5910 ns</td><td>0.5714 ns</td><td>0.2537 ns</td><td>4.5774 ns</td><td>1.49</td><td>0.09</td><td>0.0019</td><td>24 B</td><td>NA</td>
+</tr><tr><td>OptionBenchmarks</td><td>&#39;Option.Match [none]&#39;</td><td>3.6764 ns</td><td>0.4950 ns</td><td>0.1765 ns</td><td>3.7436 ns</td><td>1.20</td><td>0.06</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>AsyncBenchmarks</td><td>&#39;Legacy.MatchAsync [string]&#39;</td><td>4.7692 ns</td><td>0.6322 ns</td><td>0.2807 ns</td><td>4.7586 ns</td><td>1.55</td><td>0.09</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>CreationBenchmarks</td><td>&#39;Native.Create [string]&#39;</td><td>0.0892 ns</td><td>0.2955 ns</td><td>0.1312 ns</td><td>0.0000 ns</td><td>0.03</td><td>0.04</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Legacy Union — Match equivalent (no LINQ support) (string case)&#39;</td><td>22.9449 ns</td><td>0.7131 ns</td><td>0.3166 ns</td><td>22.8196 ns</td><td>7.46</td><td>0.22</td><td>0.0025</td><td>32 B</td><td>NA</td>
+</tr><tr><td>MatchBenchmarks</td><td>&#39;Native.Match [string]&#39;</td><td>1.5690 ns</td><td>0.1319 ns</td><td>0.0470 ns</td><td>1.5724 ns</td><td>0.51</td><td>0.02</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Match() [string]&#39;</td><td>1.4768 ns</td><td>0.4171 ns</td><td>0.1488 ns</td><td>1.4285 ns</td><td>0.48</td><td>0.05</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>OptionBenchmarks</td><td>&#39;Option.ValueOrDefault [some]&#39;</td><td>2.1125 ns</td><td>0.4179 ns</td><td>0.1855 ns</td><td>2.0471 ns</td><td>0.69</td><td>0.06</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>AsyncBenchmarks</td><td>&#39;Legacy.MatchAsync [int]&#39;</td><td>11.6231 ns</td><td>1.0973 ns</td><td>0.3913 ns</td><td>11.6379 ns</td><td>3.78</td><td>0.15</td><td>0.0057</td><td>72 B</td><td>NA</td>
+</tr><tr><td>CreationBenchmarks</td><td>&#39;Native.Create [int]&#39;</td><td>4.7602 ns</td><td>0.2160 ns</td><td>0.0770 ns</td><td>4.7567 ns</td><td>1.55</td><td>0.05</td><td>0.0019</td><td>24 B</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Legacy Union — Match equivalent (no LINQ support) (error case)&#39;</td><td>3.4866 ns</td><td>1.0726 ns</td><td>0.4762 ns</td><td>3.2322 ns</td><td>1.13</td><td>0.15</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>MatchBenchmarks</td><td>&#39;Native.Match [int]&#39;</td><td>2.4448 ns</td><td>0.7248 ns</td><td>0.3218 ns</td><td>2.2731 ns</td><td>0.79</td><td>0.10</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Match() [int]&#39;</td><td>2.2725 ns</td><td>0.1305 ns</td><td>0.0579 ns</td><td>2.2688 ns</td><td>0.74</td><td>0.03</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>OptionBenchmarks</td><td>&#39;Option.ValueOrDefault [none]&#39;</td><td>1.5607 ns</td><td>0.6058 ns</td><td>0.2690 ns</td><td>1.5029 ns</td><td>0.51</td><td>0.08</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Option — from x in some select x.ToUpper&#39;</td><td>23.8380 ns</td><td>1.1417 ns</td><td>0.5069 ns</td><td>23.8439 ns</td><td>7.75</td><td>0.26</td><td>0.0025</td><td>32 B</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;switch [string]&#39;</td><td>0.7198 ns</td><td>0.1285 ns</td><td>0.0571 ns</td><td>0.6885 ns</td><td>0.23</td><td>0.02</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>LinqBenchmarks</td><td>&#39;Option — from x in none select x.ToUpper&#39;</td><td>4.1444 ns</td><td>0.7223 ns</td><td>0.3207 ns</td><td>4.1965 ns</td><td>1.35</td><td>0.10</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;switch [int]&#39;</td><td>1.3463 ns</td><td>0.3076 ns</td><td>0.1366 ns</td><td>1.3756 ns</td><td>0.44</td><td>0.04</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Legacy.Match [string]&#39;</td><td>3.1056 ns</td><td>0.2768 ns</td><td>0.1229 ns</td><td>3.1283 ns</td><td>1.01</td><td>0.05</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>NativeUnionSwitchBenchmarks</td><td>&#39;Legacy.Match [int]&#39;</td><td>3.4623 ns</td><td>0.6811 ns</td><td>0.3024 ns</td><td>3.4941 ns</td><td>1.13</td><td>0.10</td><td>-</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>
