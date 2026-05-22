@@ -8,9 +8,7 @@
     <Title>Functional.Unions.Native</Title>
     <Description>Native C# 15 union type declarations for Functional.Unions.</Description>
     <PackageTags>functional unions native</PackageTags>
-    <!-- Use the custom Roslyn compiler that supports native union declarations -->
-    <CscToolPath>..\</CscToolPath>
-    <CscToolExe>csc.exe</CscToolExe>
+
   </PropertyGroup>
 
   <ItemGroup>

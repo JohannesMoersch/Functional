@@ -1,14 +1,13 @@
-// Shims required by the prototype Roslyn compiler that generates native union types.
-// The compiler lowers union declarations to reference these BCL types, which do not yet
-// exist in the official .NET 11 preview SDK, so we polyfill them here.
+// Polyfills required until UnionAttribute and IUnion are included in the .NET runtime.
+// See https://github.com/dotnet/core/blob/main/release-notes/11.0/preview/preview3/csharp.md
 
 namespace System.Runtime.CompilerServices
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
-	internal sealed class UnionAttribute : Attribute { }
-}
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
+	public sealed class UnionAttribute : Attribute { }
 
-namespace System.Runtime.CompilerServices
-{
-	internal interface IUnion { }
+	public interface IUnion
+	{
+		object? Value { get; }
+	}
 }
